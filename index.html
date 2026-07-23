@@ -465,7 +465,6 @@ tbody tr.hidden{display:none}
             <option value="w0323">03.23–03.27</option>
             <option value="w0126">01.26–01.30</option>
             <option value="kmrd">凯美瑞德专题 2026</option>
-            <option value="liangrui">量锐专题 2026</option>
             <option value="all">全部历史汇总</option>
           </select>
         </div>
@@ -481,6 +480,7 @@ tbody tr.hidden{display:none}
           <button class="chip" onclick="filterBids('时代银通',this)">时代银通<span class="count" id="cnt-时代银通"></span></button>
           <button class="chip" onclick="filterBids('子午线',this)">子午线<span class="count" id="cnt-子午线"></span></button>
           <button class="chip" onclick="filterBids('凯美瑞德',this)">凯美瑞德<span class="count" id="cnt-凯美瑞德"></span></button>
+          <button class="chip" onclick="filterBids('量锐',this)">量锐<span class="count" id="cnt-量锐"></span></button>
           <button class="chip" onclick="filterBids('其他',this)">其他厂商<span class="count" id="cnt-其他"></span></button>
         </div>
       </div>
@@ -898,7 +898,7 @@ const currentWeekBids = [
   {bidder:'衡泰投资',winner:'衡泰技术',project:'衡泰投资交易管理系统优化建设项目(2026年第二期)',amount:'',date:'2026-07-13'},
   {bidder:'兴业数字金融服务(上海)',winner:'时代银通',project:'对客外汇衍生品风险管理项目',amount:'',date:'2026-07-16'},
   {bidder:'北京银行',winner:'时代银通',project:'2026年外汇报价引擎功能优化项目(第三次)',amount:'31.6万元',date:'2026-07-15',source:'北京银行采购门户',sourceUrl:'https://login-cpm-xt.bankofbeijing.com.cn/cms/default/webfile/1ywgg4/20260715/1262023181099597824.html'},
-  {bidder:'中国进出口银行',winner:'凯美瑞德',project:'新外币资金交易系统建设项目（中标候选人公示·项目号2640STC71395）',amount:'预算2215万元',date:'2026-07-17',source:'中钢招标',sourceUrl:'https://www.sinosteel.com/tender'}
+  {bidder:'中国进出口银行',winner:'凯美瑞德',project:'新外币资金交易系统建设项目（中标候选人公示·项目号2640STC71395）',amount:'预算2215万元',date:'2026-07-17',source:'中钢招标',sourceUrl:'http://tendering.sinosteel.com/content/bulletin.html?id=7478074145125699584'}
 ];
 
 const archiveData = [
@@ -1001,7 +1001,7 @@ const kmrdBids = [
   {bidder:'浦发银行',winner:'凯美瑞德',project:'2026-2027金融市场初始保证金系统年度维护服务',amount:'268万元',date:'2026-06-05',source:'浦发银行采购平台',sourceUrl:'https://ebuy.spdb.com.cn/#/noticeDetail?noticeId=1133999529697272725780085407744'},
   {bidder:'衡水银行',winner:'凯美瑞德',project:'衡芯工程综合收单系统配套改造项目',amount:'67.5万元',date:'2026-02-11'},
   {bidder:'浦发银行',winner:'凯美瑞德',project:'2026-2029年度金融市场领域信息系统研发专业服务（入围供应商）',amount:'框架入围',date:'2026-04-29',source:'招标网',sourceUrl:'https://m.zhaobiao.cn/zb/succeed_v_08ebf4c3d46140272786ce6e451b142f.html'},
-  {bidder:'邮储银行',winner:'凯美瑞德',project:'2026-2027年总行开发测试类技术资源外包（包4资金资管领域，入围）',amount:'框架入围',date:'2026-06-05',source:'中国财政金融采购网',sourceUrl:'http://www.cfcpn.com/jcw/sys/index/goUrl?url=modules/sys/login/detail&column=undefined&searchVal=3937df18879a49088980bf639ce523e'},
+  {bidder:'邮储银行',winner:'凯美瑞德',project:'2026-2027年总行开发测试类技术资源外包（包4资金资管领域，入围）',amount:'框架入围',date:'2026-06-05',source:'中国邮政储蓄银行',sourceUrl:'https://www.chinapost.com.cn/cn/report/2606/2381-1.htm'},
   {bidder:'某股份制商业银行',winner:'凯美瑞德',project:'金融市场业务内模法风险计量系统、自研估值系统（中标）',amount:'金额未披露',date:'2026-04-08'}
 ];
 
@@ -1016,7 +1016,6 @@ const liangruiBids = [
 const weekOptions = [
   { id:'current', label:'本周 07.13–07.19', range:'2026年7月13日 — 7月19日', bids: currentWeekBids },
   { id:'kmrd',    label:'凯美瑞德专题 2026', range:'凯美瑞德 2026年中标专题（2月–6月，补充收集）', bids: kmrdBids },
-  { id:'liangrui',label:'量锐专题 2026',     range:'量锐 2026年中标专题（4月–6月，补充收集）',     bids: liangruiBids },
   { id:'w0706',   label:'07.06–07.12',      range:'2026年7月6日 — 7月12日',  bids: archiveData[1] },
   { id:'w0630',   label:'06.30–07.06',      range:'2026年6月30日 — 7月6日',  bids: archiveData[2] },
   { id:'w0622',   label:'06.22–06.28',      range:'2026年6月22日 — 6月28日', bids: archiveData[3] },
@@ -1236,7 +1235,7 @@ function updateCounts(){
   const xcCount = active.filter(r=>isXC(r.project)).length;
   const xcEl = document.getElementById('cnt-信创');
   if(xcEl) xcEl.textContent = xcCount ? `(${xcCount})` : '(0)';
-  ['恒生电子','金仕达','衡泰技术','云赢网络','兆尹信息','时代银通','子午线','凯美瑞德','其他'].forEach(v=>{
+  ['恒生电子','金仕达','衡泰技术','云赢网络','兆尹信息','时代银通','子午线','凯美瑞德','量锐','其他'].forEach(v=>{
     const el = document.getElementById('cnt-'+v);
     if(el) el.textContent = counts[v] ? `(${counts[v]})` : '(0)';
   });
