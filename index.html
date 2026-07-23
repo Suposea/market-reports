@@ -1046,13 +1046,24 @@ const liangruiBids = [
 // ===== Radar (近期动态: 招采计划 + 舆情) =====
 const RADAR_TYPES = { plan:'招采计划', news:'舆情动态' };
 const radarItems = [
-  { type:'plan', bank:'中国进出口银行', date:'2026-07-17', title:'新外币资金交易系统建设项目 — 中标候选人公示已发', content:'凯美瑞德(苏州)信息科技股份有限公司为中标候选人，项目预算 2215 万元、编号 2640STC71395。预计近期发布中标结果并签订合同，进入 24 个月实施期（覆盖汇率/利率/衍生品/债券，含信创适配）。', source:'爱企查·中标候选人公示', sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?pid=35348917265179&dataId=6bc27cdd9aefa76f0c325aafe407ff68b9c7700e' },
-  { type:'plan', bank:'多家银行（国有/股份/城商）', date:'2026-Q3', title:'信创改造招采窗口（资金/外汇系统国产化替代）', content:'在国产化替代与自主可控政策驱动下，预计 Q3 多家银行将启动资金交易、外汇/衍生品系统的信创改造与选型入围招采。建议持续跟踪恒生电子、凯美瑞德、金仕达、时代银通、衡泰技术等厂商动向。', source:'', sourceUrl:'' },
+  // ===== 招采计划（含下一步行动具体链接） =====
+  { type:'plan', bank:'中国进出口银行', date:'2026-07-17', title:'新外币资金交易系统 — 中标候选人已公示，待发中标结果', content:'凯美瑞德(苏州)信息科技股份有限公司为中标候选人，预算 2215 万元、编号 2640STC71395。下一步：关注中标结果公告发布并进入合同签订与 24 个月实施期（覆盖汇率/利率/衍生品/债券，含信创适配）。', source:'爱企查·中标候选人公示', sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?pid=35348917265179&dataId=6bc27cdd9aefa76f0c325aafe407ff68b9c7700e' },
+  { type:'plan', bank:'中国进出口银行', date:'2026-05', title:'人民币资金交易系统建设项目 — 供应商征集已完成', content:'口行曾发布人民币资金交易系统供应商征集（市场调研至 2026-05-03），明确要求"满足信创要求"，后续将另行发布正式采购流程。下一步：紧盯口行官网与金采网的正式招标公告。', source:'金采网·供应商征集公告', sourceUrl:'https://www.jinrongzhaobiao.com/news-7b38d171cee73010e31b2e230a053fba' },
+  { type:'plan', bank:'青岛银行', date:'2026-07', title:'新一代资金交易管理系统建设项目 — 采购公告发布', content:'青岛银行以谈判方式采购新一代资金交易管理系统，预算 380 万元，要求"全面满足国产化适配、信创升级"，覆盖债券/外汇衍生品/同业等全品类本外币资金业务。下一步：通过青岛阳光采购平台参与或跟踪。', source:'青岛阳光采购平台·采购公告', sourceUrl:'https://bbda.com/bidDetail/8600bc432baad5c53d76b4336b4145bfa0fda439a01e9cf6a15179c5da877323.html' },
+  { type:'plan', bank:'中国银行陕西省分行', date:'2026-07', title:'国库支付电子化清算系统信创改造 — 竞争性磋商公告', content:'中行陕西省分行国库支付电子化清算系统信创改造项目竞争性磋商，最高限价 125.85 万元，服务期至 2026-09-30。下一步：关注磋商结果与入围供应商。', source:'采购与招标网·磋商公告', sourceUrl:'https://www.gxzbcg.cn/class3/791271.html' },
+  { type:'plan', bank:'多家银行（国有/股份/城商）', date:'2026-Q3', title:'信创改造招采窗口 — 资金/外汇系统国产化替代', content:'在国产化替代与自主可控政策驱动下，预计 Q3 多家银行将启动资金交易、外汇/衍生品系统的信创改造与选型入围招采。建议持续在金采网监控恒生电子、凯美瑞德、金仕达、时代银通、衡泰技术、量锐等厂商动向。', source:'中国金融集中采购网（监控入口）', sourceUrl:'http://www.cfcpn.com/' },
+
+  // ===== 舆情动态（行业广覆盖，不局限于凯美瑞德） =====
   { type:'news', bank:'凯美瑞德', date:'2026-07', title:'凯美瑞德中标某 10 万亿级股份制商业银行双项目', content:'成功中标该行金融市场业务内模法风险计量系统、自研估值系统项目，是市场风险领域的又一重要突破，彰显服务大型金融机构核心系统的综合实力。', source:'凯美瑞德官网', sourceUrl:'http://kmerit.com/News_desc/55/474.html' },
   { type:'news', bank:'凯美瑞德', date:'2026-04-23', title:'光大银行应用安全动态防护设备选型入围 — 凯美瑞德为第一中标候选人', content:'中国光大银行应用安全动态防护设备选型入围公开招标中标候选人公示：第一中标候选人 凯美瑞德(苏州)信息科技股份有限公司。', source:'中招国际', sourceUrl:'https://www.cntcitc.com.cn/more.html?chanType=3&chanId=16&contentId=371c3d3206a2495cb778bb0971e4e289' },
   { type:'news', bank:'凯美瑞德', date:'2026-02-10', title:'凯美瑞德获"2025-2026年度国产化替代解决方案先锋奖"', content:'凭借自主研发的 VIVA-TCM 资金交易与风险管理系统，获权威媒体信息化观察网年度评选"国产化替代解决方案先锋奖"。', source:'中国日报网', sourceUrl:'https://caijing.chinadaily.com.cn/a/202602/10/WS698ac0e8a310942cc499f085.html' },
   { type:'news', bank:'凯美瑞德', date:'2026-03', title:'凯美瑞德三款核心产品完成华为鲲鹏双认证', content:'全链路国产化解决方案在金融信创领域取得重要突破，标志其产品完成鲲鹏双认证，夯实自主可控技术底座。', source:'太平洋财富网', sourceUrl:'' },
-  { type:'news', bank:'凯美瑞德', date:'2026-04-20', title:'凯美瑞德与兆芯达成战略合作', content:'共筑金融信创全栈自主安全底座，深化芯片级适配合作，推动资金资管领域核心技术自主创新。', source:'中华网', sourceUrl:'' }
+  { type:'news', bank:'凯美瑞德', date:'2026-04-20', title:'凯美瑞德与兆芯达成战略合作', content:'共筑金融信创全栈自主安全底座，深化芯片级适配合作，推动资金资管领域核心技术自主创新。', source:'中华网', sourceUrl:'' },
+  { type:'news', bank:'恒生电子', date:'2026-07', title:'恒生电子密集中标多家金融机构系统项目', content:'7 月连续中标：交银国际信托综合业务系统维护 466 万、国元证券托管部核心系统信创改造 343 万、北京银行基金代销系统（个人养老金）支持、五矿证券净资本/操作风险 XC 改造、徽商银行理财销售系统 2.0（第一中标候选人 183 万），覆盖银行/信托/证券多场景。', source:'天眼查·招投标记录', sourceUrl:'https://www.tianyancha.com/company/18695545/jingzhuang' },
+  { type:'news', bank:'行业·信创政策', date:'2026-06', title:'金融信创进入规模化交付阶段，2027 年关键软硬件 100% 国产替代', content:'政策明确 2027 年实现金融业关键软硬件 100% 国产替代；金融信创市场 2025 年近 2500 亿元、2026 年有望突破 3000 亿元。恒生、金证等头部厂商核心系统已从样板试点步入规模化常态化交付。', source:'新浪财经', sourceUrl:'https://finance.sina.com.cn/wm/2026-06-04/doc-iniafvzq0369751.shtml' },
+  { type:'news', bank:'交通银行', date:'2026-02', title:'交通银行全面推进全栈信创工程', content:'新一代金融市场业务系统年内上线债券/拆借/回购 3 大类 29 个品种，移植存量交易 4 万余笔、资产占比超 97%；计划 2026 年完成总行主要品种迁移、2027 年全面完成境内外金融市场业务信创改造。', source:'同花顺', sourceUrl:'https://fund.10jqka.com.cn/20260203/c674508029.shtml' },
+  { type:'news', bank:'兴业数金 / 时代银通 / 金仕达', date:'2026-07', title:'兴业数金分布式核心配套中标：时代银通（维护）、金仕达（贵金属交易）', content:'兴业数字金融服务（上海）股份有限公司分布式核心建设项目配套改造：金融市场产品报价和对客交易系统维护由杭州时代银通中标；贵金属交易管理系统配套建设由上海金仕达中标，反映股份行分布式核心改造带动资金交易系统集群需求。', source:'兴业官网·采购结果公告', sourceUrl:'https://cg.cib.com.cn/cms/default/webfile/ywgg3/20260714/1261637935095087104.html' },
+  { type:'news', bank:'恒生电子', date:'2026-05', title:'恒生发布《2026 证券行业核心系统信创建设指南》', content:'围绕核心交易 UF3.0、投资交易 O45 等七大核心业务系统提供全栈选型方案，宣称已完成所有核心业务系统 100% 全栈信创适配、累计实施信创项目超 2000 个，并联合行业云推出信创云一体化方案。', source:'今日头条', sourceUrl:'https://www.toutiao.com/article/7660118801060545076/' }
 ];
 
 // ===== Week options for filter (default = most recent week) =====
