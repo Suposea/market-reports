@@ -281,6 +281,38 @@ tbody tr.hidden{display:none}
   .reveal{transition:none;opacity:1;transform:none}
   *{animation:none!important}
 }
+
+/* ===== Vendor link + source column ===== */
+.vendor-link{color:inherit;text-decoration:none}
+.vendor-link:hover .vendor-tag{border-color:var(--accent)!important;background:var(--accent-soft)}
+.source-cell{max-width:150px}
+.src-link{display:inline-flex;align-items:center;gap:4px;font-size:0.8rem;font-weight:500;color:var(--accent);text-decoration:none;white-space:nowrap}
+.src-link:hover{text-decoration:underline}
+.src-link svg{flex:0 0 auto;opacity:.7}
+
+/* ===== Vendor business info grid ===== */
+.vendor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;margin-top:4px}
+.vc-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-md);padding:18px 18px 16px;transition:box-shadow .25s ease,transform .25s ease,border-color .25s ease}
+.vc-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.vc-flash{border-color:var(--vc)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--vc) 30%,transparent)}
+.vc-head{display:flex;align-items:flex-start;gap:11px;margin-bottom:12px}
+.vc-dot{width:11px;height:11px;border-radius:50%;margin-top:5px;flex:0 0 auto;background:var(--vc,var(--accent))}
+.vc-name{font-size:1.02rem;font-weight:600;color:var(--ink-900)}
+.vc-biz{font-size:0.8rem;color:var(--ink-500);margin-top:2px}
+.vc-detail{display:flex;flex-direction:column;gap:6px;padding:10px 0;border-top:1px dashed var(--border-2);border-bottom:1px dashed var(--border-2);margin-bottom:10px}
+.vc-row{display:flex;justify-content:space-between;gap:12px;font-size:0.82rem;line-height:1.4}
+.vc-k{color:var(--ink-400);flex:0 0 auto}
+.vc-v{color:var(--ink-800);text-align:right;font-weight:500}
+.vc-hint{color:var(--ink-500);font-size:0.8rem;font-style:italic;padding:14px 0}
+.vc-legal{font-size:0.78rem;color:var(--ink-500);margin-bottom:12px;word-break:break-all}
+.vc-links{display:flex;gap:10px}
+.vc-link{display:inline-flex;align-items:center;gap:3px;font-size:0.82rem;font-weight:600;color:#fff;background:var(--vc,var(--accent));padding:6px 14px;border-radius:var(--radius-sm);text-decoration:none;transition:opacity .2s ease}
+.vc-link:hover{opacity:.88}
+@media(max-width:640px){
+  .vendor-grid{grid-template-columns:1fr}
+  .source-cell{display:none}
+  thead th:nth-child(6),tbody td:nth-child(6){display:none}
+}
 </style>
 </head>
 <body>
@@ -295,6 +327,7 @@ tbody tr.hidden{display:none}
     <div class="tabs">
       <div class="tab active" data-tab="overview">概览</div>
       <div class="tab" data-tab="bids">招投标汇总</div>
+      <div class="tab" data-tab="vendor">厂商工商信息</div>
       <div class="tab" data-tab="policy">政策行业</div>
       <div class="tab" data-tab="archive">历史归档</div>
     </div>
@@ -423,7 +456,6 @@ tbody tr.hidden{display:none}
             <option value="w0323">03.23–03.27</option>
             <option value="w0126">01.26–01.30</option>
             <option value="kmrd">凯美瑞德专题 2026</option>
-            <option value="zhong">中汇亿达专题 2026</option>
             <option value="all">全部历史汇总</option>
           </select>
         </div>
@@ -439,7 +471,6 @@ tbody tr.hidden{display:none}
           <button class="chip" onclick="filterBids('时代银通',this)">时代银通<span class="count" id="cnt-时代银通"></span></button>
           <button class="chip" onclick="filterBids('子午线',this)">子午线<span class="count" id="cnt-子午线"></span></button>
           <button class="chip" onclick="filterBids('凯美瑞德',this)">凯美瑞德<span class="count" id="cnt-凯美瑞德"></span></button>
-          <button class="chip" onclick="filterBids('中汇亿达',this)">中汇亿达<span class="count" id="cnt-中汇亿达"></span></button>
           <button class="chip" onclick="filterBids('其他',this)">其他厂商<span class="count" id="cnt-其他"></span></button>
         </div>
       </div>
@@ -453,6 +484,7 @@ tbody tr.hidden{display:none}
               <th data-sort="project" onclick="sortBy('project')">项目名称<span class="sort-icon">↕</span></th>
               <th data-sort="amount" onclick="sortBy('amount')">金额<span class="sort-icon">↕</span></th>
               <th data-sort="date" onclick="sortBy('date')">日期<span class="sort-icon">↕</span></th>
+              <th data-sort="source" onclick="sortBy('source')">信息来源<span class="sort-icon">↕</span></th>
             </tr>
           </thead>
           <tbody id="bidsBody"></tbody>
@@ -471,6 +503,24 @@ tbody tr.hidden{display:none}
       </div>
 
       <div class="update-badge">⏰ 下次自动更新：2026年7月27日（每周一早上）</div>
+    </div>
+  </div>
+
+  <!-- ===== Tab: Vendor Business Info ===== -->
+  <div class="tab-panel" id="tab-vendor">
+    <div class="panel reveal">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <span class="icon">
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h.01M15 17h.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            厂商工商信息
+          </div>
+          <div class="panel-sub">各中标厂商核心工商登记信息 · 数据来自企查查 / 天眼查（点击卡片内链接查看实时详情）</div>
+        </div>
+      </div>
+      <div class="vendor-grid" id="vendorCards"></div>
     </div>
   </div>
 
@@ -692,10 +742,78 @@ const VENDOR_COLORS = {
   '子午线':'#9c7b66','QTrade':'#8a8278','顶点软件':'#6f7d86',
   '长亭科技':'#a3675f','科蓝软件':'#5b6b7a','银信科技':'#6b7a6e',
   '森浦':'#7a8a94',
-  '凯美瑞德':'#8f7a5a',
-  '中汇亿达':'#a8895c'
+  '凯美瑞德':'#8f7a5a'
 };
 const OTHER_VENDORS = ['QTrade','顶点软件','长亭科技','科蓝软件','银信科技','森浦'];
+
+// ===== 厂商工商信息（含企查查/天眼查直达；部分已抓取核心登记信息） =====
+const VENDOR_PROFILES = [
+  { name:'恒生电子', biz:'金融IT龙头 · 核心交易/估值/资管系统',
+    legal:'恒生电子股份有限公司', legalPerson:'彭政纲', regCap:'189,473.42 万元', found:'2000-12-13', status:'存续',
+    addr:'浙江省杭州市滨江区滨兴路1888号43层', qcc:'恒生电子股份有限公司', tyc:'恒生电子股份有限公司' },
+  { name:'金仕达', biz:'资金/风险/衍生品系统 · 银行IT',
+    legal:'上海金仕达软件科技股份有限公司', legalPerson:'黄贤峰', regCap:'38,890.58 万元', found:'1995-02-17', status:'存续（在营、开业、在册）',
+    addr:'中国（上海）自由贸易试验区亮景路210号', qcc:'上海金仕达软件科技股份有限公司', tyc:'上海金仕达软件科技股份有限公司' },
+  { name:'凯美瑞德', biz:'资金/保证金/估值 · 银行自营与资管',
+    legal:'凯美瑞德（苏州）信息科技股份有限公司', legalPerson:'饶谿', regCap:'5,666.43 万元', found:'2013-08-23', status:'在业',
+    addr:'苏州工业园区翠薇街9号月亮湾国际商务中心1幢1902室', qcc:'凯美瑞德(苏州)信息科技股份有限公司', tyc:'凯美瑞德（苏州）信息科技股份有限公司' },
+  { name:'衡泰技术', biz:'xAsset/xIR · 固收/估值/风险计量', qcc:'衡泰技术', tyc:'衡泰技术' },
+  { name:'云赢网络', biz:'期权/资金交易系统 · 原厂维保', qcc:'云赢网络', tyc:'云赢网络' },
+  { name:'兆尹信息', biz:'风险/绩效/投研一体化系统', qcc:'兆尹信息', tyc:'兆尹信息' },
+  { name:'时代银通', biz:'外汇/代客金融市场业务系统', qcc:'时代银通', tyc:'时代银通' },
+  { name:'子午线', biz:'量化投研与量化交易融合', qcc:'子午线', tyc:'子午线' },
+  { name:'QTrade', biz:'金融OTC即时通讯与交易终端', qcc:'QTrade', tyc:'QTrade' },
+  { name:'顶点软件', biz:'大投行/交易系统（A5等）', qcc:'顶点软件', tyc:'顶点软件' },
+  { name:'长亭科技', biz:'安全 · 红蓝攻防/防护', qcc:'长亭科技', tyc:'长亭科技' },
+  { name:'科蓝软件', biz:'银行渠道/网银系统', qcc:'科蓝软件', tyc:'科蓝软件' },
+  { name:'银信科技', biz:'IT硬件及基础设施维保', qcc:'银信科技', tyc:'银信科技' },
+  { name:'森浦', biz:'QB终端/固收交易社区', qcc:'森浦', tyc:'森浦' }
+];
+function vendorQccUrl(p){ return 'https://www.qcc.com/web/search?key=' + encodeURIComponent(p.qcc || p.name); }
+function vendorTycUrl(p){ return 'https://www.tianyancha.com/search?key=' + encodeURIComponent(p.tyc || p.name); }
+function renderVendorTab(){
+  const el = document.getElementById('vendorCards');
+  if(!el) return;
+  el.innerHTML = VENDOR_PROFILES.map((p,i)=>{
+    const color = getVendorColor(p.name);
+    const detail = (p.legalPerson) ? `
+      <div class="vc-row"><span class="vc-k">法定代表人</span><span class="vc-v">${p.legalPerson}</span></div>
+      <div class="vc-row"><span class="vc-k">注册资本</span><span class="vc-v">${p.regCap}</span></div>
+      <div class="vc-row"><span class="vc-k">成立日期</span><span class="vc-v">${p.found}</span></div>
+      <div class="vc-row"><span class="vc-k">登记状态</span><span class="vc-v">${p.status}</span></div>
+      <div class="vc-row"><span class="vc-k">注册地址</span><span class="vc-v">${p.addr}</span></div>` : '';
+    return `<div class="vc-card" id="vcard-${i}" style="--vc:${color}">
+      <div class="vc-head">
+        <span class="vc-dot"></span>
+        <div>
+          <div class="vc-name">${p.name}</div>
+          <div class="vc-biz">${p.biz}</div>
+        </div>
+      </div>
+      ${detail ? `<div class="vc-detail">${detail}</div>` : `<div class="vc-detail vc-hint">核心工商信息请通过下方企查查 / 天眼查入口查看（实时数据）</div>`}
+      <div class="vc-legal">${p.legal ? escapeHtml(p.legal) : ''}</div>
+      <div class="vc-links">
+        <a class="vc-link" href="${vendorQccUrl(p)}" target="_blank" rel="noopener">企查查 ↗</a>
+        <a class="vc-link" href="${vendorTycUrl(p)}" target="_blank" rel="noopener">天眼查 ↗</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+function gotoVendor(name){
+  const tab = document.querySelector('.tab[data-tab="vendor"]');
+  if(tab && !tab.classList.contains('active')) tab.click();
+  const idx = VENDOR_PROFILES.findIndex(p=>p.name===name);
+  if(idx<0) return;
+  setTimeout(()=>{
+    const card = document.getElementById('vcard-'+idx);
+    if(card){ card.scrollIntoView({behavior:'smooth',block:'center'}); card.classList.add('vc-flash'); setTimeout(()=>card.classList.remove('vc-flash'),1400); }
+  }, 60);
+}
+function sourceCell(r){
+  const text = r.source || '公开信息';
+  const url = r.sourceUrl || ('https://www.baidu.com/s?wd=' + encodeURIComponent((r.project||'') + ' ' + (r.winner||'') + ' 中标'));
+  return `<a class="src-link" href="${url}" target="_blank" rel="noopener">${escapeHtml(text)}<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`;
+}
 
 const currentWeekBids = [
   {bidder:'天风证券',winner:'恒生电子',project:'柜台交易系统中的实时清算认申购日间扣款模块项目',amount:'',date:'2026-07-17'},
@@ -712,7 +830,7 @@ const currentWeekBids = [
   {bidder:'衡泰投资',winner:'衡泰技术',project:'衡泰投资交易管理系统优化建设项目(2026年第二期)',amount:'',date:'2026-07-13'},
   {bidder:'兴业数字金融服务(上海)',winner:'时代银通',project:'对客外汇衍生品风险管理项目',amount:'',date:'2026-07-16'},
   {bidder:'北京银行',winner:'时代银通',project:'2026年外汇报价引擎功能优化项目(第三次)',amount:'31.6万元',date:'2026-07-15'},
-  {bidder:'中国进出口银行',winner:'凯美瑞德',project:'新外币资金交易系统建设项目（中标候选人公示·项目号2640STC71395）',amount:'预算2215万元',date:'2026-07-17'}
+  {bidder:'中国进出口银行',winner:'凯美瑞德',project:'新外币资金交易系统建设项目（中标候选人公示·项目号2640STC71395）',amount:'预算2215万元',date:'2026-07-17',source:'中钢招标',sourceUrl:'https://www.sinosteel.com/tender'}
 ];
 
 const archiveData = [
@@ -820,26 +938,6 @@ const kmrdBids = [
   {bidder:'某股份制商业银行',winner:'凯美瑞德',project:'金融市场业务内模法风险计量系统、自研估值系统（中标）',amount:'金额未披露',date:'2026-04-08'}
 ];
 
-// ===== 中汇亿达(ComStar)专题（2026年银行项目中标，补充收集） =====
-const zhongBids = [
-  {bidder:'中原银行',winner:'中汇亿达',project:'资金业务管理系统服务采购项目',amount:'142.272万元',date:'2026-07-15'},
-  {bidder:'绍兴银行',winner:'中汇亿达',project:'资金系统本外币后台信创改造项目',amount:'98.4万元',date:'2026-07-13'},
-  {bidder:'云南红塔银行',winner:'中汇亿达',project:'资金业务管理系统国产化改造项目',amount:'130万元',date:'2026-07-16'},
-  {bidder:'昆仑银行',winner:'中汇亿达',project:'2026年金融市场自营业务管理系统升级项目',amount:'金额未披露',date:'2026-07-08'},
-  {bidder:'重庆农村商业银行',winner:'中汇亿达',project:'外汇资金及衍生业务系统(后台系统)信创升级改造项目',amount:'138万元',date:'2026-07-03'},
-  {bidder:'江苏昆山农村商业银行',winner:'中汇亿达',project:'信息技术部2026年应用维保项目（入围）',amount:'框架入围',date:'2026-07-02'},
-  {bidder:'上海农村商业银行',winner:'中汇亿达',project:'债券机器人智能化交易项目',amount:'金额未披露',date:'2026-07-07'},
-  {bidder:'云南红塔银行',winner:'中汇亿达',project:'资金业务前置系统接口项目',amount:'金额未披露',date:'2026-07-03'},
-  {bidder:'威海银行',winner:'中汇亿达',project:'资金业务风险管理系统信创建设项目（中标候选人公示）',amount:'金额未披露',date:'2026-06-26'},
-  {bidder:'武汉农村商业银行',winner:'中汇亿达',project:'关联交易管理系统配套改造-Comstar资金业务管理系统项目',amount:'金额未披露',date:'2026-06-17'},
-  {bidder:'贵阳农村商业银行',winner:'中汇亿达',project:'资金业务管理系统配合系统融合改造项目',amount:'70万元',date:'2026-06-02'},
-  {bidder:'哈尔滨银行',winner:'中汇亿达',project:'Comstar理财业务管理系统及结构性存款产品管理系统项目',amount:'115.8万元',date:'2026-02-04'},
-  {bidder:'中邮理财',winner:'中汇亿达',project:'2026年外部数据及终端服务（ComStar终端及接口维护）',amount:'44.352万元',date:'2026-01-04'},
-  {bidder:'中山农村商业银行',winner:'中汇亿达',project:'2026年Comstar系统账号采购项目（单一来源）',amount:'金额未披露',date:'2026-01-01'},
-  {bidder:'德州银行',winner:'中汇亿达',project:'COMSTAR资金业务管理系统服务项目（成交）',amount:'金额未披露',date:'2026'},
-  {bidder:'中国光大银行',winner:'中汇亿达',project:'资金交易业务综合管理平台估值定价子系统开发服务选型入围（第二次）',amount:'框架入围',date:'2026'}
-];
-
 // ===== Week options for filter (default = most recent week) =====
 const weekOptions = [
   { id:'current', label:'本周 07.13–07.19', range:'2026年7月13日 — 7月19日', bids: currentWeekBids },
@@ -850,14 +948,13 @@ const weekOptions = [
   { id:'w0420',   label:'04.20–04.24',      range:'2026年4月20日 — 4月24日', bids: archiveData[4] },
   { id:'w0323',   label:'03.23–03.27',      range:'2026年3月23日 — 3月27日', bids: archiveData[5] },
   { id:'w0126',   label:'01.26–01.30',      range:'2026年1月26日 — 1月30日', bids: archiveData[6] },
-  { id:'zhong',   label:'中汇亿达专题 2026', range:'中汇亿达(ComStar) 2026年银行项目中标专题（1月–7月）', bids: zhongBids },
   { id:'all',     label:'全部历史汇总',      range:'全部历史周报合并',         bids: null }
 ];
 function bidSignature(r){
   return (r.winner||'')+'|'+(r.project||'')+'|'+(r.bidder||'')+'|'+(r.date||'');
 }
 function getAllBids(){
-  const merged = [ ...currentWeekBids, ...archiveData.slice(1).flat(), ...kmrdBids, ...zhongBids ];
+  const merged = [ ...currentWeekBids, ...archiveData.slice(1).flat(), ...kmrdBids ];
   const seen = new Set(); const out = [];
   merged.forEach(r=>{ const k = bidSignature(r); if(!seen.has(k)){ seen.add(k); out.push(r); } });
   return out;
@@ -999,10 +1096,11 @@ function renderBidsTable(){
     const amtClass = (r.amount && /[\d]/.test(r.amount)) ? '' : 'empty';
     return `<tr>
       <td>${r.bidder}</td>
-      <td><span class="vendor-tag" style="border-color:${color}40">${r.winner}</span></td>
+      <td><a class="vendor-link" href="javascript:void(0)" onclick="gotoVendor('${escapeHtml(r.winner)}')"><span class="vendor-tag" style="border-color:${color}40">${r.winner}</span></a></td>
       <td>${r.project}</td>
       <td class="amount-cell ${amtClass}">${r.amount || '—'}</td>
       <td>${r.date ? `<span class="date-tag">${r.date}</span>` : '<span class="date-tag" style="opacity:.45">—</span>'}</td>
+      <td class="source-cell">${sourceCell(r)}</td>
     </tr>`;
   }).join('');
 
@@ -1063,7 +1161,7 @@ function updateCounts(){
   const xcCount = active.filter(r=>isXC(r.project)).length;
   const xcEl = document.getElementById('cnt-信创');
   if(xcEl) xcEl.textContent = xcCount ? `(${xcCount})` : '(0)';
-  ['恒生电子','金仕达','衡泰技术','云赢网络','兆尹信息','时代银通','子午线','凯美瑞德','中汇亿达','其他'].forEach(v=>{
+  ['恒生电子','金仕达','衡泰技术','云赢网络','兆尹信息','时代银通','子午线','凯美瑞德','其他'].forEach(v=>{
     const el = document.getElementById('cnt-'+v);
     if(el) el.textContent = counts[v] ? `(${counts[v]})` : '(0)';
   });
@@ -1079,7 +1177,7 @@ function renderArchive(){
       const amtClass = (r.amount && /[\d]/.test(r.amount)) ? '' : 'empty';
       return `<tr>
         <td>${r.bidder}</td>
-        <td><span class="vendor-tag" style="border-color:${color}40">${r.winner}</span></td>
+        <td><a class="vendor-link" href="javascript:void(0)" onclick="gotoVendor('${escapeHtml(r.winner)}')"><span class="vendor-tag" style="border-color:${color}40">${r.winner}</span></a></td>
         <td>${r.project}</td>
         <td class="amount-cell ${amtClass}">${r.amount || '—'}</td>
       </tr>`;
@@ -1098,8 +1196,8 @@ function toggleArchive(head){
 
 // ===== CSV Export =====
 function exportCSV(){
-  const headers = ['招标单位','中标单位','项目名称','金额','日期'];
-  const rows = getActiveBids().map(r=>[r.bidder,r.winner,r.project,r.amount||'未披露',r.date||'']);
+  const headers = ['招标单位','中标单位','项目名称','金额','日期','信息来源'];
+  const rows = getActiveBids().map(r=>[r.bidder,r.winner,r.project,r.amount||'未披露',r.date||'',r.source||'公开信息']);
   const csv = '\uFEFF' + [headers, ...rows].map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
   const blob = new Blob([csv],{type:'text/csv;charset=utf-8'});
   const url = URL.createObjectURL(blob);
@@ -1222,6 +1320,7 @@ function init(){
   try { renderBidsTable(); } catch(e){ console.error('renderBidsTable failed:', e); }
   try { updateCounts(); } catch(e){ console.error('updateCounts failed:', e); }
   try { renderArchive(); } catch(e){ console.error('renderArchive failed:', e); }
+  try { renderVendorTab(); } catch(e){ console.error('renderVendorTab failed:', e); }
   try { renderBigDeals(); } catch(e){ console.error('renderBigDeals failed:', e); }
   try { initCharts(); } catch(e){ console.error('Charts failed (site still usable):', e); }
   try { triggerReveal(); } catch(e){ console.error('triggerReveal failed:', e); }
