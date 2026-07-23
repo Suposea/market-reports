@@ -218,6 +218,16 @@ tbody tr.hidden{display:none}
 .info-card h4{font-size:0.95rem;font-weight:600;color:var(--ink-900);margin-bottom:8px;line-height:1.45}
 .info-card p{font-size:0.84rem;color:var(--ink-500);line-height:1.65}
 .info-card p b{color:var(--ink-900);font-weight:600}
+/* Radar (近期动态) card variants */
+.radar-filters{display:flex;gap:8px;flex-wrap:wrap}
+.radar-card-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:9px}
+.radar-card-head .tag{margin-bottom:0}
+.radar-badge.plan{color:var(--accent-strong);background:var(--accent-soft)}
+.radar-badge.news{color:var(--clay);background:var(--clay-soft)}
+.radar-bank{font-size:0.8rem;font-weight:600;color:var(--ink-900)}
+.radar-date{margin-left:auto;font-size:0.74rem;color:var(--ink-500);font-variant-numeric:tabular-nums}
+.radar-card.plan::before{background:var(--accent)}
+.radar-card.news::before{background:var(--clay)}
 
 /* ===== Archive Timeline ===== */
 .timeline{position:relative;padding-left:28px}
@@ -339,6 +349,7 @@ tbody tr.hidden{display:none}
       <div class="tab" data-tab="vendor">厂商工商信息</div>
       <div class="tab" data-tab="policy">政策行业</div>
       <div class="tab" data-tab="archive">历史归档</div>
+      <div class="tab" data-tab="radar">近期动态</div>
     </div>
     <div class="topbar-right">
       <div class="search-box">
@@ -737,6 +748,25 @@ tbody tr.hidden{display:none}
 
 </div>
 
+  <!-- ===== Tab 6: Radar (近期动态) ===== -->
+  <div class="tab-panel" id="tab-radar">
+    <div class="panel reveal">
+      <div class="panel-title">
+        <span class="icon" style="background:var(--accent-soft);color:var(--accent-strong)">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 2 4 7v6c0 5 3.5 7.5 8 9 4.5-1.5 8-4 8-9V7l-8-5Z" stroke-width="2" stroke-linejoin="round"/><path d="M12 8v4m0 0v4m0-4h4m-4 0H8" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        招采雷达 · 近期动态
+      </div>
+      <div class="panel-sub" style="margin-bottom:16px">收集未来近期的各家银行相关招投标计划、招采线索与厂商舆情动态（持续补充）</div>
+      <div class="radar-filters">
+        <button class="chip active" onclick="filterRadar('all',this)">全部</button>
+        <button class="chip" onclick="filterRadar('plan',this)">招采计划</button>
+        <button class="chip" onclick="filterRadar('news',this)">舆情动态</button>
+      </div>
+      <div class="info-grid" id="radarGrid" style="margin-top:18px"></div>
+    </div>
+  </div>
+
 <footer class="footer">
   <p class="strong">苏坡漫智能体 · 市场动态周报系统</p>
   <p>自动更新 · 每周一早上生成最新报告</p>
@@ -898,7 +928,7 @@ const currentWeekBids = [
   {bidder:'衡泰投资',winner:'衡泰技术',project:'衡泰投资交易管理系统优化建设项目(2026年第二期)',amount:'',date:'2026-07-13'},
   {bidder:'兴业数字金融服务(上海)',winner:'时代银通',project:'对客外汇衍生品风险管理项目',amount:'',date:'2026-07-16'},
   {bidder:'北京银行',winner:'时代银通',project:'2026年外汇报价引擎功能优化项目(第三次)',amount:'31.6万元',date:'2026-07-15',source:'北京银行采购门户',sourceUrl:'https://login-cpm-xt.bankofbeijing.com.cn/cms/default/webfile/1ywgg4/20260715/1262023181099597824.html'},
-  {bidder:'中国进出口银行',winner:'凯美瑞德',project:'新外币资金交易系统建设项目（中标候选人公示·项目号2640STC71395）',amount:'预算2215万元',date:'2026-07-17',source:'中钢招标',sourceUrl:'http://tendering.sinosteel.com/content/bulletin.html?id=7478074145125699584'}
+  {bidder:'中国进出口银行',winner:'凯美瑞德',project:'新外币资金交易系统建设项目（中标候选人公示·项目号2640STC71395）',amount:'预算2215万元',date:'2026-07-17',source:'爱企查·中标候选人公示',sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?pid=35348917265179&dataId=6bc27cdd9aefa76f0c325aafe407ff68b9c7700e'}
 ];
 
 const archiveData = [
@@ -1010,6 +1040,18 @@ const liangruiBids = [
   {bidder:'浦发银行',winner:'量锐',project:'金融市场系统群重构建设项目之原型产品及定制化开发服务采购（2026-2029）',amount:'1752万元',date:'2026-05-12',source:'浦发银行采购平台',sourceUrl:'https://ebuy.spdb.com.cn/#/noticeDetail?noticeId=1129205376275605536281300893696'},
   {bidder:'上海农商银行',winner:'量锐',project:'2026年量化交易系统维护服务项目（单一来源）',amount:'',date:'2026-05-08',source:'上海农商银行供应商门户',sourceUrl:'https://pms2g.shrcb.com/cms/cmsjieguogg/e75be62c601b47adafd0fc58fd42ca84.html'},
   {bidder:'浦发银行',winner:'量锐',project:'2026-2029年度金融市场领域信息系统研发专业服务（入围供应商）',amount:'框架入围',date:'2026-04-29',source:'招标网',sourceUrl:'https://m.zhaobiao.cn/zb/succeed_v_499425bd2136b637541a83c3c86f456b.html'}
+];
+
+// ===== Radar (近期动态: 招采计划 + 舆情) =====
+const RADAR_TYPES = { plan:'招采计划', news:'舆情动态' };
+const radarItems = [
+  { type:'plan', bank:'中国进出口银行', date:'2026-07-17', title:'新外币资金交易系统建设项目 — 中标候选人公示已发', content:'凯美瑞德(苏州)信息科技股份有限公司为中标候选人，项目预算 2215 万元、编号 2640STC71395。预计近期发布中标结果并签订合同，进入 24 个月实施期（覆盖汇率/利率/衍生品/债券，含信创适配）。', source:'爱企查·中标候选人公示', sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?pid=35348917265179&dataId=6bc27cdd9aefa76f0c325aafe407ff68b9c7700e' },
+  { type:'plan', bank:'多家银行（国有/股份/城商）', date:'2026-Q3', title:'信创改造招采窗口（资金/外汇系统国产化替代）', content:'在国产化替代与自主可控政策驱动下，预计 Q3 多家银行将启动资金交易、外汇/衍生品系统的信创改造与选型入围招采。建议持续跟踪恒生电子、凯美瑞德、金仕达、时代银通、衡泰技术等厂商动向。', source:'', sourceUrl:'' },
+  { type:'news', bank:'凯美瑞德', date:'2026-07', title:'凯美瑞德中标某 10 万亿级股份制商业银行双项目', content:'成功中标该行金融市场业务内模法风险计量系统、自研估值系统项目，是市场风险领域的又一重要突破，彰显服务大型金融机构核心系统的综合实力。', source:'凯美瑞德官网', sourceUrl:'http://kmerit.com/News_desc/55/474.html' },
+  { type:'news', bank:'凯美瑞德', date:'2026-04-23', title:'光大银行应用安全动态防护设备选型入围 — 凯美瑞德为第一中标候选人', content:'中国光大银行应用安全动态防护设备选型入围公开招标中标候选人公示：第一中标候选人 凯美瑞德(苏州)信息科技股份有限公司。', source:'中招国际', sourceUrl:'https://www.cntcitc.com.cn/more.html?chanType=3&chanId=16&contentId=371c3d3206a2495cb778bb0971e4e289' },
+  { type:'news', bank:'凯美瑞德', date:'2026-02-10', title:'凯美瑞德获"2025-2026年度国产化替代解决方案先锋奖"', content:'凭借自主研发的 VIVA-TCM 资金交易与风险管理系统，获权威媒体信息化观察网年度评选"国产化替代解决方案先锋奖"。', source:'中国日报网', sourceUrl:'https://caijing.chinadaily.com.cn/a/202602/10/WS698ac0e8a310942cc499f085.html' },
+  { type:'news', bank:'凯美瑞德', date:'2026-03', title:'凯美瑞德三款核心产品完成华为鲲鹏双认证', content:'全链路国产化解决方案在金融信创领域取得重要突破，标志其产品完成鲲鹏双认证，夯实自主可控技术底座。', source:'太平洋财富网', sourceUrl:'' },
+  { type:'news', bank:'凯美瑞德', date:'2026-04-20', title:'凯美瑞德与兆芯达成战略合作', content:'共筑金融信创全栈自主安全底座，深化芯片级适配合作，推动资金资管领域核心技术自主创新。', source:'中华网', sourceUrl:'' }
 ];
 
 // ===== Week options for filter (default = most recent week) =====
@@ -1129,7 +1171,31 @@ function renderBigDeals(){
           <span class="bd-date">${escapeHtml(r.date||'')}</span>
         </div>
       </div>
+      </div>`).join('');
+}
+
+// ===== Render Radar (近期动态) =====
+function renderRadar(filter){
+  const grid = document.getElementById('radarGrid');
+  if(!grid) return;
+  const items = radarItems.filter(it => !filter || filter==='all' || it.type===filter);
+  if(!items.length){ grid.innerHTML = '<div class="bd-empty">暂无相关动态</div>'; return; }
+  grid.innerHTML = items.map(it=>`
+    <div class="info-card radar-card ${it.type}">
+      <div class="radar-card-head">
+        <span class="tag radar-badge ${it.type}">${RADAR_TYPES[it.type]||it.type}</span>
+        <span class="radar-bank">${escapeHtml(it.bank||'')}</span>
+        <span class="radar-date">${escapeHtml(it.date||'')}</span>
+      </div>
+      <h4>${escapeHtml(it.title)}</h4>
+      <p>${escapeHtml(it.content||'')}</p>
+      ${it.source ? `<a class="src-link ${it.sourceUrl?'src-real':'src-search'}" href="${it.sourceUrl||'#'}" target="_blank" rel="noopener">${escapeHtml(it.source)}<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>` : ''}
     </div>`).join('');
+}
+function filterRadar(type,btn){
+  document.querySelectorAll('#tab-radar .chip').forEach(c=>c.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderRadar(type);
 }
 
 function renderBidsTable(){
@@ -1396,6 +1462,7 @@ function init(){
   try { renderArchive(); } catch(e){ console.error('renderArchive failed:', e); }
   try { renderVendorTab(); } catch(e){ console.error('renderVendorTab failed:', e); }
   try { renderBigDeals(); } catch(e){ console.error('renderBigDeals failed:', e); }
+  try { renderRadar('all'); } catch(e){ console.error('renderRadar failed:', e); }
   try { initCharts(); } catch(e){ console.error('Charts failed (site still usable):', e); }
   try { triggerReveal(); } catch(e){ console.error('triggerReveal failed:', e); }
 }
