@@ -285,14 +285,14 @@ tbody tr.hidden{display:none}
 /* ===== Vendor link + source column ===== */
 .vendor-link{color:inherit;text-decoration:none}
 .vendor-link:hover .vendor-tag{border-color:var(--accent)!important;background:var(--accent-soft)}
-.source-cell{max-width:150px}
-.src-link{display:inline-flex;align-items:center;gap:4px;font-size:0.8rem;font-weight:500;color:var(--accent);text-decoration:none;white-space:nowrap}
+.source-cell{max-width:200px;vertical-align:top}
+.src-link{display:inline;align-items:center;gap:4px;font-size:0.8rem;font-weight:500;color:var(--accent);text-decoration:none;white-space:normal;overflow-wrap:anywhere;word-break:break-word;line-height:1.4}
 .src-link:hover{text-decoration:underline}
-.src-link svg{flex:0 0 auto;opacity:.7}
+.src-link svg{flex:0 0 auto;opacity:.7;vertical-align:middle}
 .src-link.src-real{color:#1f8a4c}
 .src-link.src-real:hover{text-decoration:underline}
 .src-link.src-search{color:var(--accent)}
-.src-dot{width:6px;height:6px;border-radius:50%;background:#1f8a4c;display:inline-block;margin-right:4px;flex:0 0 auto}
+.src-dot{width:6px;height:6px;border-radius:50%;background:#1f8a4c;display:inline-block;margin-right:4px;flex:0 0 auto;vertical-align:middle}
 
 /* ===== Vendor business info grid ===== */
 .vendor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;margin-top:4px}
@@ -777,10 +777,26 @@ const VENDOR_PROFILES = [
     addr:'浙江省杭州市西湖区教工路23号百脑汇科技大厦1215室', creditCode:'91330100725231789B',
     staff:'948人', staffYear:'2025', staffTrend:'▼ 较2024年 975人（-3%）', staffScale:'900-999人',
     qcc:'衡泰技术', tyc:'衡泰技术' },
-  { name:'云赢网络', biz:'期权/资金交易系统 · 原厂维保', qcc:'云赢网络', tyc:'云赢网络' },
-  { name:'兆尹信息', biz:'风险/绩效/投研一体化系统', qcc:'兆尹信息', tyc:'兆尹信息' },
-  { name:'时代银通', biz:'外汇/代客金融市场业务系统', qcc:'时代银通', tyc:'时代银通' },
-  { name:'子午线', biz:'量化投研与量化交易融合', qcc:'子午线', tyc:'子午线' },
+  { name:'云赢网络', biz:'期权/资金交易系统 · 原厂维保',
+    legal:'杭州云赢网络科技有限公司', legalPerson:'何华', regCap:'46,606.11 万元', found:'2015-12-15', status:'存续',
+    addr:'浙江省杭州市滨江区长河街道滨兴路1888号数智恒生中心3301室', creditCode:'91330108MA27WGJ06K',
+    staff:'98人', staffYear:'2025', staffTrend:'▼ 较2023年 171人（-43%）', staffScale:'50-99人',
+    qcc:'云赢网络', tyc:'云赢网络' },
+  { name:'兆尹信息', biz:'风险/绩效/投研一体化系统',
+    legal:'安徽兆尹信息科技股份有限公司', legalPerson:'尹留志', regCap:'8,677.23 万元', found:'2007-07-18', status:'存续（在营、开业、在册）',
+    addr:'安徽省芜湖市弋江区中山南路717号芜湖科技产业园5#楼', creditCode:'91340200664219742U',
+    staff:'10人', staffYear:'2025', staffTrend:'▲ 较2024年 9人（+11%）', staffScale:'少于50人',
+    qcc:'兆尹信息', tyc:'兆尹信息' },
+  { name:'时代银通', biz:'外汇/代客金融市场业务系统',
+    legal:'杭州时代银通软件股份有限公司', legalPerson:'蒋汶达', regCap:'4,440 万元', found:'2002-09-02', status:'存续',
+    addr:'浙江省杭州市西湖区文三路259号B幢3号701室', creditCode:'91330108742930012N',
+    staff:'530人', staffYear:'2025', staffTrend:'▲ 较2024年 465人（+14%）', staffScale:'500-599人',
+    qcc:'时代银通', tyc:'时代银通' },
+  { name:'子午线', biz:'量化投研与量化交易融合',
+    legal:'深圳市子午线信息科技有限公司', legalPerson:'陈韶坤', regCap:'5,000 万元', found:'2017-12-20', status:'存续（在营、开业、在册）',
+    addr:'深圳市宝安区新安街道兴东社区67区大仟工业厂区1号厂房2层A01', creditCode:'91440300MA5EX7XLXT',
+    staff:'26人', staffYear:'2025', staffTrend:'▲ 较2024年 20人（+30%）', staffScale:'少于50人',
+    qcc:'子午线', tyc:'子午线' },
   { name:'QTrade', biz:'金融OTC即时通讯与交易终端', qcc:'QTrade', tyc:'QTrade' },
   { name:'顶点软件', biz:'大投行/交易系统（A5等）',
     legal:'福建顶点软件股份有限公司', legalPerson:'严孟宇', regCap:'20,537.64 万元', found:'2000-10-25', status:'存续（在营、开业、在册）',
@@ -802,7 +818,11 @@ const VENDOR_PROFILES = [
     addr:'北京市海淀区苏州街29号维亚大厦12层071室', creditCode:'91110000762955583N',
     staff:'436人', staffYear:'2025', staffTrend:'▼ 较2024年 515人（-15%）', staffScale:'400-499人',
     qcc:'银信科技', tyc:'银信科技' },
-  { name:'森浦', biz:'QB终端/固收交易社区', qcc:'森浦', tyc:'森浦' }
+  { name:'森浦', biz:'QB终端/固收交易社区',
+    legal:'宁波森浦信息技术有限公司', legalPerson:'王枫', regCap:'5,200.70 万元', found:'2010-02-09', status:'存续',
+    addr:'浙江省宁波市鄞州区首南西路88、76号B幢9层901室', creditCode:'91330212551505566A',
+    staff:'14人', staffYear:'2025', staffTrend:'▼ 较2024年 15人（-7%）', staffScale:'少于50人',
+    qcc:'森浦', tyc:'森浦' }
 ];
 function vendorQccUrl(p){ return 'https://www.qcc.com/web/search?key=' + encodeURIComponent(p.qcc || p.name); }
 function vendorTycUrl(p){ return 'https://www.tianyancha.com/search?key=' + encodeURIComponent(p.tyc || p.name); }
@@ -971,11 +991,11 @@ const archiveData = [
 
 // ===== 凯美瑞德专题（2026年上半年中标，补充收集） =====
 const kmrdBids = [
-  {bidder:'浦发银行',winner:'凯美瑞德',project:'金融市场系统群重构建设项目之原型产品及定制化开发服务采购（2026-2029）',amount:'14500万元',date:'2026-05-09'},
-  {bidder:'浦发银行',winner:'凯美瑞德',project:'金融市场系统群重构之金融市场CSA保证金管理系统厂商实施服务',amount:'72.7万元',date:'2026-05-06'},
+  {bidder:'浦发银行',winner:'凯美瑞德',project:'金融市场系统群重构建设项目之原型产品及定制化开发服务采购（2026-2029）',amount:'14500万元',date:'2026-05-09',source:'天眼查',sourceUrl:'https://news.tianyancha.com/ll_pa4a02vjl6.html'},
+  {bidder:'浦发银行',winner:'凯美瑞德',project:'金融市场系统群重构之金融市场CSA保证金管理系统厂商实施服务',amount:'72.7万元',date:'2026-05-06',source:'招标网',sourceUrl:'https://m.zhaobiao.cn/zb/succeed_v_4ee36f5ca856487d66bb0d4be94c632c.html'},
   {bidder:'浦发银行',winner:'凯美瑞德',project:'2026-2027金融市场初始保证金系统年度维护服务',amount:'268万元',date:'2026-06-05'},
   {bidder:'衡水银行',winner:'凯美瑞德',project:'衡芯工程综合收单系统配套改造项目',amount:'67.5万元',date:'2026-02-11'},
-  {bidder:'浦发银行',winner:'凯美瑞德',project:'2026-2029年度金融市场领域信息系统研发专业服务（入围供应商）',amount:'框架入围',date:'2026-04-29'},
+  {bidder:'浦发银行',winner:'凯美瑞德',project:'2026-2029年度金融市场领域信息系统研发专业服务（入围供应商）',amount:'框架入围',date:'2026-04-29',source:'招标网',sourceUrl:'https://m.zhaobiao.cn/zb/succeed_v_08ebf4c3d46140272786ce6e451b142f.html'},
   {bidder:'邮储银行',winner:'凯美瑞德',project:'2026-2027年总行开发测试类技术资源外包（包4资金资管领域，入围）',amount:'框架入围',date:'2026-06-05'},
   {bidder:'某股份制商业银行',winner:'凯美瑞德',project:'金融市场业务内模法风险计量系统、自研估值系统（中标）',amount:'金额未披露',date:'2026-04-08'}
 ];
