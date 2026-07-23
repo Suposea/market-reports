@@ -834,7 +834,11 @@ const VENDOR_PROFILES = [
     addr:'深圳市宝安区新安街道兴东社区67区大仟工业厂区1号厂房2层A01', creditCode:'91440300MA5EX7XLXT',
     staff:'26人', staffYear:'2025', staffTrend:'▲ 较2024年 20人（+30%）', staffScale:'少于50人',
     qcc:'子午线', tyc:'子午线' },
-  { name:'QTrade', biz:'金融OTC即时通讯与交易终端', qcc:'QTrade', tyc:'QTrade' },
+  { name:'量锐', biz:'FICC交易前台/量化交易系统',
+    legal:'上海量锐信息科技有限公司', legalPerson:'周琪', regCap:'5,189.26 万元', found:'2014-05-16', status:'存续',
+    addr:'上海市黄浦区延安东路550号12层1202-1215室（实际楼层11层）', creditCode:'913101133014248270',
+    staff:'69人', staffYear:'2025', staffTrend:'▲ 较2024年 57人（+21%）', staffScale:'50-99人',
+    qcc:'上海量锐信息科技有限公司', tyc:'上海量锐信息科技有限公司' },
   { name:'顶点软件', biz:'大投行/交易系统（A5等）',
     legal:'福建顶点软件股份有限公司', legalPerson:'严孟宇', regCap:'20,537.64 万元', found:'2000-10-25', status:'存续（在营、开业、在册）',
     addr:'福建省福州市鼓楼区铜盘路软件大道89号A区13号楼', creditCode:'91350000260188521B',
@@ -860,11 +864,7 @@ const VENDOR_PROFILES = [
     addr:'浙江省宁波市鄞州区首南西路88、76号B幢9层901室', creditCode:'91330212551505566A',
     staff:'14人', staffYear:'2025', staffTrend:'▼ 较2024年 15人（-7%）', staffScale:'少于50人',
     qcc:'森浦', tyc:'森浦' },
-  { name:'量锐', biz:'FICC交易前台/量化交易系统',
-    legal:'上海量锐信息科技有限公司', legalPerson:'周琪', regCap:'5,189.26 万元', found:'2014-05-16', status:'存续',
-    addr:'上海市黄浦区延安东路550号12层1202-1215室（实际楼层11层）', creditCode:'913101133014248270',
-    staff:'69人', staffYear:'2025', staffTrend:'▲ 较2024年 57人（+21%）', staffScale:'50-99人',
-    qcc:'上海量锐信息科技有限公司', tyc:'上海量锐信息科技有限公司' }
+  { name:'QTrade', biz:'金融OTC即时通讯与交易终端', qcc:'QTrade', tyc:'QTrade' }
 ];
 function vendorQccUrl(p){ return 'https://www.qcc.com/web/search?key=' + encodeURIComponent(p.qcc || p.name); }
 function vendorTycUrl(p){ return 'https://www.tianyancha.com/search?key=' + encodeURIComponent(p.tyc || p.name); }
