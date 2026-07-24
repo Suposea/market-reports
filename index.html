@@ -161,10 +161,6 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(1100px
 .chip:hover{border-color:var(--accent);color:var(--ink-900)}
 .chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .chip .count{opacity:.65;margin-left:4px;font-size:0.78rem}
-.chip.xc{background:var(--clay-soft);border-color:var(--clay);color:var(--clay)}
-.chip.xc:hover{border-color:var(--clay);color:var(--clay)}
-.chip.xc.active{background:var(--clay);color:#fff;border-color:var(--clay)}
-.chip-divider{width:1px;height:20px;background:var(--border-2);margin:0 3px;align-self:center}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-sm);border:1px solid var(--border-2);background:var(--surface);color:var(--ink-500);font-size:0.85rem;font-weight:500;cursor:pointer;transition:all .25s ease;font-family:var(--font-sans)}
 .btn:hover{border-color:var(--accent);color:var(--accent-strong)}
 .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -487,8 +483,6 @@ tbody tr.hidden{display:none}
         </div>
         <div class="filter-chips" id="filterChips">
           <button class="chip active" onclick="filterBids('all',this)">全部<span class="count" id="cnt-all"></span></button>
-          <button class="chip xc" onclick="filterBids('信创',this)">信创类<span class="count" id="cnt-信创"></span></button>
-          <span class="chip-divider"></span>
           <button class="chip" onclick="filterBids('恒生电子',this)">恒生电子<span class="count" id="cnt-恒生电子"></span></button>
           <button class="chip" onclick="filterBids('金仕达',this)">金仕达<span class="count" id="cnt-金仕达"></span></button>
           <button class="chip" onclick="filterBids('衡泰技术',this)">衡泰技术<span class="count" id="cnt-衡泰技术"></span></button>
@@ -1150,9 +1144,6 @@ function getVendorColor(v){
 function isOtherVendor(v){
   return OTHER_VENDORS.includes(v);
 }
-function isXC(s){
-  return /信创|XC|国产化|自主可控|鲲鹏|海光|ARM|申威|飞腾/.test(s);
-}
 function parseAmount(s){
   if(!s) return 0;
   const m = s.match(/([\d.]+)/);
@@ -1223,7 +1214,6 @@ function renderBidsTable(){
   if(currentFilter !== 'all'){
     rows = rows.filter(r=>{
       if(currentFilter === '其他') return isOtherVendor(r.winner);
-      if(currentFilter === '信创') return isXC(r.project);
       return r.winner === currentFilter;
     });
   }
@@ -1316,9 +1306,6 @@ function updateCounts(){
     counts[key] = (counts[key]||0) + 1;
   });
   document.getElementById('cnt-all').textContent = `(${all})`;
-  const xcCount = active.filter(r=>isXC(r.project)).length;
-  const xcEl = document.getElementById('cnt-信创');
-  if(xcEl) xcEl.textContent = xcCount ? `(${xcCount})` : '(0)';
   ['恒生电子','金仕达','衡泰技术','云赢网络','兆尹信息','时代银通','子午线','凯美瑞德','量锐','其他'].forEach(v=>{
     const el = document.getElementById('cnt-'+v);
     if(el) el.textContent = counts[v] ? `(${counts[v]})` : '(0)';
