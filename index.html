@@ -507,7 +507,7 @@ tbody tr.hidden{display:none}
             </span>
             招投标信息汇总
           </div>
-          <div class="panel-sub" id="periodSub">报告周期：2026年7月13日 — 7月19日 · 点击列头可排序</div>
+          <div class="panel-sub" id="periodSub">报告周期：2026年7月20日 — 7月26日 · 点击列头可排序</div>
         </div>
         <button class="btn btn-primary" onclick="exportCSV()">
           <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -519,7 +519,8 @@ tbody tr.hidden{display:none}
         <div class="week-select">
           <span class="week-label">周范围</span>
           <select id="weekSelect" onchange="selectWeek(this.value)" aria-label="选择周报范围">
-            <option value="current">本周 07.13–07.19</option>
+            <option value="current">本周 07.20–07.26</option>
+            <option value="w0713">07.13–07.19</option>
             <option value="w0706">07.06–07.12</option>
             <option value="w0630">06.30–07.06</option>
             <option value="w0622">06.22–06.28</option>
@@ -566,13 +567,12 @@ tbody tr.hidden{display:none}
       </div>
 
       <div class="note-box" id="weekNote">
-        <strong>云赢网络 / 兆尹信息 / 子午线（近期结转）：</strong>本周（7/13-7/19）公开渠道未见三家厂商新增中标公告。
-        云赢网络最近一期为<strong>浦发银行总行期权定价模型系统产品维保及开发维保服务项目</strong>，成交结果公告于 2026-07-08；
-        兆尹信息近期结转为<strong>威海银行金融市场投资业务信用风险管控系统信创建设项目</strong>（公示 2026-07-09）与<strong>光大理财风险管理与绩效评估系统性能提升及信创改造项目</strong>（公示 2026-07-07）；
-        子午线最近一期为<strong>浦发银行总行量化投研与量化交易融合一期项目</strong>，成交结果公告于 2026-06-23。
+        <strong>本周重点（7/20-7/26）：</strong>银行类中标覆盖国有大行（工行·信创、国开行）、城/农商行（江苏银行·信创、华夏银行、徽商银行）、理财子（青银理财）及政策行相关（中国银行陕西分行）；
+        <strong>信创/国产化项目</strong>多点开花：工行远程授权服务端信创改造（中软国际 125万）、江苏银行电子验印国产化改造（中科金财）、银河证券海光CPU信创服务器（先进数通）、国投证券风险数据集市信创升级（金仕达）、兴业证券固收XC改造（衡泰）。
+        <strong>凯美瑞德</strong>本周无新增公开中标（上周口行新外币资金交易系统中标候选人公示持续跟踪，见"近期动态"）；<strong>时代银通 / 子午线 / 量锐</strong>本周公开渠道未见新增中标公告，最近一期见历史归档。
       </div>
 
-      <div class="update-badge">⏰ 下次自动更新：2026年7月27日（每周一早上）</div>
+      <div class="update-badge">⏰ 下次自动更新：2026年8月3日（每周一早上）</div>
     </div>
   </div>
 
@@ -606,24 +606,24 @@ tbody tr.hidden{display:none}
       <div class="panel-sub" style="margin-bottom:20px">银行间市场、外汇交易中心、交易商协会等机构政策通知与规则变化</div>
       <div class="info-grid">
         <div class="info-card">
-          <span class="tag">2026-07-14</span>
-          <h4>中国外汇交易中心发布《同业存款交易主协议》</h4>
-          <p>中汇交发〔2026〕145号。主协议适用于人民币及外币同业存款交易，市场成员申请开展相关业务须签署；已开展外币同业存款交易成员应于发布之日起<b>30个工作日</b>内签署。采用多边签署模式，标志银行间同业存款交易迈入标准化主协议管理阶段，利于统一交易文本、防范交易与法律风险。</p>
+          <span class="tag">2026-07-24</span>
+          <h4>交易商协会发布《场外衍生品交易数据报送规范（试行版）》</h4>
+          <p>交易商协会发布场外衍生品交易数据报送规范试行版，首次报送须追溯至<b>2023年1月1日</b>，补报截止日为<b>2026年8月7日</b>。规范明确了利率、外汇、信用等衍生品的数据报送口径、字段要素与频次要求，进一步强化场外衍生品市场透明度与监管穿透能力。</p>
         </div>
         <div class="info-card">
           <span class="tag">2026-07-15</span>
-          <h4>上半年金融统计数据发布 & 推动人民币离岸市场发展</h4>
-          <p>国新办发布会介绍上半年货币政策与金融统计。人民银行将从四方面推动离岸市场：保持流动性稳定（香港金管局常备互换增至<b>5000亿元</b>）、丰富离岸资产池、活跃离岸产品交易（回购/国债期货/利率掉期）、完善离岸金融基础设施（指导外汇交易中心与香港合作建综合性平台）。</p>
+          <h4>外汇交易中心批准上海商业银行成为银行间外币货币市场成员</h4>
+          <p>中国外汇交易中心通知，上海商业银行有限公司自<b>2026年7月20日</b>起成为银行间外币货币市场成员，可参与外币拆借、外币回购等交易。外币货币市场成员持续扩容，有助于完善外币流动性传导机制。</p>
         </div>
         <div class="info-card">
-          <span class="tag">2026-07-16</span>
-          <h4>央行公开市场操作</h4>
-          <p>人民银行以固定利率、数量招标开展<b>6260亿元</b>7天期逆回购，操作利率<b>1.40%</b>，全额满足一级交易商需求，维护半年末后市场流动性平稳。</p>
+          <span class="tag">2026-07-01</span>
+          <h4>银行间债券经纪新规过渡期收官：进入付费时代</h4>
+          <p>银行间债券市场经纪业务管理新规过渡期于<b>7月1日</b>正式结束，货币经纪公司债券经纪业务从免费服务转向<b>付费模式</b>。新规对经纪商资质、风控、报价行为提出更高要求，推动债券经纪业务规范化发展。</p>
         </div>
         <div class="info-card">
           <span class="tag">周内参考</span>
-          <h4>人民币汇率中间价（7/14）</h4>
-          <p><b>美元</b> 6.7990 ｜ <b>欧元</b> 7.7367 ｜ <b>100日元</b> 4.1850 ｜ <b>港元</b> 0.86746 ｜ <b>英镑</b> 9.0721</p>
+          <h4>人民币汇率中间价（7/25）</h4>
+          <p><b>美元</b> 6.7815 ｜ <b>欧元</b> 7.8123 ｜ <b>100日元</b> 4.2031 ｜ <b>港元</b> 0.86521 ｜ <b>英镑</b> 9.1547</p>
         </div>
       </div>
     </div>
@@ -638,24 +638,24 @@ tbody tr.hidden{display:none}
       <div class="panel-sub" style="margin-bottom:20px">金融IT厂商客户案例、产品发布、行业峰会与金融科技创新</div>
       <div class="info-grid">
         <div class="info-card industry">
-          <span class="tag">2026-07-13</span>
-          <h4>恒生电子：国金证券全量上线 UF3.0 内存交易系统</h4>
-          <p>国金证券完成恒生UF3.0证券内存交易系统全量客户切换，覆盖沪、深、北市场股、债、基全业务，以"零故障、零异常"平稳投产。继6月超千万客户切换后，构建全栈自主可控交易底座，为新一代核心系统高效上线打造样板。</p>
+          <span class="tag">2026-07-24</span>
+          <h4>恒生电子：新一代资金清算系统在头部保险资管成功上线</h4>
+          <p>恒生电子新一代资金清算系统在某头部保险资管机构成功上线，实现<b>全链路国产化适配</b>（鲲鹏+麒麟OS+达梦数据库），覆盖资产托管清算、资金划拨、对账全流程。标志着恒生在保险资管核心系统信创替代领域取得重要突破。</p>
+        </div>
+        <div class="info-card industry">
+          <span class="tag">2026-07-22</span>
+          <h4>恒生电子：董事长提议中期分红不低于净利润30%</h4>
+          <p>恒生电子董事长提议2026年中期分红比例不低于归母净利润的<b>30%</b>，体现对股东回报的持续承诺。公司近年来分红比例逐年提升，AI战略转型与利润分享双轮驱动。</p>
         </div>
         <div class="info-card industry">
           <span class="tag">2026-07</span>
-          <h4>恒生电子 × 阿里云 AI 全栈战略合作</h4>
-          <p>双方在大模型技术、算力服务及行业智能化应用深度合作，已联合推出基于千问大模型的金融行业AI解决方案，恒生聚源金融数据服务MCP已接入多平台，加速恒生AI战略转型。</p>
-        </div>
-        <div class="info-card industry">
-          <span class="tag">2026-07</span>
-          <h4>金仕达 × 玻色量子 金融科技战略合作</h4>
-          <p>双方探索量子计算与人工智能在金融科技的创新应用，重点聚焦<b>金融风控与合规</b>、大宗商品与电力交易等方向。</p>
+          <h4>恒生电子 ESG 评级升至 B-（伦交所，连续四年上升）</h4>
+          <p>伦敦证券交易所集团（LSEG）最新ESG评级中，恒生电子评级升至<b>B-</b>，为连续第四年提升。在环境、社会、治理三个维度均获改善，反映公司在可持续发展治理方面的持续投入获得国际认可。</p>
         </div>
         <div class="info-card industry">
           <span class="tag">行业观察</span>
-          <h4>UF3.0 扛脉冲行情 · 量子+AI 前沿探索</h4>
-          <p>UF3.0应对"9·24"后瞬时脉冲式交易洪峰的性能容量，及信创全栈自主可控核心系统规模化落地，成本周行业焦点；量子计算+AI在金融风控、大宗商品交易领域进入头部金融IT厂商合作视野。</p>
+          <h4>信创加速 · 衍生品报送上新 · 保险资管国产清算</h4>
+          <p>本周银行/券商信创改造项目密集落地（工行远程授权信创、银河证券海光服务器、国投证券风控信创等），叠加交易商协会场外衍生品报送新规与恒生保险资管全链路国产清算上线，金融IT信创替代正从外围系统向核心交易与清算系统纵深推进。</p>
         </div>
       </div>
     </div>
@@ -677,6 +677,22 @@ tbody tr.hidden{display:none}
           <div class="archive-card">
             <div class="archive-head" onclick="toggleArchive(this)">
               <div>
+                <h3>2026.07.20 — 07.26 周报</h3>
+                <div class="meta">19个项目 · 衡泰×5 · 金仕达×3 · 兆尹×2 · 恒生×1 · 云赢×1 · 银行/信创多点</div>
+              </div>
+              <span class="toggle">+</span>
+            </div>
+            <div class="archive-body"><div class="archive-content">
+              <div class="table-wrapper" style="margin-top:16px">
+                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-0"></tbody></table>
+              </div>
+            </div></div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="archive-card">
+            <div class="archive-head" onclick="toggleArchive(this)">
+              <div>
                 <h3>2026.07.13 — 07.19 周报</h3>
                 <div class="meta">14个项目 · 恒生×8 · 金仕达×1 · 衡泰×3 · 时代银通×2</div>
               </div>
@@ -684,7 +700,7 @@ tbody tr.hidden{display:none}
             </div>
             <div class="archive-body"><div class="archive-content">
               <div class="table-wrapper" style="margin-top:16px">
-                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-0"></tbody></table>
+                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-1"></tbody></table>
               </div>
             </div></div>
           </div>
@@ -700,7 +716,7 @@ tbody tr.hidden{display:none}
             </div>
             <div class="archive-body"><div class="archive-content">
               <div class="table-wrapper" style="margin-top:16px">
-                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-1"></tbody></table>
+                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-2"></tbody></table>
               </div>
             </div></div>
           </div>
@@ -717,7 +733,7 @@ tbody tr.hidden{display:none}
             </div>
             <div class="archive-body"><div class="archive-content">
               <div class="table-wrapper" style="margin-top:16px">
-                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-2"></tbody></table>
+                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-3"></tbody></table>
               </div>
             </div></div>
           </div>
@@ -734,7 +750,7 @@ tbody tr.hidden{display:none}
             </div>
             <div class="archive-body"><div class="archive-content">
               <div class="table-wrapper" style="margin-top:16px">
-                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-3"></tbody></table>
+                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-4"></tbody></table>
               </div>
             </div></div>
           </div>
@@ -751,7 +767,7 @@ tbody tr.hidden{display:none}
             </div>
             <div class="archive-body"><div class="archive-content">
               <div class="table-wrapper" style="margin-top:16px">
-                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-4"></tbody></table>
+                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-5"></tbody></table>
               </div>
             </div></div>
           </div>
@@ -768,7 +784,7 @@ tbody tr.hidden{display:none}
             </div>
             <div class="archive-body"><div class="archive-content">
               <div class="table-wrapper" style="margin-top:16px">
-                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-5"></tbody></table>
+                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-6"></tbody></table>
               </div>
             </div></div>
           </div>
@@ -780,13 +796,12 @@ tbody tr.hidden{display:none}
               <div>
                 <h3>2026.01.26 — 01.30 周报</h3>
                 <div class="meta">7个项目 · 恒生×1 · 衡泰×2 · 兆尹×1 · 时代银通×1 · 其他×2</div>
-                <!-- ARCH_INDEX:6 -->
               </div>
               <span class="toggle">+</span>
             </div>
             <div class="archive-body"><div class="archive-content">
               <div class="table-wrapper" style="margin-top:16px">
-                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-6"></tbody></table>
+                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-7"></tbody></table>
               </div>
             </div></div>
           </div>
@@ -963,24 +978,49 @@ function sourceCell(r){
 }
 
 const currentWeekBids = [
-  {bidder:'天风证券',winner:'恒生电子',project:'柜台交易系统中的实时清算认申购日间扣款模块项目',amount:'18万元',date:'2026-07-17',source:'中国招标投标公共服务平台',sourceUrl:'https://ctbpsp.com/#/bulletinDetail?uuid=450d052a-9004-4304-9689-6d91da12fff8&cid=14'},
-  {bidder:'兴业基金',winner:'恒生电子',project:'估值系统迭代改造采购项目',amount:'',date:'2026-07-16'},
-  {bidder:'西南证券',winner:'恒生电子',project:'财富管理业务相关系统监管建设及业务创新建设项目-机构柜台支持场外FOF基金券结',amount:'',date:'2026-07-15'},
-  {bidder:'兴银理财',winner:'恒生电子',project:'交易转发系统配套上交所改造项目',amount:'',date:'2026-07-15'},
-  {bidder:'上海农商银行',winner:'恒生电子',project:'基金销售系统开发采购(商业养老新增人保对接、预约赎回、7×24等功能)',amount:'',date:'2026-07-15'},
-  {bidder:'招商证券',winner:'恒生电子',project:'核心交易系统新增支持沪市新固收平台等4个所司业务相关系统改造项目',amount:'',date:'2026-07-15'},
-  {bidder:'招商证券',winner:'恒生电子',project:'QFII客户参与股票期权交易相关系统功能模块改造项目',amount:'',date:'2026-07-15'},
-  {bidder:'国投证券',winner:'恒生电子',project:'2026年二季度恒生自营估值系统等3套系统升级改造项目',amount:'',date:'2026-07-15'},
-  {bidder:'浙江明日控股集团',winner:'金仕达',project:'明日控股期货系统升级项目',amount:'',date:'2026-07-16'},
-  {bidder:'兴业证券',winner:'衡泰技术',project:'固定收益系统高频智能交易与监管集中度改造(XC)项目',amount:'',date:'2026-07-15',source:'兴业证券',sourceUrl:'https://www.xyzq.com.cn/xysec/info/article/e4960d5f19e94a748ba079e700996da6'},
-  {bidder:'大连银行',winner:'衡泰技术',project:'本币资金管理系统四期升级改造项目',amount:'',date:'2026-07-15'},
-  {bidder:'衡泰投资',winner:'衡泰技术',project:'衡泰投资交易管理系统优化建设项目(2026年第二期)',amount:'',date:'2026-07-13'},
-  {bidder:'兴业数字金融服务(上海)',winner:'时代银通',project:'对客外汇衍生品风险管理项目',amount:'',date:'2026-07-16'},
-  {bidder:'北京银行',winner:'时代银通',project:'2026年外汇报价引擎功能优化项目(第三次)',amount:'31.6万元',date:'2026-07-15',source:'北京银行采购门户',sourceUrl:'https://login-cpm-xt.bankofbeijing.com.cn/cms/default/webfile/1ywgg4/20260715/1262023181099597824.html'},
-  {bidder:'中国进出口银行',winner:'凯美瑞德',project:'新外币资金交易系统建设项目（中标候选人公示·项目号2640STC71395）',amount:'预算2215万元',date:'2026-07-17',source:'爱企查·中标候选人公示',sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?pid=35348917265179&dataId=6bc27cdd9aefa76f0c325aafe407ff68b9c7700e'}
+  {bidder:'中国工商银行',winner:'中软国际',project:'远程授权系统服务端信创改造项目（国产化/信创）',amount:'125万元',date:'2026-07-20',source:'证券之星·天眼查中标数据',sourceUrl:'https://stock.stockstar.com/RB2026072400019213.shtml'},
+  {bidder:'江苏银行',winner:'北京中科金财',project:'电子验印系统国产化改造项目（信创）',amount:'金额未披露',date:'2026-07-20',source:'千里马·江苏省招标中心',sourceUrl:'https://wap.qianlima.com/gjxx/342116/index_15_3.html'},
+  {bidder:'国家开发银行',winner:'南天信息',project:'2026年资金交易大厅虚拟化平台软件采购项目',amount:'93.96万元',date:'2026-07-21',source:'搜狐·天眼查中标数据',sourceUrl:'https://www.sohu.com/a/1054252377_121319643'},
+  {bidder:'中国银行陕西省分行',winner:'安硕信息',project:'普惠金融营销过程管理系统项目（中标候选人公示）',amount:'金额未披露',date:'2026-07-21',source:'爱企查·中标候选人公示',sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?dataId=a77f7b0c9a94d6dbd97032a067423e77807fb6c2&pid=32442824568234'},
+  {bidder:'中国银河证券',winner:'先进数通',project:'2026年IT基础设施集采 标包2：海光CPU信创低频服务器采购项目（信创）',amount:'金额未披露',date:'2026-07-20',source:'搜狐证券·先进数通中标',sourceUrl:'https://q.stock.sohu.com/cn/300541/information.shtml?type=200'},
+  {bidder:'华夏银行',winner:'云赢网络',project:'资金业务系统本币业务优化项目(第二次)（成交候选人公示）',amount:'金额未披露',date:'2026-07-24',source:'天眼查·云赢网络招投标',sourceUrl:'https://www.tianyancha.com/company/2341109469/jingzhuang'},
+  {bidder:'徽商银行',winner:'兆尹信息',project:'投行业务管理平台升级采购项目（债务融资子系统架构重构）',amount:'142万元',date:'2026-07-23',source:'徽商银行采购平台',sourceUrl:'https://hxsh.hsbank.com.cn:20300/cggl/cms/cmscjjggs/ef700be559e94a9d842d25bdb63cf3e8.html'},
+  {bidder:'青银理财',winner:'兆尹信息',project:'信息披露与监管报送系统公告功能优化项目（成交公告）',amount:'金额未披露',date:'2026-07-23',source:'青岛市公共资源交易网',sourceUrl:'https://ggzy.qingdao.gov.cn/PortalQDManage/PortalQD/ZtbShowGY/20217?flag=2'},
+  {bidder:'兴业证券',winner:'衡泰技术',project:'衡泰固定收益系统高频智能交易与监管集中度改造(XC)项目（信创，结果公示）',amount:'金额未披露',date:'2026-07-23',source:'兴业证券官网',sourceUrl:'https://www.xyzq.com.cn/xysec/info/article/d10a9d0525bf4a58b5144b16b9d3c32d?cid=14'},
+  {bidder:'成方金融科技(上海分公司)',winner:'衡泰技术',project:'风险管理平台二期优化采购项目',amount:'456万元',date:'2026-07-23',source:'中国金融采购网',sourceUrl:'http://www.cfcpn.com/'},
+  {bidder:'建信养老金管理',winner:'衡泰技术',project:'受托管理与投资监督系统重构优化项目(一期)集中采购（多家入围）',amount:'框架入围',date:'2026-07-21',source:'建行采购电商平台',sourceUrl:'https://ibuy.ccb.com/cms/index.html#/content?pId=353&id=27031'},
+  {bidder:'国泰海通证券',winner:'衡泰技术',project:'2026年上半年xIR系统开发服务采购项目（单一来源）',amount:'金额未披露',date:'2026-07-21',source:'天眼查·衡泰技术招投标',sourceUrl:'https://www.tianyancha.com/company/1335860444/jingzhuang'},
+  {bidder:'招商证券国际',winner:'衡泰技术',project:'灵犀财务数智中台与抵质押品管理平台（中标候选人公示）',amount:'金额未披露',date:'2026-07-20',source:'天眼查·衡泰技术招投标',sourceUrl:'https://www.tianyancha.com/company/1335860444/jingzhuang'},
+  {bidder:'国开证券',winner:'金证股份',project:'核心交易相关系统技术驻场外包服务项目(2026年立项3年期)',amount:'852.48万元',date:'2026-07-23',source:'证券之星·天眼查中标数据',sourceUrl:'https://stock.stockstar.com/RB2026072600001906.shtml'},
+  {bidder:'国投证券',winner:'金仕达',project:'风险数据集市信创升级改造项目（信创，事前公示）',amount:'金额未披露',date:'2026-07-20',source:'爱企查·金仕达招投标',sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?dataId=d77e88feed094ea266d87eef5f1eb651041da9c3&pid=33931198214156'},
+  {bidder:'招标单位待披露',winner:'金仕达',project:'金仕达统一资金平台软件V1.0升级（候选人公示）',amount:'金额未披露',date:'2026-07-21',source:'爱企查·金仕达招投标',sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?dataId=d77e88feed094ea266d87eef5f1eb651041da9c3&pid=33931198214156'},
+  {bidder:'浙江明日控股集团',winner:'金仕达',project:'明日控股期货系统升级项目（中标结果公告）',amount:'金额未披露',date:'2026-07-21',source:'爱企查·金仕达招投标',sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?dataId=d77e88feed094ea266d87eef5f1eb651041da9c3&pid=33931198214156'},
+  {bidder:'国元证券',winner:'顶点软件',project:'融资融券极速交易系统同步证券分组等相关功能优化项目',amount:'91万元',date:'2026-07-20',source:'优质采采购平台',sourceUrl:'https://www.youzhicai.com/nd/eac1e8de-85de-7a25-8f4d-519e4935958a-1.html'},
+  {bidder:'浙江农村商业联合银行',winner:'恒生电子',project:'专项领域通用类软件研发人力外包资源池入围项目（多家入围）',amount:'框架入围',date:'2026-07-24',source:'中国金融采购网',sourceUrl:'http://www.cfcpn.com/'}
 ];
 
 const archiveData = [
+  [
+    {bidder:'中国工商银行',winner:'中软国际',project:'远程授权系统服务端信创改造项目（信创）',amount:'125万元'},
+    {bidder:'江苏银行',winner:'北京中科金财',project:'电子验印系统国产化改造项目（信创）',amount:'金额未披露'},
+    {bidder:'国家开发银行',winner:'南天信息',project:'2026年资金交易大厅虚拟化平台软件采购项目',amount:'93.96万元'},
+    {bidder:'中国银行陕西省分行',winner:'安硕信息',project:'普惠金融营销过程管理系统项目',amount:'金额未披露'},
+    {bidder:'中国银河证券',winner:'先进数通',project:'IT基础设施集采标包2：海光CPU信创低频服务器（信创）',amount:'金额未披露'},
+    {bidder:'华夏银行',winner:'云赢网络',project:'资金业务系统本币业务优化项目(第二次)',amount:'金额未披露'},
+    {bidder:'徽商银行',winner:'兆尹信息',project:'投行业务管理平台升级采购项目',amount:'142万元'},
+    {bidder:'青银理财',winner:'兆尹信息',project:'信息披露与监管报送系统公告功能优化项目',amount:'金额未披露'},
+    {bidder:'兴业证券',winner:'衡泰技术',project:'固定收益系统高频智能交易与监管集中度改造(XC)项目（信创）',amount:'金额未披露'},
+    {bidder:'成方金融科技(上海分公司)',winner:'衡泰技术',project:'风险管理平台二期优化采购项目',amount:'456万元'},
+    {bidder:'建信养老金管理',winner:'衡泰技术',project:'受托管理与投资监督系统重构优化项目(一期)',amount:'框架入围'},
+    {bidder:'国泰海通证券',winner:'衡泰技术',project:'2026年上半年xIR系统开发服务采购项目',amount:'金额未披露'},
+    {bidder:'招商证券国际',winner:'衡泰技术',project:'灵犀财务数智中台与抵质押品管理平台',amount:'金额未披露'},
+    {bidder:'国开证券',winner:'金证股份',project:'核心交易相关系统技术驻场外包服务项目(3年期)',amount:'852.48万元'},
+    {bidder:'国投证券',winner:'金仕达',project:'风险数据集市信创升级改造项目（信创）',amount:'金额未披露'},
+    {bidder:'招标单位待披露',winner:'金仕达',project:'金仕达统一资金平台软件V1.0升级',amount:'金额未披露'},
+    {bidder:'浙江明日控股集团',winner:'金仕达',project:'明日控股期货系统升级项目',amount:'金额未披露'},
+    {bidder:'国元证券',winner:'顶点软件',project:'融资融券极速交易系统同步证券分组等功能优化项目',amount:'91万元'},
+    {bidder:'浙江农村商业联合银行',winner:'恒生电子',project:'专项领域通用类软件研发人力外包资源池入围项目',amount:'框架入围'}
+  ],
   [
     {bidder:'天风证券',winner:'恒生电子',project:'柜台交易系统实时清算认申购日间扣款模块项目',amount:''},
     {bidder:'兴业基金',winner:'恒生电子',project:'估值系统迭代改造采购项目',amount:''},
@@ -1116,14 +1156,15 @@ const radarItems = [
 
 // ===== Week options for filter (default = most recent week) =====
 const weekOptions = [
-  { id:'current', label:'本周 07.13–07.19', range:'2026年7月13日 — 7月19日', bids: currentWeekBids },
+  { id:'current', label:'本周 07.20–07.26', range:'2026年7月20日 — 7月26日', bids: currentWeekBids },
   { id:'kmrd',    label:'凯美瑞德专题 2026', range:'凯美瑞德 2026年中标专题（2月–6月，补充收集）', bids: kmrdBids },
-  { id:'w0706',   label:'07.06–07.12',      range:'2026年7月6日 — 7月12日',  bids: archiveData[1] },
-  { id:'w0630',   label:'06.30–07.06',      range:'2026年6月30日 — 7月6日',  bids: archiveData[2] },
-  { id:'w0622',   label:'06.22–06.28',      range:'2026年6月22日 — 6月28日', bids: archiveData[3] },
-  { id:'w0420',   label:'04.20–04.24',      range:'2026年4月20日 — 4月24日', bids: archiveData[4] },
-  { id:'w0323',   label:'03.23–03.27',      range:'2026年3月23日 — 3月27日', bids: archiveData[5] },
-  { id:'w0126',   label:'01.26–01.30',      range:'2026年1月26日 — 1月30日', bids: archiveData[6] },
+  { id:'w0713',   label:'07.13–07.19',      range:'2026年7月13日 — 7月19日', bids: archiveData[1] },
+  { id:'w0706',   label:'07.06–07.12',      range:'2026年7月6日 — 7月12日',  bids: archiveData[2] },
+  { id:'w0630',   label:'06.30–07.06',      range:'2026年6月30日 — 7月6日',  bids: archiveData[3] },
+  { id:'w0622',   label:'06.22–06.28',      range:'2026年6月22日 — 6月28日', bids: archiveData[4] },
+  { id:'w0420',   label:'04.20–04.24',      range:'2026年4月20日 — 4月24日', bids: archiveData[5] },
+  { id:'w0323',   label:'03.23–03.27',      range:'2026年3月23日 — 3月27日', bids: archiveData[6] },
+  { id:'w0126',   label:'01.26–01.30',      range:'2026年1月26日 — 1月30日', bids: archiveData[7] },
   { id:'all',     label:'全部历史汇总',      range:'全部历史周报合并',         bids: null }
 ];
 function bidSignature(r){
@@ -1500,13 +1541,14 @@ function initCharts(){
 
   // Trend line chart — amounts per week (computed from data)
   const weekDefs = [
-    {label:'01.26', bids:archiveData[6]},
-    {label:'03.23', bids:archiveData[5]},
-    {label:'04.20', bids:archiveData[4]},
-    {label:'06.22', bids:archiveData[3]},
-    {label:'06.30', bids:archiveData[2]},
-    {label:'07.06', bids:archiveData[1]},
-    {label:'07.13', bids:archiveData[0]}
+    {label:'01.26', bids:archiveData[7]},
+    {label:'03.23', bids:archiveData[6]},
+    {label:'04.20', bids:archiveData[5]},
+    {label:'06.22', bids:archiveData[4]},
+    {label:'06.30', bids:archiveData[3]},
+    {label:'07.06', bids:archiveData[2]},
+    {label:'07.13', bids:archiveData[1]},
+    {label:'07.20', bids:archiveData[0]}
   ];
   const weekLabels = weekDefs.map(w=>w.label);
   const weekAmounts = weekDefs.map(w=>w.bids.reduce((s,r)=>s+parseAmount(r.amount),0));
