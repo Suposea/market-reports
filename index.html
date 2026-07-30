@@ -507,7 +507,7 @@ tbody tr.hidden{display:none}
             </span>
             招投标信息汇总
           </div>
-          <div class="panel-sub" id="periodSub">报告周期：2026年7月20日 — 7月26日 · 点击列头可排序</div>
+          <div class="panel-sub" id="periodSub">报告周期：2026年7月20日 — 7月30日（滚动更新，含 07.27–07.30 新增）· 点击列头可排序</div>
         </div>
         <button class="btn btn-primary" onclick="exportCSV()">
           <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -519,7 +519,7 @@ tbody tr.hidden{display:none}
         <div class="week-select">
           <span class="week-label">周范围</span>
           <select id="weekSelect" onchange="selectWeek(this.value)" aria-label="选择周报范围">
-            <option value="current">最新 07.20–07.26</option>
+            <option value="current">最新 07.20–07.30</option>
             <option value="w0713">07.13–07.19</option>
             <option value="w0706">07.06–07.12</option>
             <option value="w0630">06.30–07.06</option>
@@ -567,9 +567,10 @@ tbody tr.hidden{display:none}
       </div>
 
       <div class="note-box" id="weekNote">
-        <strong>最新重点（7/20-7/26）：</strong>银行类中标覆盖国有大行（工行·信创、国开行）、城/农商行（江苏银行·信创、华夏银行、徽商银行）、理财子（青银理财）及政策行相关（中国银行陕西分行）；
+        <strong>最新重点（7/20-7/30 滚动更新）：</strong>银行类中标覆盖国有大行（工行·信创、国开行、浦发银行）、城/农商行（江苏银行·信创、华夏银行、徽商银行、瑞丰银行）、理财子（青银理财）及政策行相关（中国银行陕西分行）；
         <strong>信创/国产化项目</strong>多点开花：工行远程授权服务端信创改造（中软国际 125万）、江苏银行电子验印国产化改造（中科金财）、银河证券海光CPU信创服务器（先进数通）、国投证券风险数据集市信创升级（金仕达）、兴业证券固收XC改造（衡泰）。
-        <strong>凯美瑞德</strong>最新无新增公开中标（上周口行新外币资金交易系统中标候选人公示持续跟踪，见"近期动态"）；<strong>时代银通 / 子午线 / 量锐</strong>最新公开渠道未见新增中标公告，最近一期见历史归档。
+        <strong>07.27–07.30 新增</strong>：浦发银行金融市场系统群年度维保续约密集——金仕达三系统维保 178.588425 万元、安永财务估值系统 65 万元、凯美瑞德初始保证金 268 万元；国泰海通证券 FICC 数据集市开发由衡泰技术中标 150 万元；瑞丰银行通用开发人力外包（上海诺祺）07-28 结果公告。
+        <strong>凯美瑞德</strong>本周新增浦发初始保证金系统年度维护 268 万元（单一来源），口行新外币资金交易系统中标候选人公示持续跟踪；<strong>时代银通 / 子午线 / 量锐</strong>公开渠道未见新增中标公告，最近一期见历史归档。
       </div>
 
       <div class="update-badge">⏰ 下次自动更新：2026年8月3日（每周一早上）</div>
@@ -996,7 +997,11 @@ const currentWeekBids = [
   {bidder:'招标单位待披露',winner:'金仕达',project:'金仕达统一资金平台软件V1.0升级（候选人公示）',amount:'金额未披露',date:'2026-07-21',source:'爱企查·金仕达招投标',sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?dataId=d77e88feed094ea266d87eef5f1eb651041da9c3&pid=33931198214156'},
   {bidder:'浙江明日控股集团',winner:'金仕达',project:'明日控股期货系统升级项目（中标结果公告）',amount:'金额未披露',date:'2026-07-21',source:'爱企查·金仕达招投标',sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?dataId=d77e88feed094ea266d87eef5f1eb651041da9c3&pid=33931198214156'},
   {bidder:'国元证券',winner:'顶点软件',project:'融资融券极速交易系统同步证券分组等相关功能优化项目',amount:'91万元',date:'2026-07-20',source:'优质采采购平台',sourceUrl:'https://www.youzhicai.com/nd/eac1e8de-85de-7a25-8f4d-519e4935958a-1.html'},
-  {bidder:'浙江农村商业联合银行',winner:'恒生电子',project:'专项领域通用类软件研发人力外包资源池入围项目（多家入围）',amount:'框架入围',date:'2026-07-24',source:'中国金融采购网',sourceUrl:'http://www.cfcpn.com/'}
+  {bidder:'浙江农村商业联合银行',winner:'恒生电子',project:'专项领域通用类软件研发人力外包资源池入围项目（多家入围）',amount:'框架入围',date:'2026-07-24',source:'中国金融采购网',sourceUrl:'http://www.cfcpn.com/'},
+  {bidder:'上海浦东发展银行',winner:'金仕达',project:'2026-2027年"投资风险管理与绩效评估、黄金期货自营交易管理、证交所债券交易"三个系统维保服务（单一来源）',amount:'178.588425万元',date:'2026-07-27',source:'知了标讯·成交结果公告',sourceUrl:'https://www.zhiliaobiaoxun.cn/detail/508677082b2C525BC21c.html'},
+  {bidder:'国泰海通证券',winner:'衡泰技术',project:'2026年上半年FICC数据集市开发采购项目（采购结果公告）',amount:'150万元',date:'2026-07-27',source:'天眼查·衡泰技术招投标',sourceUrl:'https://www.tianyancha.com/company/1335860444/jingzhuang'},
+  {bidder:'上海浦东发展银行',winner:'安永(中国)企业咨询有限公司',project:'财务估值系统2026年度开发维护服务项目（成交结果公告）',amount:'65万元',date:'2026-07-27',source:'浦发银行采购平台',sourceUrl:'https://ebuy.spdb.com.cn/#/noticeDetail?noticeId=1144355918337187687500609028096'},
+  {bidder:'瑞丰银行',winner:'上海诺祺科技有限公司',project:'通用开发人力外包服务采购项目（结果公告）',amount:'金额未披露',date:'2026-07-28',source:'爱企查·招投标记录',sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?dataId=6418f5ccc295ea7f9392c16520fea76fb4cfdde8&pid=32152193586616'}
 ];
 
 const archiveData = [
@@ -1142,6 +1147,10 @@ const radarItems = [
   { type:'plan', bank:'重庆三峡银行', date:'2026-07-08', title:'本币资金业务管理系统 2026 年度信创项目 — 直接采购公示', content:'重庆三峡银行本币资金业务管理系统 2026 年度信创项目，拟定供应商 上海中汇亿达金融信息技术有限公司，预算 128 万元，公示期限 2026-07-08 至 2026-07-15。建设任务：服务器端全栈式信创改造、历史业务数据迁移至信创数据库、信创终端适配（兼容信创终端/OS/浏览器）。下一步：公示期满后进入合同签订与实施。', source:'重庆公共资源交易网·直接采购公示', sourceUrl:'https://www.cqggzy.com/trade/014012/8966e56d-36d5-412f-8aa0-191cb35e53ce' },
   { type:'plan', bank:'中国银行陕西省分行', date:'2026-07-13', title:'国库支付电子化清算系统信创改造 — 竞争性磋商（已成交）', content:'中行陕西省分行国库支付电子化清算系统信创改造项目竞争性磋商，最高限价 125.85 万元，服务期至 2026-09-30。磋商公告 2026-06 发布、2026-07-03 谈判；成交结果已于 2026-07-13 公示：北京中科江南信息技术股份有限公司中标（125 万元）。可作为同类信创改造招采的时序参考。', source:'采购与招标网·磋商公告', sourceUrl:'https://www.gxzbcg.cn/class3/791271.html' },
   { type:'plan', bank:'多家银行（国有/股份/城商）', date:'2026-Q3', title:'信创改造招采窗口 — 资金/外汇系统国产化替代', content:'在国产化替代与自主可控政策驱动下，预计 Q3 多家银行将启动资金交易、外汇/衍生品系统的信创改造与选型入围招采。建议持续在金采网监控恒生电子、凯美瑞德、金仕达、时代银通、衡泰技术、量锐等厂商动向。', source:'中国金融集中采购网（监控入口）', sourceUrl:'http://www.cfcpn.com/' },
+  { type:'plan', bank:'中国光大银行', date:'2026-07-30', title:'资金交易业务综合管理平台 交易管理模块 开发服务选型入围 — 今日开标', content:'光大银行资金交易业务综合管理平台交易管理模块开发服务选型入围公开招标，招标代理编号 21-05-04A-2026-D-F-E18894。新增贵金属交易管理、扩展外汇及衍生品（组合期权/外汇期货/碳合约/指数期货）交易管理，服务期 2.5 年，中标人 1 家。招标文件获取 2026-07-08 至 2026-07-28；投标截止/开标 2026-07-30 09:30（今日）。下一步：紧盯中标候选人公示与入围厂商（恒生/金仕达/衡泰/凯美瑞德等资金交易厂商）。', source:'光大银行官网·招标公告', sourceUrl:'https://www.95595.cn/site/zhpd/zxgg35/cggg/413934677/index.html' },
+  { type:'plan', bank:'兰州银行', date:'2026-08-14', title:'2026年度信创改造所需服务器及配套软件采购 — 招标公告', content:'兰州银行 2026 年度信创改造所需服务器及配套软件采购项目（招标编号 GXTC-C-26110045），3 个标段：标段1 鲲鹏芯片服务器 24 台 1572 万元；标段2 海光芯片服务器 25 台 1374.4 万元；标段3 软件授权 153.6 万元；预算合计约 3100 万元。招标文件获取 2026-07-24 至 2026-07-30；投标截止 2026-08-14 09:30。下一步：关注信创服务器/软件选型入围结果。', source:'甘肃经济信息网·招标公告', sourceUrl:'https://www.gsei.com.cn/html/1336/2026-07-24/content-688755.html' },
+  { type:'plan', bank:'中山农村商业银行', date:'2026-08-27', title:'统一流程平台信创改造项目 — 招标公告', content:'中山农村商业银行统一流程平台信创改造项目公开招标，招标文件获取 2026-07-23 至 2026-07-29；提疑截至 2026-07-31；投标截止/开标 2026-08-27 09:30。属农商行流程平台信创改造，关注后续中标方（恒生/金证/科蓝等流程平台厂商）。', source:'中山农商行官网·招标公告', sourceUrl:'http://portal.zsebank.com/zhongshan/gywm/gyzxgg/202607/134552.html' },
+  { type:'plan', bank:'城银清算服务有限责任公司', date:'2026-07-28', title:'2026年应用系统信创改造硬件负载均衡项目 — 招标公告', content:'城银清算服务有限责任公司 2026 年应用系统信创改造硬件负载均衡项目公开招标（项目编号 2406086016），截止时间 2026-07-28。属清算基础设施信创改造，关注信创负载均衡设备选型（神州数码/迪普/深信服等）。', source:'中国招标网·招标公告', sourceUrl:'https://www.ebnew.com/businessShow/708975308.html' },
 
   // ===== 舆情动态（行业广覆盖，不局限于凯美瑞德，时间精准） =====
   { type:'news', bank:'凯美瑞德', date:'2026-07', title:'凯美瑞德中标某 10 万亿级股份制商业银行双项目', content:'成功中标该行金融市场业务内模法风险计量系统、自研估值系统项目，是市场风险领域的又一重要突破，彰显服务大型金融机构核心系统的综合实力。', source:'凯美瑞德官网', sourceUrl:'http://kmerit.com/News_desc/55/474.html' },
@@ -1152,12 +1161,15 @@ const radarItems = [
   { type:'news', bank:'恒丰银行', date:'2026-07', title:'恒丰银行 2026-2027 年应用系统维保项目 — 多家厂商入围', content:'恒丰银行 2026-2027 年应用系统维保项目（单一来源）公示，包三"资金管理子应用、同业负债应用、金融市场智能决策分析平台维保"入围供应商含 凯美瑞德(苏州)信息科技股份有限公司；其余包件入围含 恒生电子、杭州时代银通 等。合同 2026 年 7 月左右原合同到期后续约。', source:'知了标讯·集中采购项目', sourceUrl:'https://www.zhiliaobiaoxun.com/detail/503109081b246d51762d.html' },
   { type:'news', bank:'行业·信创政策', date:'2026-06', title:'金融信创进入规模化交付阶段，2027 年关键软硬件 100% 国产替代', content:'政策明确 2027 年实现金融业关键软硬件 100% 国产替代；金融信创市场 2025 年近 2500 亿元、2026 年有望突破 3000 亿元。恒生、金证等头部厂商核心系统已从样板试点步入规模化常态化交付。', source:'新浪财经', sourceUrl:'https://finance.sina.com.cn/wm/2026-06-04/doc-iniafvzq0369751.shtml' },
   { type:'news', bank:'兴业数金 / 时代银通 / 金仕达', date:'2026-07', title:'兴业数金分布式核心配套中标：时代银通（维护）、金仕达（贵金属交易）', content:'兴业数字金融服务（上海）股份有限公司分布式核心建设项目配套改造：金融市场产品报价和对客交易系统维护由杭州时代银通中标；贵金属交易管理系统配套建设由上海金仕达中标，反映股份行分布式核心改造带动资金交易系统集群需求。', source:'兴业官网·采购结果公告', sourceUrl:'https://cg.cib.com.cn/cms/default/webfile/ywgg3/20260714/1261637935095087104.html' },
-  { type:'news', bank:'恒生电子', date:'2026-05', title:'恒生发布《2026 证券行业核心系统信创建设指南》', content:'围绕核心交易 UF3.0、投资交易 O45 等七大核心业务系统提供全栈选型方案，宣称已完成所有核心业务系统 100% 全栈信创适配、累计实施信创项目超 2000 个，并联合行业云推出信创云一体化方案。', source:'今日头条', sourceUrl:'https://www.toutiao.com/article/7660118801060545076/' }
+  { type:'news', bank:'恒生电子', date:'2026-05', title:'恒生发布《2026 证券行业核心系统信创建设指南》', content:'围绕核心交易 UF3.0、投资交易 O45 等七大核心业务系统提供全栈选型方案，宣称已完成所有核心业务系统 100% 全栈信创适配、累计实施信创项目超 2000 个，并联合行业云推出信创云一体化方案。', source:'今日头条', sourceUrl:'https://www.toutiao.com/article/7660118801060545076/' },
+  { type:'news', bank:'浦发银行', date:'2026-07-27', title:'浦发银行金融市场系统群年度维保续约密集（金仕达/安永/凯美瑞德）', content:'2026-07-27 浦发银行集中发布金融市场相关系统维保成交：金仕达 中标"投资风险管理与绩效评估、黄金期货自营交易管理、证交所债券交易"三个系统维保服务 单一来源 178.588425 万元（项目编号 00100000-CG-IT-2026-0110）；安永 中标财务估值系统 2026 年度开发维护服务 65 万元；叠加凯美瑞德 金融市场初始保证金系统年度维护 268 万元（单一来源），反映浦发金融市场系统群进入年度维保续约密集期。', source:'知了标讯·成交结果公告', sourceUrl:'https://www.zhiliaobiaoxun.cn/detail/508677082b2C525BC21c.html' },
+  { type:'news', bank:'金仕达', date:'2026-07-27', title:'金仕达单一来源中标浦发银行三系统维保 178.588425 万元', content:'上海浦东发展银行总行 2026-2027 年"投资风险管理与绩效评估、黄金期货自营交易管理、证交所债券交易"三个系统维保服务项目采购成交结果公示：候选及中选供应商均为上海金仕达软件科技股份有限公司，采购金额 178.588425 万元，采购方式单一来源（项目编号 00100000-CG-IT-2026-0110）。', source:'知了标讯·成交结果公告', sourceUrl:'https://www.zhiliaobiaoxun.cn/detail/508677082b2C525BC21c.html' },
+  { type:'news', bank:'衡泰技术', date:'2026-07-27', title:'衡泰技术中标国泰海通证券 2026 年上半年 FICC 数据集市开发 150 万元', content:'国泰海通证券 2026 年上半年 FICC 数据集市开发采购项目采购结果公告：杭州衡泰技术股份有限公司中标，中标金额 150 万元，公告发布时间 2026-07-27。叠加已公示的兴业证券固收XC改造、成方金科风险管理平台二期(456万)、建信养老金受托管理重构、招商证券国际灵犀中台等，衡泰 7 月资金/固收类订单持续放量。', source:'天眼查·衡泰技术招投标', sourceUrl:'https://www.tianyancha.com/company/1335860444/jingzhuang' }
 ];
 
 // ===== Week options for filter (default = most recent week) =====
 const weekOptions = [
-  { id:'current', label:'最新 07.20–07.26', range:'2026年7月20日 — 7月26日', bids: currentWeekBids },
+  { id:'current', label:'最新 07.20–07.30', range:'2026年7月20日 — 7月30日（含近期新增）', bids: currentWeekBids },
   { id:'kmrd',    label:'凯美瑞德专题 2026', range:'凯美瑞德 2026年中标专题（2月–6月，补充收集）', bids: kmrdBids },
   { id:'w0713',   label:'07.13–07.19',      range:'2026年7月13日 — 7月19日', bids: archiveData[1] },
   { id:'w0706',   label:'07.06–07.12',      range:'2026年7月6日 — 7月12日',  bids: archiveData[2] },
