@@ -334,7 +334,7 @@ tbody tr.hidden{display:none}
   .source-cell{display:none}
   thead th:nth-child(6),tbody td:nth-child(6){display:none}
 }
-/* ===== P0 优化：本周要点 / 厂商战况榜 / 表格视觉分层 ===== */
+/* ===== P0 优化：最新要点 / 厂商战况榜 / 表格视觉分层 ===== */
 .tldr{background:linear-gradient(135deg,var(--surface) 0%,var(--surface-2) 100%);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px 26px;margin-bottom:28px;box-shadow:var(--shadow-xs);position:relative;overflow:hidden}
 .tldr::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
 .tldr-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
@@ -418,7 +418,7 @@ tbody tr.hidden{display:none}
         </div>
         <div class="kpi-value" id="kpi-total">85</div>
         <div class="kpi-label">累计中标项目</div>
-        <span class="kpi-trend"><span class="arrow">↗</span> 本周新增 14</span>
+        <span class="kpi-trend"><span class="arrow">↗</span> 最新新增 14</span>
       </div>
       <div class="kpi-card reveal">
         <div class="kpi-icon">
@@ -426,7 +426,7 @@ tbody tr.hidden{display:none}
         </div>
         <div class="kpi-value" id="kpi-amount">20,659</div>
         <div class="kpi-label">已披露金额（万元）</div>
-        <span class="kpi-trend"><span class="arrow">↗</span> 本周新增 31.6</span>
+        <span class="kpi-trend"><span class="arrow">↗</span> 最新新增 31.6</span>
       </div>
       <div class="kpi-card reveal">
         <div class="kpi-icon">
@@ -519,7 +519,7 @@ tbody tr.hidden{display:none}
         <div class="week-select">
           <span class="week-label">周范围</span>
           <select id="weekSelect" onchange="selectWeek(this.value)" aria-label="选择周报范围">
-            <option value="current">本周 07.20–07.26</option>
+            <option value="current">最新 07.20–07.26</option>
             <option value="w0713">07.13–07.19</option>
             <option value="w0706">07.06–07.12</option>
             <option value="w0630">06.30–07.06</option>
@@ -567,9 +567,9 @@ tbody tr.hidden{display:none}
       </div>
 
       <div class="note-box" id="weekNote">
-        <strong>本周重点（7/20-7/26）：</strong>银行类中标覆盖国有大行（工行·信创、国开行）、城/农商行（江苏银行·信创、华夏银行、徽商银行）、理财子（青银理财）及政策行相关（中国银行陕西分行）；
+        <strong>最新重点（7/20-7/26）：</strong>银行类中标覆盖国有大行（工行·信创、国开行）、城/农商行（江苏银行·信创、华夏银行、徽商银行）、理财子（青银理财）及政策行相关（中国银行陕西分行）；
         <strong>信创/国产化项目</strong>多点开花：工行远程授权服务端信创改造（中软国际 125万）、江苏银行电子验印国产化改造（中科金财）、银河证券海光CPU信创服务器（先进数通）、国投证券风险数据集市信创升级（金仕达）、兴业证券固收XC改造（衡泰）。
-        <strong>凯美瑞德</strong>本周无新增公开中标（上周口行新外币资金交易系统中标候选人公示持续跟踪，见"近期动态"）；<strong>时代银通 / 子午线 / 量锐</strong>本周公开渠道未见新增中标公告，最近一期见历史归档。
+        <strong>凯美瑞德</strong>最新无新增公开中标（上周口行新外币资金交易系统中标候选人公示持续跟踪，见"近期动态"）；<strong>时代银通 / 子午线 / 量锐</strong>最新公开渠道未见新增中标公告，最近一期见历史归档。
       </div>
 
       <div class="update-badge">⏰ 下次自动更新：2026年8月3日（每周一早上）</div>
@@ -655,7 +655,7 @@ tbody tr.hidden{display:none}
         <div class="info-card industry">
           <span class="tag">行业观察</span>
           <h4>信创加速 · 衍生品报送上新 · 保险资管国产清算</h4>
-          <p>本周银行/券商信创改造项目密集落地（工行远程授权信创、银河证券海光服务器、国投证券风控信创等），叠加交易商协会场外衍生品报送新规与恒生保险资管全链路国产清算上线，金融IT信创替代正从外围系统向核心交易与清算系统纵深推进。</p>
+          <p>最新银行/券商信创改造项目密集落地（工行远程授权信创、银河证券海光服务器、国投证券风控信创等），叠加交易商协会场外衍生品报送新规与恒生保险资管全链路国产清算上线，金融IT信创替代正从外围系统向核心交易与清算系统纵深推进。</p>
         </div>
       </div>
     </div>
@@ -1148,7 +1148,7 @@ const radarItems = [
   { type:'news', bank:'凯美瑞德', date:'2026-07', title:'浦发银行金融市场初始保证金系统年度维护 — 单一来源中标 268 万元', content:'上海浦东发展银行总行 2026-2027 金融市场初始保证金系统年度维护服务采购项目采购成交结果公示：候选及中选供应商均为凯美瑞德(苏州)信息科技股份有限公司，采购金额 RMB 2,680,000 元，采购方式单一来源（项目编号 00100000-CG-IT-2026-0101）。', source:'知了标讯·成交结果公告', sourceUrl:'https://www.zhiliaobiaoxun.cn/detail/507333567b278D8528Fc.html' },
   { type:'news', bank:'恒生电子', date:'2026-07-24', title:'恒生电子 7 月下旬密集中标多家金融机构系统项目', content:'7 月连续中标（精准日期）：国元证券 采购知识治理及智驱工程项目(应用软件部分) 中标候选人公示 2026-07-24；广银理财 2026 年度投资交易维保及功能开发采购项目 中标 148.7 万元 2026-07-24；湖南银行 客户经理工作台(投顾版)建设项目 中标候选人 190 万元 2026-07-23；上海农商银行 资管估值清算系统强化净值下发链路控制项目 单一来源 恒生 成交 2026-07-16；昆山农商银行"新增TA对接资管信托理财子"系统改造 单一来源 恒生 2026-07-02；常熟农商银行 财富管理系统多元化产品建设项目 恒生 2026-07-06；华安证券 反洗钱系统信创改造项目 恒生中标 225 万元 2026-07-06。', source:'天眼查·招投标记录', sourceUrl:'https://www.tianyancha.com/company/18695545/jingzhuang' },
   { type:'news', bank:'金仕达', date:'2026-07-24', title:'金仕达近期连下多单：中原/中信建投/浙商/华通', content:'精准日期：中原银行 量化交易投资系统项目 中标 198 万元 2026-07-14；中信建投证券 自营黄金交易系统信创改造(第二次) 成交 48 万元 2026-07-14（候选公示 2026-07-09）；浙商证券 2026 年反洗钱自检排查及执法检查数据提取模块升级改造迭代开发项目 直采公示 2026-07-23；青岛华通集团 供应链业务系统(大宗商品交易与风险管理系统) 中标 236 万元 2026-07-24；金仕达统一资金平台软件V1.0升级 结果公告 49 万元 2026-07-22。', source:'天眼查·招投标记录', sourceUrl:'https://www.tianyancha.com/company/3292680560/jingzhuang' },
-  { type:'news', bank:'衡泰技术', date:'2026-07-15', title:'衡泰技术 7 月连中：中信建投资管债券 XC、大连银行本币四期', content:'精准日期：中信建投证券 资管债券业务管理系统信创改造采购项目 成交 170 万元 2026-07-10（候选公示 2026-07-06）；大连银行 本币资金管理系统四期升级改造项目 中标 57 万元 2026-07-15；叠加本周已公示的兴业证券固收XC改造、成方金科风险管理平台二期(456万)、建信养老金受托管理重构、国泰海通xIR、招商证券国际灵犀中台等。', source:'天眼查·招投标记录', sourceUrl:'https://www.tianyancha.com/company/1335860444/jingzhuang' },
+  { type:'news', bank:'衡泰技术', date:'2026-07-15', title:'衡泰技术 7 月连中：中信建投资管债券 XC、大连银行本币四期', content:'精准日期：中信建投证券 资管债券业务管理系统信创改造采购项目 成交 170 万元 2026-07-10（候选公示 2026-07-06）；大连银行 本币资金管理系统四期升级改造项目 中标 57 万元 2026-07-15；叠加最新已公示的兴业证券固收XC改造、成方金科风险管理平台二期(456万)、建信养老金受托管理重构、国泰海通xIR、招商证券国际灵犀中台等。', source:'天眼查·招投标记录', sourceUrl:'https://www.tianyancha.com/company/1335860444/jingzhuang' },
   { type:'news', bank:'恒丰银行', date:'2026-07', title:'恒丰银行 2026-2027 年应用系统维保项目 — 多家厂商入围', content:'恒丰银行 2026-2027 年应用系统维保项目（单一来源）公示，包三"资金管理子应用、同业负债应用、金融市场智能决策分析平台维保"入围供应商含 凯美瑞德(苏州)信息科技股份有限公司；其余包件入围含 恒生电子、杭州时代银通 等。合同 2026 年 7 月左右原合同到期后续约。', source:'知了标讯·集中采购项目', sourceUrl:'https://www.zhiliaobiaoxun.com/detail/503109081b246d51762d.html' },
   { type:'news', bank:'行业·信创政策', date:'2026-06', title:'金融信创进入规模化交付阶段，2027 年关键软硬件 100% 国产替代', content:'政策明确 2027 年实现金融业关键软硬件 100% 国产替代；金融信创市场 2025 年近 2500 亿元、2026 年有望突破 3000 亿元。恒生、金证等头部厂商核心系统已从样板试点步入规模化常态化交付。', source:'新浪财经', sourceUrl:'https://finance.sina.com.cn/wm/2026-06-04/doc-iniafvzq0369751.shtml' },
   { type:'news', bank:'兴业数金 / 时代银通 / 金仕达', date:'2026-07', title:'兴业数金分布式核心配套中标：时代银通（维护）、金仕达（贵金属交易）', content:'兴业数字金融服务（上海）股份有限公司分布式核心建设项目配套改造：金融市场产品报价和对客交易系统维护由杭州时代银通中标；贵金属交易管理系统配套建设由上海金仕达中标，反映股份行分布式核心改造带动资金交易系统集群需求。', source:'兴业官网·采购结果公告', sourceUrl:'https://cg.cib.com.cn/cms/default/webfile/ywgg3/20260714/1261637935095087104.html' },
@@ -1157,7 +1157,7 @@ const radarItems = [
 
 // ===== Week options for filter (default = most recent week) =====
 const weekOptions = [
-  { id:'current', label:'本周 07.20–07.26', range:'2026年7月20日 — 7月26日', bids: currentWeekBids },
+  { id:'current', label:'最新 07.20–07.26', range:'2026年7月20日 — 7月26日', bids: currentWeekBids },
   { id:'kmrd',    label:'凯美瑞德专题 2026', range:'凯美瑞德 2026年中标专题（2月–6月，补充收集）', bids: kmrdBids },
   { id:'w0713',   label:'07.13–07.19',      range:'2026年7月13日 — 7月19日', bids: archiveData[1] },
   { id:'w0706',   label:'07.06–07.12',      range:'2026年7月6日 — 7月12日',  bids: archiveData[2] },
@@ -1274,7 +1274,7 @@ function renderBigDeals(){
       </div>`).join('');
 }
 
-// ===== P0: 本周要点 TL;DR =====
+// ===== P0: 最新要点 TL;DR =====
 function renderTLDR(){
   const el = document.getElementById('tldrCard');
   if(!el) return;
@@ -1293,10 +1293,10 @@ function renderTLDR(){
   const range = (dates[0] && dates[dates.length-1]) ? `${dates[0]} – ${dates[dates.length-1]}` : '';
   const maxTxt = max ? `单笔最高：<b>${max.r.winner}</b>「${escapeHtml(max.r.project)}」<b>${max.a.toLocaleString()}万元</b>。` : '';
   el.innerHTML = `
-    <div class="tldr-head"><span class="tldr-badge">本周要点</span><span class="tldr-title">${range} 战况速览</span></div>
-    <div class="tldr-body">本周共收录 <b>${n}</b> 条银行/金融机构中标，覆盖 <b>${banks.size}</b> 家银行、<b>${vendors.size}</b> 家厂商；其中国产化/信创类 <b>${xc}</b> 条。中标数量领先：${top}。${maxTxt}</div>
+    <div class="tldr-head"><span class="tldr-badge">最新要点</span><span class="tldr-title">${range} 战况速览</span></div>
+    <div class="tldr-body">最新共收录 <b>${n}</b> 条银行/金融机构中标，覆盖 <b>${banks.size}</b> 家银行、<b>${vendors.size}</b> 家厂商；其中国产化/信创类 <b>${xc}</b> 条。中标数量领先：${top}。${maxTxt}</div>
     <div class="tldr-stats">
-      <div class="tldr-stat"><div class="v">${n}</div><div class="k">本周中标</div></div>
+      <div class="tldr-stat"><div class="v">${n}</div><div class="k">最新中标</div></div>
       <div class="tldr-stat"><div class="v">${banks.size}</div><div class="k">覆盖银行</div></div>
       <div class="tldr-stat"><div class="v">${vendors.size}</div><div class="k">涉及厂商</div></div>
       <div class="tldr-stat"><div class="v">${xc}</div><div class="k">信创类</div></div>
@@ -1392,7 +1392,7 @@ function renderBidsTable(){
     const amtClass = (r.amount && /[\d]/.test(r.amount)) ? '' : 'empty';
     const isWeek = weekSet.has(bidSignature(r));
     return `<tr style="--vc:${color}" class="${isWeek?'is-week':''}">
-      <td>${r.bidder}${isWeek?'<span class="week-badge">本周</span>':''}</td>
+      <td>${r.bidder}${isWeek?'<span class="week-badge">最新</span>':''}</td>
       <td><a class="vendor-link" href="javascript:void(0)" onclick="gotoVendor('${escapeHtml(r.winner)}')"><span class="vendor-tag" style="border-color:${color}40">${r.winner}</span></a></td>
       <td>${r.project}</td>
       <td class="amount-cell ${amtClass}">${r.amount || '—'}</td>
@@ -1612,6 +1612,7 @@ function triggerReveal(){
 function init(){
   try { document.getElementById('kpi-total').textContent = getAllBids().length; } catch(e){ console.error('kpi-total failed:', e); }
   try { document.getElementById('kpi-amount').textContent = Math.round(getAllBids().reduce((s,r)=>s+parseAmount(r.amount),0)).toLocaleString(); } catch(e){ console.error('kpi-amount failed:', e); }
+  try { document.getElementById('kpi-vendors').textContent = new Set(getAllBids().map(r=>r.winner)).size; } catch(e){ console.error('kpi-vendors failed:', e); }
   try { renderBidsTable(); } catch(e){ console.error('renderBidsTable failed:', e); }
   try { updateCounts(); } catch(e){ console.error('updateCounts failed:', e); }
   try { renderArchive(); } catch(e){ console.error('renderArchive failed:', e); }
