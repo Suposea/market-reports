@@ -654,9 +654,9 @@ tbody tr.hidden{display:none}
           <p>伦敦证券交易所集团（LSEG）最新ESG评级中，恒生电子评级升至<b>B-</b>，为连续第四年提升。在环境、社会、治理三个维度均获改善，反映公司在可持续发展治理方面的持续投入获得国际认可。</p>
         </div>
         <div class="info-card industry">
-          <span class="tag">行业观察</span>
-          <h4>信创加速 · 衍生品报送上新 · 保险资管国产清算</h4>
-          <p>最新银行/券商信创改造项目密集落地（工行远程授权信创、银河证券海光服务器、国投证券风控信创等），叠加交易商协会场外衍生品报送新规与恒生保险资管全链路国产清算上线，金融IT信创替代正从外围系统向核心交易与清算系统纵深推进。</p>
+          <span class="tag">本周观察</span>
+          <h4>信创纵深 · 银行核心系统国产化提速</h4>
+          <p>本周信创改造持续向银行核心系统纵深：兴业银行分布式核心对公信创GoldenDB数据库、华夏银行新一代数字人民币系统（鲲鹏/海光服务器）、乐山商行信创一期全栈软硬件完成采购；叠加光大证券托管外包、华润银行理财销售系统信创改造，金融IT国产化正从外围向核心交易与清算系统全域推进；恒生/金仕达/衡泰本周中标密集（详见招投标汇总）。</p>
         </div>
       </div>
     </div>
@@ -979,29 +979,34 @@ function sourceCell(r){
 }
 
 const currentWeekBids = [
-  {bidder:'中国工商银行',winner:'中软国际',project:'远程授权系统服务端信创改造项目（国产化/信创）',amount:'125万元',date:'2026-07-20',source:'证券之星·天眼查中标数据',sourceUrl:'https://stock.stockstar.com/RB2026072400019213.shtml'},
-  {bidder:'江苏银行',winner:'北京中科金财',project:'电子验印系统国产化改造项目（信创）',amount:'金额未披露',date:'2026-07-20',source:'千里马·江苏省招标中心',sourceUrl:'https://wap.qianlima.com/gjxx/342116/index_15_3.html'},
-  {bidder:'国家开发银行',winner:'南天信息',project:'2026年资金交易大厅虚拟化平台软件采购项目',amount:'93.96万元',date:'2026-07-21',source:'搜狐·天眼查中标数据',sourceUrl:'https://www.sohu.com/a/1054252377_121319643'},
-  {bidder:'中国银行陕西省分行',winner:'安硕信息',project:'普惠金融营销过程管理系统项目（中标候选人公示）',amount:'金额未披露',date:'2026-07-21',source:'爱企查·中标候选人公示',sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?dataId=a77f7b0c9a94d6dbd97032a067423e77807fb6c2&pid=32442824568234'},
-  {bidder:'中国银河证券',winner:'先进数通',project:'2026年IT基础设施集采 标包2：海光CPU信创低频服务器采购项目（信创）',amount:'金额未披露',date:'2026-07-20',source:'搜狐证券·先进数通中标',sourceUrl:'https://q.stock.sohu.com/cn/300541/information.shtml?type=200'},
-  {bidder:'华夏银行',winner:'云赢网络',project:'资金业务系统本币业务优化项目(第二次)（成交候选人公示）',amount:'金额未披露',date:'2026-07-24',source:'天眼查·云赢网络招投标',sourceUrl:'https://www.tianyancha.com/company/2341109469/jingzhuang'},
-  {bidder:'徽商银行',winner:'兆尹信息',project:'投行业务管理平台升级采购项目（债务融资子系统架构重构）',amount:'142万元',date:'2026-07-23',source:'徽商银行采购平台',sourceUrl:'https://hxsh.hsbank.com.cn:20300/cggl/cms/cmscjjggs/ef700be559e94a9d842d25bdb63cf3e8.html'},
-  {bidder:'青银理财',winner:'兆尹信息',project:'信息披露与监管报送系统公告功能优化项目（成交公告）',amount:'金额未披露',date:'2026-07-23',source:'青岛市公共资源交易网',sourceUrl:'https://ggzy.qingdao.gov.cn/PortalQDManage/PortalQD/ZtbShowGY/20217?flag=2'},
-  {bidder:'兴业证券',winner:'衡泰技术',project:'衡泰固定收益系统高频智能交易与监管集中度改造(XC)项目（信创，结果公示）',amount:'金额未披露',date:'2026-07-23',source:'兴业证券官网',sourceUrl:'https://www.xyzq.com.cn/xysec/info/article/d10a9d0525bf4a58b5144b16b9d3c32d?cid=14'},
-  {bidder:'成方金融科技(上海分公司)',winner:'衡泰技术',project:'风险管理平台二期优化采购项目',amount:'456万元',date:'2026-07-23',source:'中国金融采购网',sourceUrl:'http://www.cfcpn.com/'},
-  {bidder:'建信养老金管理',winner:'衡泰技术',project:'受托管理与投资监督系统重构优化项目(一期)集中采购（多家入围）',amount:'框架入围',date:'2026-07-21',source:'建行采购电商平台',sourceUrl:'https://ibuy.ccb.com/cms/index.html#/content?pId=353&id=27031'},
-  {bidder:'国泰海通证券',winner:'衡泰技术',project:'2026年上半年xIR系统开发服务采购项目（单一来源）',amount:'金额未披露',date:'2026-07-21',source:'天眼查·衡泰技术招投标',sourceUrl:'https://www.tianyancha.com/company/1335860444/jingzhuang'},
-  {bidder:'招商证券国际',winner:'衡泰技术',project:'灵犀财务数智中台与抵质押品管理平台（中标候选人公示）',amount:'金额未披露',date:'2026-07-20',source:'天眼查·衡泰技术招投标',sourceUrl:'https://www.tianyancha.com/company/1335860444/jingzhuang'},
-  {bidder:'国开证券',winner:'金证股份',project:'核心交易相关系统技术驻场外包服务项目(2026年立项3年期)',amount:'852.48万元',date:'2026-07-23',source:'证券之星·天眼查中标数据',sourceUrl:'https://stock.stockstar.com/RB2026072600001906.shtml'},
-  {bidder:'国投证券',winner:'金仕达',project:'风险数据集市信创升级改造项目（信创，事前公示）',amount:'金额未披露',date:'2026-07-20',source:'爱企查·金仕达招投标',sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?dataId=d77e88feed094ea266d87eef5f1eb651041da9c3&pid=33931198214156'},
-  {bidder:'招标单位待披露',winner:'金仕达',project:'金仕达统一资金平台软件V1.0升级（候选人公示）',amount:'金额未披露',date:'2026-07-21',source:'爱企查·金仕达招投标',sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?dataId=d77e88feed094ea266d87eef5f1eb651041da9c3&pid=33931198214156'},
-  {bidder:'浙江明日控股集团',winner:'金仕达',project:'明日控股期货系统升级项目（中标结果公告）',amount:'金额未披露',date:'2026-07-21',source:'爱企查·金仕达招投标',sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?dataId=d77e88feed094ea266d87eef5f1eb651041da9c3&pid=33931198214156'},
-  {bidder:'国元证券',winner:'顶点软件',project:'融资融券极速交易系统同步证券分组等相关功能优化项目',amount:'91万元',date:'2026-07-20',source:'优质采采购平台',sourceUrl:'https://www.youzhicai.com/nd/eac1e8de-85de-7a25-8f4d-519e4935958a-1.html'},
-  {bidder:'浙江农村商业联合银行',winner:'恒生电子',project:'专项领域通用类软件研发人力外包资源池入围项目（多家入围）',amount:'框架入围',date:'2026-07-24',source:'中国金融采购网',sourceUrl:'http://www.cfcpn.com/'},
+  // === 凯美瑞德（KMRD）持续重点跟踪 · 07-24 补全（之前漏收）===
+  {bidder:'恒丰银行',winner:'凯美瑞德(苏州)信息科技股份有限公司',project:'套期保值管理升级改造项目（单一来源采购公示，Calypso系统唯一授权实施伙伴）',amount:'金额未披露',date:'2026-07-24',source:'恒丰银行官网',sourceUrl:'https://www.hfbank.com.cn/gyhf/cgpt/jzcg/dylygs/316440.shtml'},
+  {bidder:'浙江农村商业联合银行',winner:'凯美瑞德(苏州)信息科技股份有限公司',project:'专项领域通用类软件研发人力外包资源池入围（标的3，折扣率95%入围）',amount:'框架入围',date:'2026-07-24',source:'浙江农商联合银行',sourceUrl:'https://www.f5.zj96596.com/zj96596/2026-07/24/article_2026072414230664713.shtml'},
+  // === 07.27–08.02 最新一周 ===
   {bidder:'上海浦东发展银行',winner:'金仕达',project:'2026-2027年"投资风险管理与绩效评估、黄金期货自营交易管理、证交所债券交易"三个系统维保服务（单一来源）',amount:'178.588425万元',date:'2026-07-27',source:'知了标讯·成交结果公告',sourceUrl:'https://www.zhiliaobiaoxun.cn/detail/508677082b2C525BC21c.html'},
   {bidder:'国泰海通证券',winner:'衡泰技术',project:'2026年上半年FICC数据集市开发采购项目（采购结果公告）',amount:'150万元',date:'2026-07-27',source:'天眼查·衡泰技术招投标',sourceUrl:'https://www.tianyancha.com/company/1335860444/jingzhuang'},
   {bidder:'上海浦东发展银行',winner:'安永(中国)企业咨询有限公司',project:'财务估值系统2026年度开发维护服务项目（成交结果公告）',amount:'65万元',date:'2026-07-27',source:'浦发银行采购平台',sourceUrl:'https://ebuy.spdb.com.cn/#/noticeDetail?noticeId=1144355918337187687500609028096'},
-  {bidder:'瑞丰银行',winner:'上海诺祺科技有限公司',project:'通用开发人力外包服务采购项目（结果公告）',amount:'金额未披露',date:'2026-07-28',source:'爱企查·招投标记录',sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?dataId=6418f5ccc295ea7f9392c16520fea76fb4cfdde8&pid=32152193586616'}
+  {bidder:'瑞丰银行',winner:'上海诺祺科技有限公司',project:'通用开发人力外包服务采购项目（结果公告）',amount:'金额未披露',date:'2026-07-28',source:'爱企查·招投标记录',sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?dataId=6418f5ccc295ea7f9392c16520fea76fb4cfdde8&pid=32152193586616'},
+  {bidder:'兴业银行',winner:'中兴通讯股份有限公司',project:'2026年度分布式核心对公信创GoldenDB数据库采购结果公告',amount:'框架入围',date:'2026-07-28',source:'兴业银行采购平台',sourceUrl:'https://cg.cib.com.cn/cms/default/webfile/ywgg3/20260728/1266717593893339136.html'},
+  {bidder:'宁波通商银行',winner:'宁波胜达高科信息工程有限公司',project:'2026年服务器硬盘采购项目（中标结果公告）',amount:'378.185万元',date:'2026-07-28',source:'宁波通商银行',sourceUrl:'https://www.ncbank.cn/ncbank/2026-07/28/article_2026072817231480968.shtml'},
+  {bidder:'国投证券',winner:'金仕达',project:'风险数据集市信创升级改造项目（候选人公示）',amount:'120万元',date:'2026-07-28',source:'国投证券采购平台',sourceUrl:'https://www.sdicc.com.cn/cgxx/zbhxrDetail?bdGuid=37db53f6-a27e-4ded-93ac-ef274ff37212&guid=ded2b996-89f2-4885-8c30-21a1d9a1e1f0-'},
+  {bidder:'中国民生银行',winner:'金仕达',project:'贵金属现货延期交易模块技术开发采购项目（单一来源采购前公告）',amount:'金额未披露',date:'2026-07-29',source:'中国民生银行采购平台',sourceUrl:''},
+  {bidder:'国元证券',winner:'衡泰技术',project:'信用风险管理系统信创改造项目(应用软件部分)（中标候选人公示）',amount:'金额未披露',date:'2026-07-29',source:'安徽省招投标协会',sourceUrl:'https://www.ahtba.org.cn/site/trade/affiche/detail/863a1369-8b26-11f1-b7f6-00163e1f3e9b'},
+  {bidder:'国投证券',winner:'衡泰技术',project:'衡泰投资交易管理系统PB上行升级改造项目（结果公告）',amount:'28万元',date:'2026-07-30',source:'国投证券采购平台',sourceUrl:'https://www.sdicc.com.cn/cgxx/zbjgDetail?bdGuid=c1745fb3-1833-45ab-b73c-60cdc0dc6fec&guid=cf91be7d-f0ae-4e60-a02c-ef65a7bc234a'},
+  {bidder:'国投证券',winner:'衡泰技术',project:'衡泰投资交易管理系统优化建设项目(2026年第二期)（结果公告）',amount:'117万元',date:'2026-07-30',source:'国投证券采购平台',sourceUrl:'https://www.sdicc.com.cn/cgxx/zbjgDetail?bdGuid=75ed33b1-572c-4b14-9727-df9facd3a0a8&guid=031e0a34-30dc-4bac-887b-4413a52d3551'},
+  {bidder:'德邦证券',winner:'衡泰技术',project:'市场风险信创项目（中标结果）',amount:'金额未披露',date:'2026-07-30',source:'德邦证券采购平台',sourceUrl:'https://onelinkplus.com/#/trade-info-detail?id=1532493014814044161&noticeType=4&publishStatus=1&cid=14'},
+  {bidder:'光大证券',winner:'金仕达',project:'异常交易监控_集中交易柜台切换_信创_2026_优化项目（采购结果公告）',amount:'20.8万元',date:'2026-07-30',source:'光大证券采购平台',sourceUrl:'https://purms.ebscn.com/web/gdweb/index/procurementShow.do?articleId=8aa6bbf020f04608bfb7316c67373f8b&cid=14'},
+  {bidder:'华能贵诚信托',winner:'恒生电子',project:'2026年恒生估值系统上交所新竞价新综业改造项目（采购结果公告）',amount:'34万元',date:'2026-07-30',source:'华能贵诚信托采购平台',sourceUrl:'https://ec.chng.com.cn/channel/home/?SlJfApAfmEBp=1785401554893#/detail?id=12916945'},
+  {bidder:'华能贵诚信托',winner:'恒生电子',project:'恒生系统维护费及驻场运维服务项目（采购结果公告）',amount:'285万元',date:'2026-07-30',source:'华能贵诚信托采购平台',sourceUrl:'https://ec.chng.com.cn/channel/home/?SlJfApAfmEBp=1785401552735#/detail?id=12916946'},
+  {bidder:'光大证券',winner:'恒生电子',project:'托管外包_监管新规_二季度_信创_2026_优化(紧急部署部分)项目（采购结果公告）',amount:'48.8万元',date:'2026-07-30',source:'光大证券采购平台',sourceUrl:'https://purms.ebscn.com/web/gdweb/index/procurementShow.do?articleId=4f4fce63513542008669f5b1c59aa34a&cid=14'},
+  {bidder:'广东华润银行股份有限公司',winner:'恒生电子',project:'理财销售系统信创改造项目及理财代销和日间清算功能改造（采购结果公示）',amount:'184万元',date:'2026-07-30',source:'同壁财经·华润银行采购结果',sourceUrl:'https://tongbicapital.com/article/detail?id=1255629'},
+  {bidder:'光大证券',winner:'恒生电子',project:'托管外包_监管新规_二季度_信创_2026_优化项目(第二次)（成交公告）',amount:'220万元',date:'2026-07-31',source:'金采网·光大证券',sourceUrl:'http://www.cfcpn.com/jcw/sys/index/goUrl?url=modules/sys/login/detail&column=undefined&searchVal=e96578f9fa8c4ebf91179b393099830'},
+  {bidder:'华安证券',winner:'恒生电子',project:'集中交易相关系统升级(新增货币组合宝等功能)改造项目（中标结果公告）',amount:'375万元',date:'2026-07-31',source:'华安证券',sourceUrl:'https://www.hazq.com/main/a/20260731/19129.shtml'},
+  {bidder:'华安证券',winner:'恒生电子',project:'机构经纪投资管理系统信创改造项目（中标候选人公示）',amount:'金额未披露',date:'2026-07-31',source:'安徽省招投标协会',sourceUrl:'https://www.ahtba.org.cn/htmlUrl/trade_/2026-07-31/d339fbe5-8c7e-11f1-b7f6-00163e1f3e9b.html'},
+  {bidder:'华夏银行',winner:'多家（紫光软件/可利邦/南天信息/东华软件等）',project:'新一代数字人民币系统建设项目（鲲鹏PC服务器/海光PC服务器/存储/扩容/网络/加密机，中标候选人公示）',amount:'金额未披露',date:'2026-07-30',source:'移动支付网',sourceUrl:'https://www.mpaypass.com.cn/news/202607/31090528.html'},
+  {bidder:'乐山市商业银行',winner:'多家（南天信息/贝优特/网鼎/华讯/神州新桥/融科智联等）',project:'信创一期基础软硬件采购项目（集中式数据库/服务器/存储/中间件/网络等，中标结果公告）',amount:'金额未披露',date:'2026-07-30',source:'爱企查·乐山商行招投标',sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?dataId=fb2bda521df983ccef497233209b10fbadab424a&pid=83298316175863'},
+  {bidder:'中国银行股份有限公司',winner:'北京知其安科技有限公司',project:'基于AI智能体的智能化自动化安全运营项目（结果公告）',amount:'16.96万元',date:'2026-07-31',source:'中国银行采购平台/金采网',sourceUrl:'http://www.cfcpn.com/jcw/sys/index/goUrl?url=modules/sys/login/detail&column=undefined&searchVal=e6015d20592b4cffa85e983b18dfa5e'},
+  {bidder:'中国邮政储蓄银行股份有限公司',winner:'多家（广电运通/烽火信息/吧哒科技等）',project:'湖北省数智人社"一卡通"一体化平台建设项目（数据库服务器/云管存储/数据库及OS等，中标候选人公示）',amount:'金额未披露',date:'2026-07-27',source:'中国邮政储蓄银行',sourceUrl:'https://www.chinapost.com.cn/cn/report/2607/7960-1.htm'}
 ];
 
 const archiveData = [
@@ -1140,6 +1145,7 @@ const liangruiBids = [
 const RADAR_TYPES = { plan:'招采计划', news:'舆情动态' };
 const radarItems = [
   // ===== 招采计划（含下一步行动具体链接，时间精准） =====
+  { type:'plan', bank:'恒丰银行', date:'2026-07-24', title:'套期保值管理升级改造 — 凯美瑞德单一来源公示，待发成交结果', content:'恒丰银行套期保值管理升级改造项目采用单一来源采购，供应商为凯美瑞德(苏州)信息科技股份有限公司（Calypso系统NASDAQ官方唯一授权中国大陆及港澳实施伙伴），公示期 2026-07-27 至 2026-07-31。下一步：公示期满后关注恒丰银行官网成交结果公告，进入衍生品及套期保值模块实施期。', source:'恒丰银行官网·单一来源公示', sourceUrl:'https://www.hfbank.com.cn/gyhf/cgpt/jzcg/dylygs/316440.shtml' },
   { type:'plan', bank:'中国进出口银行', date:'2026-07-17', title:'新外币资金交易系统 — 中标候选人已公示，待发中标结果', content:'凯美瑞德(苏州)信息科技股份有限公司为中标候选人，预算 2215 万元、编号 2640STC71395。下一步：关注中标结果公告发布并进入合同签订与 24 个月实施期（覆盖汇率/利率/衍生品/债券，含信创适配）。', source:'爱企查·中标候选人公示', sourceUrl:'https://aiqicha.baidu.com/tenderbidding/detail?pid=35348917265179&dataId=6bc27cdd9aefa76f0c325aafe407ff68b9c7700e' },
   { type:'plan', bank:'中国进出口银行', date:'2026-05', title:'人民币资金交易系统建设项目 — 供应商征集已完成', content:'口行曾发布人民币资金交易系统供应商征集（市场调研至 2026-05-03），明确要求"满足信创要求"，后续将另行发布正式采购流程。下一步：紧盯口行官网与金采网的正式招标公告。', source:'金采网·供应商征集公告', sourceUrl:'https://www.jinrongzhaobiao.com/news-7b38d171cee73010e31b2e230a053fba' },
   { type:'plan', bank:'中原银行', date:'2026-07-09', title:'新一代资金交易管理系统（资金业务前台交易系统）— 公开招标', content:'中原银行发布新一代资金交易管理系统（资金业务前台交易系统）公开招标，公告发布日 2026-07-09，招标文件获取 2026-07-10 9:00 至 2026-07-16 17:30，投标截止/开标 2026-07-31 09:30。覆盖本币/外汇/贵金属/衍生品全业务品种交易，服务期 18 个月（6 个月建设 + 12 个月免费维保）。下一步：紧盯 2026-07-31 开标、8 月公示中标方（恒生/金仕达/衡泰/凯美瑞德等资金交易厂商重点跟进）。', source:'中招联合招标采购平台·公开招标公告', sourceUrl:'https://www.365trade.com.cn/zfwzb/843093.jhtml' },
@@ -1169,7 +1175,7 @@ const radarItems = [
 
 // ===== Week options for filter (default = most recent week) =====
 const weekOptions = [
-  { id:'current', label:'最新 07.20–07.30', range:'2026年7月20日 — 7月30日（含近期新增）', bids: currentWeekBids },
+  { id:'current', label:'最新 07.24–08.02', range:'2026年7月24日 — 8月2日（含凯美瑞德重点跟踪补全）', bids: currentWeekBids },
   { id:'kmrd',    label:'凯美瑞德专题 2026', range:'凯美瑞德 2026年中标专题（2月–6月，补充收集）', bids: kmrdBids },
   { id:'w0713',   label:'07.13–07.19',      range:'2026年7月13日 — 7月19日', bids: archiveData[1] },
   { id:'w0706',   label:'07.06–07.12',      range:'2026年7月6日 — 7月12日',  bids: archiveData[2] },
