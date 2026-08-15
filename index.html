@@ -18,11 +18,11 @@
   --border-2: #dad6cd;
   --border-3: #c9c4ba;
 
-  /* 墨色文字层级 */
+  /* 墨色文字层级（次级文字已提对比度至 WCAG AA） */
   --ink-900: #1d1e20;
   --ink-700: #44464a;
-  --ink-500: #71737a;
-  --ink-400: #9a9c9f;
+  --ink-500: #54565b;
+  --ink-400: #66686d;
 
   /* 单一强调色：低饱和石板蓝（全站仅此一抹彩） */
   --accent: #5b6b7a;
@@ -33,6 +33,19 @@
   /* 第二低饱和色：陶土（仅用于"行业"分类点缀，克制使用） */
   --clay: #9a8159;
   --clay-soft: #f1ece3;
+
+  /* 语义状态色（金融惯例：涨/大单=红，回落=绿；含未披露/即将发生/已办结） */
+  --up: #b4452f;
+  --up-soft: #f6ebe7;
+  --down: #1f8a4c;
+  --down-soft: #e7f3ec;
+  --und: #8a8d92;
+  --und-soft: #efeeec;
+  --soon: #b0842f;
+  --soon-soft: #f4ecdd;
+  --done: #5b6b7a;
+  /* 卡片浮雕层级（替代纯描边，营造"浮起"质感） */
+  --elev-1: 0 1px 2px rgba(29,30,32,0.04), 0 10px 26px -16px rgba(29,30,32,0.20);
 
   /* 阴影：极弱，以细线为主 */
   --shadow-xs: 0 1px 2px rgba(29,30,32,0.03);
@@ -61,14 +74,20 @@
   --border-3: #42484c;
   --ink-900: #ecebe8;
   --ink-700: #b6b8ba;
-  --ink-500: #888b8e;
-  --ink-400: #5f6164;
+  --ink-500: #b3b6ba;
+  --ink-400: #9a9da1;
   --accent: #8a9bab;
   --accent-strong: #aebccb;
   --accent-soft: #232c34;
   --accent-line: #33414d;
   --clay: #b6a079;
   --clay-soft: #2a2720;
+  --up: #e07a5f;       --up-soft: rgba(224,122,95,0.16);
+  --down: #5cc88a;     --down-soft: rgba(92,200,138,0.16);
+  --und: #9a9da1;      --und-soft: rgba(154,157,161,0.14);
+  --soon: #e0b15f;     --soon-soft: rgba(224,177,95,0.16);
+  --done: #8a9bab;
+  --elev-1: 0 1px 2px rgba(0,0,0,0.3), 0 12px 30px -16px rgba(0,0,0,0.6);
   --shadow-xs: 0 1px 2px rgba(0,0,0,0.2);
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.25);
   --shadow-md: 0 6px 16px -8px rgba(0,0,0,0.4);
@@ -415,11 +434,69 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
 .radar-card.is-future{border-color:color-mix(in srgb,var(--accent) 45%,var(--border))}
 .radar-card.is-future .radar-date{color:var(--ink-700);font-weight:600}
 
+/* ===== P1 焕新：语义状态色 + 卡片浮雕 + 微交互 ===== */
+.kpi-card,.chart-card,.info-card,.vc-card,.radar-card,.archive-card{
+  box-shadow:var(--elev-1);
+}
+.kpi-card .kpi-value{font-size:2.35rem;letter-spacing:-.02em}
+.kpi-value .unit{font-size:0.9rem;color:var(--ink-400);margin-left:3px;font-weight:500}
+
+/* 大额项目：金额高亮为"涨红"，并加比例条 */
+.amount-cell.big{color:var(--up);font-weight:700}
+.bd-amount{color:var(--up)}
+.bd-bar{height:4px;border-radius:var(--radius-full);background:var(--surface-3);overflow:hidden;margin-top:8px}
+.bd-bar span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--up),color-mix(in srgb,var(--up) 55%,var(--clay)));transition:width .8s cubic-bezier(.2,.8,.2,1)}
+
+/* 战况榜厂商行可点击钻取 */
+.wb-row{cursor:pointer;transition:background .2s ease,transform .2s ease}
+.wb-row:hover{background:var(--surface-2);transform:translateX(2px)}
+
+/* 状态标签语义化 */
+.mini-tag.xc{background:var(--clay-soft);color:var(--clay);border-color:transparent}
+.mini-tag.und{background:var(--und-soft);color:var(--und);border-color:transparent}
+.radar-eta{background:var(--soon-soft);color:var(--soon)}
+
+/* 折叠动画：用 max-height+opacity 平滑展开，避免硬切换 */
+.bd-item.bd-extra{opacity:0;transform:translateY(-4px);max-height:0;overflow:hidden;transition:opacity .35s ease,transform .35s ease,max-height .35s ease}
+.bd-expanded .bd-extra{opacity:1;transform:none;max-height:140px}
+
+/* 数字入场 count-up 预备态 */
+.counting{font-variant-numeric:tabular-nums}
+
+/* 本周数据看点（自动派生，零编造） */
+.tldr-insights{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px;padding-top:18px;border-top:1px dashed var(--border-2)}
+.tldr-insight{display:flex;gap:10px;align-items:flex-start}
+.ti-ico{flex-shrink:0;width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:0.72rem;background:var(--accent-soft);color:var(--accent-strong);margin-top:2px}
+.ti-label{display:block;font-size:0.72rem;color:var(--ink-400);font-weight:600;letter-spacing:.04em;margin-bottom:3px}
+.ti-body{font-size:0.84rem;color:var(--ink-700);line-height:1.5}
+@media(max-width:640px){.tldr-insights{grid-template-columns:1fr}}
+
+/* 招采雷达：倒计时语义色（未来节点已在 .is-future 高亮） */
+.radar-group{position:relative}
+
 @media(max-width:640px){
   .tldr-stats .tldr-stat{flex-basis:calc(50% - 8px)}
   .wb-row{grid-template-columns:108px 1fr 84px;gap:8px}
   .wb-title{font-size:0.95rem}
   #bidsTable{min-width:640px}
+}
+
+/* 可访问性：尊重减弱动效偏好 */
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms!important;transition-duration:.001ms!important}
+}
+
+/* 打印 / 导出 PDF：零依赖，仅显示内容主体 */
+@media print{
+  body{background:#fff}
+  .topbar,.tabs,.icon-btn,.chip,.bd-fold,.radar-history,.search-box{display:none!important}
+  .tab-panel{display:block!important;animation:none!important;margin-bottom:18px}
+  .reveal{opacity:1!important;transform:none!important}
+  .archive-body{display:block!important}
+  .container{max-width:none;padding:0}
+  .kpi-card,.chart-card,.info-card,.vc-card,.radar-card,.archive-card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
+  #bidsTable{font-size:11px;min-width:0!important}
+  .bd-item.bd-extra{max-height:none!important;opacity:1!important;transform:none!important}
 }
 </style>
 </head>
@@ -447,6 +524,9 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
       </div>
       <button class="icon-btn" onclick="exportCSV()" title="导出CSV">
         <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="icon-btn" onclick="window.print()" title="导出 / 打印 PDF">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2M6 14h12v7H6v-7z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button class="icon-btn" onclick="toggleTheme()" title="切换主题" aria-label="切换明暗主题" id="themeBtn">
         <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" id="themeIcon"><circle cx="12" cy="12" r="4" stroke-width="2"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke-width="2" stroke-linecap="round"/></svg>
@@ -743,140 +823,8 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
       </div>
       <div class="panel-sub" style="margin-bottom:24px">点击展开查看各期周报详细招投标信息</div>
 
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="archive-card">
-            <div class="archive-head" onclick="toggleArchive(this)">
-              <div>
-                <h3>2026.07.20 — 07.26 周报</h3>
-                <div class="meta">19个项目 · 衡泰×5 · 金仕达×3 · 兆尹×2 · 恒生×1 · 云赢×1 · 银行/信创多点</div>
-              </div>
-              <span class="toggle">+</span>
-            </div>
-            <div class="archive-body"><div class="archive-content">
-              <div class="table-wrapper" style="margin-top:16px">
-                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-0"></tbody></table>
-              </div>
-            </div></div>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="archive-card">
-            <div class="archive-head" onclick="toggleArchive(this)">
-              <div>
-                <h3>2026.07.13 — 07.19 周报</h3>
-                <div class="meta">14个项目 · 恒生×8 · 金仕达×1 · 衡泰×3 · 时代银通×2</div>
-              </div>
-              <span class="toggle">+</span>
-            </div>
-            <div class="archive-body"><div class="archive-content">
-              <div class="table-wrapper" style="margin-top:16px">
-                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-1"></tbody></table>
-              </div>
-            </div></div>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="archive-card">
-            <div class="archive-head" onclick="toggleArchive(this)">
-              <div>
-                <h3>2026.07.06 — 07.12 周报</h3>
-                <div class="meta">21个项目 · 恒生×4 · 金仕达×7 · 衡泰×6 · 云赢×1 · 兆尹×1 · 其他×2</div>
-              </div>
-              <span class="toggle">+</span>
-            </div>
-            <div class="archive-body"><div class="archive-content">
-              <div class="table-wrapper" style="margin-top:16px">
-                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-2"></tbody></table>
-              </div>
-            </div></div>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="archive-card">
-            <div class="archive-head" onclick="toggleArchive(this)">
-              <div>
-                <h3>2026.06.30 — 07.06 周报</h3>
-                <div class="meta">7个项目 · 恒生×4 · 金仕达×1 · 其他×2</div>
-              </div>
-              <span class="toggle">+</span>
-            </div>
-            <div class="archive-body"><div class="archive-content">
-              <div class="table-wrapper" style="margin-top:16px">
-                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-3"></tbody></table>
-              </div>
-            </div></div>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="archive-card">
-            <div class="archive-head" onclick="toggleArchive(this)">
-              <div>
-                <h3>2026.06.22 — 06.28 周报</h3>
-                <div class="meta">13个项目 · 恒生×2 · 金仕达×6 · 衡泰×2 · 云赢×1 · 兆尹×1 · 时代银通×1 · 子午线×1</div>
-              </div>
-              <span class="toggle">+</span>
-            </div>
-            <div class="archive-body"><div class="archive-content">
-              <div class="table-wrapper" style="margin-top:16px">
-                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-4"></tbody></table>
-              </div>
-            </div></div>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="archive-card">
-            <div class="archive-head" onclick="toggleArchive(this)">
-              <div>
-                <h3>2026.04.20 — 04.24 周报</h3>
-                <div class="meta">8个项目 · 恒生×3 · 衡泰×2 · 云赢×1 · 兆尹×1 · 其他×1</div>
-              </div>
-              <span class="toggle">+</span>
-            </div>
-            <div class="archive-body"><div class="archive-content">
-              <div class="table-wrapper" style="margin-top:16px">
-                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-5"></tbody></table>
-              </div>
-            </div></div>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="archive-card">
-            <div class="archive-head" onclick="toggleArchive(this)">
-              <div>
-                <h3>2026.03.23 — 03.27 周报</h3>
-                <div class="meta">7个项目 · 恒生×2 · 金仕达×1 · 兆尹×1 · 其他×3</div>
-              </div>
-              <span class="toggle">+</span>
-            </div>
-            <div class="archive-body"><div class="archive-content">
-              <div class="table-wrapper" style="margin-top:16px">
-                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-6"></tbody></table>
-              </div>
-            </div></div>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="archive-card">
-            <div class="archive-head" onclick="toggleArchive(this)">
-              <div>
-                <h3>2026.01.26 — 01.30 周报</h3>
-                <div class="meta">7个项目 · 恒生×1 · 衡泰×2 · 兆尹×1 · 时代银通×1 · 其他×2</div>
-              </div>
-              <span class="toggle">+</span>
-            </div>
-            <div class="archive-body"><div class="archive-content">
-              <div class="table-wrapper" style="margin-top:16px">
-                <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead><tbody id="arch-7"></tbody></table>
-              </div>
-            </div></div>
-          </div>
-        </div>
+      <div class="timeline" id="archiveTimeline">
+        <!-- 归档时间轴由 renderArchive() 依据 weekOptions 单一数据源动态生成，避免硬编码 arch-N 与数据桶错位 -->
       </div>
     </div>
   </div>
@@ -1416,10 +1364,19 @@ function getVendorColor(v){
 function isOtherVendor(v){
   return OTHER_VENDORS.includes(v);
 }
+// 金额解析：统一换算为「万元」数值（支持 "X亿元"→X*10000、"X万元"→X、"X元"→X/10000）
+// 数据准确性铁律：无数字（如"金额未披露"/"框架入围"）一律返回 0，绝不臆造数值
 function parseAmount(s){
   if(!s) return 0;
-  const m = s.match(/([\d.]+)/);
-  return m ? parseFloat(m[1]) : 0;
+  const m = s.match(/([\d.,]+)\s*([亿万千])?\s*元?/);
+  if(!m) return 0;
+  let v = parseFloat(m[1].replace(/,/g,''));
+  if(isNaN(v)) return 0;
+  const unit = m[2];
+  if(unit === '亿') v = v * 10000;        // 转为万元
+  else if(unit === '万') v = v;           // 已是万元
+  else if(unit === '千') v = v / 10;      // 千元→万元
+  return v;
 }
 function classifyType(s){
   if(/维保|运维|维护服务|维保服务/.test(s)) return '维保服务';
@@ -1469,6 +1426,7 @@ function renderBigDeals(){
     .map(r=>({ ...r, _amt: parseAmount(r.amount) }))
     .filter(r=> r._amt >= BIG_DEAL_MIN)
     .sort((a,b)=> b._amt - a._amt);
+  const maxAmt = deals.length ? deals[0]._amt : 0;
 
   if(cnt) cnt.textContent = deals.length ? `共 ${deals.length} 个` : '';
   el.classList.remove('bd-expanded');
@@ -1483,6 +1441,7 @@ function renderBigDeals(){
     <div class="bd-item${i >= BIG_DEAL_FOLD ? ' bd-extra' : ''}">
       ${i < 3 ? `<span class="bd-rank">TOP ${i+1}</span>` : ''}
       <div class="bd-amount">${r._amt.toLocaleString()}<span class="unit">万元</span></div>
+      <div class="bd-bar"><span style="width:${maxAmt?Math.round(r._amt/maxAmt*100):0}%"></span></div>
       <div class="bd-body">
         <div class="bd-project">${escapeHtml(r.project)}</div>
         <div class="bd-meta">
@@ -1521,15 +1480,22 @@ function renderTLDR(){
   const n = wk.length;
   const vendors = new Set(wk.map(r=>r.winner));
   const banks = new Set(wk.map(r=>r.bidder));
-  const xc = wk.filter(r=>/信创|国产|自主可控|鲲鹏|海光|XC/i.test(r.project)).length;
+  const xc = wk.filter(r=>isXC(r.project)).length;
   const amts = wk.map(r=>({r,a:parseAmount(r.amount)})).filter(x=>x.a>0);
   const max = amts.length ? amts.reduce((m,x)=>x.a>m.a?x:m) : null;
   const cnt = {};
   wk.forEach(r=>cnt[r.winner]=(cnt[r.winner]||0)+1);
-  const top = Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([k,v])=>`<b>${k}</b>（${v}条）`).join('、');
+  const entries = Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
+  const top = entries.slice(0,2).map(([k,v])=>`<b>${k}</b>（${v}条）`).join('、');
+  const mostActive = entries[0];
   const dates = wk.map(r=>r.date).filter(Boolean).sort();
   const range = (dates[0] && dates[dates.length-1]) ? `${dates[0]} – ${dates[dates.length-1]}` : '';
   const maxTxt = max ? `单笔最高：<b>${max.r.winner}</b>「${escapeHtml(max.r.project)}」<b>${max.a.toLocaleString()}万元</b>。` : '';
+  const insights = [
+    { ico:'▲', label:'本周最大单', txt: max ? `${max.r.winner} 凭「${escapeHtml(max.r.project)}」斩获 <b>${max.a.toLocaleString()}万元</b>` : '—' },
+    { ico:'◆', label:'最活跃厂商', txt: mostActive ? `<b>${mostActive[0]}</b> 本周中标 ${mostActive[1]} 条` : '—' },
+    { ico:'●', label:'信创浓度', txt: `<b>${xc}/${n}</b> 条（${n?Math.round(xc/n*100):0}%）为国产化 / 信创项目` }
+  ];
   el.innerHTML = `
     <div class="tldr-head"><span class="tldr-badge">最新要点</span><span class="tldr-title">${range} 战况速览</span></div>
     <div class="tldr-body">最新共收录 <b>${n}</b> 条银行/金融机构中标，覆盖 <b>${banks.size}</b> 家银行、<b>${vendors.size}</b> 家厂商；其中国产化/信创类 <b>${xc}</b> 条。中标数量领先：${top}。${maxTxt}</div>
@@ -1538,6 +1504,9 @@ function renderTLDR(){
       <div class="tldr-stat"><div class="v">${banks.size}</div><div class="k">覆盖银行</div></div>
       <div class="tldr-stat"><div class="v">${vendors.size}</div><div class="k">涉及厂商</div></div>
       <div class="tldr-stat"><div class="v">${xc}</div><div class="k">信创类</div></div>
+    </div>
+    <div class="tldr-insights">
+      ${insights.map(i=>`<div class="tldr-insight"><span class="ti-ico">${i.ico}</span><div class="ti-body"><span class="ti-label">${i.label}</span>${i.txt}</div></div>`).join('')}
     </div>`;
 }
 
@@ -1560,12 +1529,22 @@ function renderWarBoard(){
     const color = getVendorColor(r.name);
     const pct = Math.round(r.count / maxCount * 100);
     const amtTxt = r.amt>0 ? ` · ${Math.round(r.amt).toLocaleString()}万` : '';
-    return `<div class="wb-row" style="--vc:${color}">
+    return `<div class="wb-row" style="--vc:${color}" onclick="focusVendor('${escapeHtml(r.name)}')" title="点击筛选 ${escapeHtml(r.name)} 全部中标">
       <div class="wb-name"><span class="wb-dot"></span><span>${escapeHtml(r.name)}</span></div>
       <div class="wb-track"><div class="wb-fill" style="width:${pct}%"></div></div>
       <div class="wb-meta"><b>${r.count}</b>条<span class="amt">${amtTxt}</span> · ${r.banks.size}行</div>
     </div>`;
   }).join('');
+}
+
+// 厂商钻取：点击战况榜任一厂商 → 筛选其全部中标并跳到招投标汇总
+function focusVendor(v){
+  currentFilter = v;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active', c.dataset && c.dataset.vendor === v));
+  renderBidsTable();
+  updateCounts();
+  const tab = document.querySelector('.tab[data-tab="bids"]');
+  if(tab) tab.click();
 }
 
 // ===== Render Radar (近期动态：聚焦未来 + 近 3 个月) =====
@@ -1788,18 +1767,44 @@ function updateCounts(){
   });
 }
 
-// ===== Render Archive Tables =====
+// ===== Render Archive Tables（由 weekOptions 单一数据源动态生成，消除 arch-N 与数据桶错位）=====
 function renderArchive(){
-  archiveData.forEach((bids, i)=>{
-    const tbody = document.getElementById('arch-'+i);
+  const tl = document.getElementById('archiveTimeline');
+  if(!tl) return;
+  const items = weekOptions.filter(w=>w.id!=='current' && w.id!=='all' && w.bids && w.bids.length);
+  tl.innerHTML = items.map(w=>{
+    const bids = w.bids;
+    const cnt = {};
+    bids.forEach(r=>{ const k = isOtherVendor(r.winner)?'其他':r.winner; cnt[k]=(cnt[k]||0)+1; });
+    const top = Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([k,v])=>`${k}×${v}`).join(' · ') || '—';
+    return `<div class="timeline-item"><div class="archive-card">
+      <div class="archive-head" onclick="toggleArchive(this)">
+        <div><h3>${escapeHtml(w.label)} 周报</h3><div class="meta">${bids.length}个项目 · ${top}</div></div>
+        <span class="toggle">+</span>
+      </div>
+      <div class="archive-body"><div class="archive-content">
+        <div class="table-wrapper" style="margin-top:16px">
+          <table><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th></tr></thead>
+          <tbody id="arch-${w.id}"></tbody></table>
+        </div>
+      </div></div>
+    </div></div>`;
+  }).join('');
+
+  items.forEach(w=>{
+    const tbody = document.getElementById('arch-'+w.id);
     if(!tbody) return;
-    tbody.innerHTML = bids.map(r=>{
+    tbody.innerHTML = w.bids.map(r=>{
       const color = getVendorColor(r.winner);
-      const amtClass = (r.amount && /[\d]/.test(r.amount)) ? '' : 'empty';
+      const hasAmt = !!(r.amount && /\d/.test(r.amount));
+      const amtClass = (hasAmt ? '' : 'empty') + (parseAmount(r.amount) >= BIG_DEAL_MIN ? ' big' : '');
+      const tags = [];
+      if(isXC(r.project)) tags.push('<span class="mini-tag xc">信创</span>');
+      if(!hasAmt && r.amount) tags.push(`<span class="mini-tag und">${escapeHtml(r.amount)}</span>`);
       return `<tr>
-        <td>${r.bidder}</td>
+        <td>${escapeHtml(r.bidder)}</td>
         <td><a class="vendor-link" href="javascript:void(0)" onclick="gotoVendor('${escapeHtml(r.winner)}')"><span class="vendor-tag" style="border-color:${color}40">${r.winner}</span></a></td>
-        <td>${r.project}</td>
+        <td>${escapeHtml(r.project)} ${tags.join('')}</td>
         <td class="amount-cell ${amtClass}">${r.amount || '—'}</td>
       </tr>`;
     }).join('');
@@ -1838,7 +1843,9 @@ function getChartColors(){
     grid: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(29,30,32,0.06)',
     surface: isDark ? '#1e2123' : '#ffffff',
     accent: isDark ? '#8a9bab' : '#5b6b7a',
-    accentSoft: isDark ? 'rgba(138,155,171,0.14)' : 'rgba(91,107,122,0.10)'
+    accentSoft: isDark ? 'rgba(138,155,171,0.14)' : 'rgba(91,107,122,0.10)',
+    clay: isDark ? '#b6a079' : '#9a8159',
+    claySoft: isDark ? 'rgba(182,160,121,0.16)' : 'rgba(154,129,89,0.12)'
   };
 }
 
@@ -1867,32 +1874,29 @@ function initCharts(){
     }
   });
 
-  // Trend line chart — amounts per week (computed from data)
-  const weekDefs = [
-    {label:'01.26', bids:archiveData[7]},
-    {label:'03.23', bids:archiveData[6]},
-    {label:'04.20', bids:archiveData[5]},
-    {label:'06.22', bids:archiveData[4]},
-    {label:'06.30', bids:archiveData[3]},
-    {label:'07.06', bids:archiveData[2]},
-    {label:'07.13', bids:archiveData[1]},
-    {label:'07.20', bids:archiveData[0]}
-  ];
-  const weekLabels = weekDefs.map(w=>w.label);
-  const weekAmounts = weekDefs.map(w=>w.bids.reduce((s,r)=>s+parseAmount(r.amount),0));
+  // Trend chart — 由 weekOptions 同源派生、按真实日期升序；信创/其他 堆叠面积，呈现金额结构变化
+  const weekStart = (range)=>{
+    const m = range && range.match(/(\d{4})年(\d{1,2})月(\d{1,2})/);
+    return m ? `${m[1]}-${String(m[2]).padStart(2,'0')}-${String(m[3]).padStart(2,'0')}` : '0000-00-00';
+  };
+  const trendWeeks = weekOptions
+    .filter(w=>w.id!=='current' && w.id!=='all' && w.id!=='w-supp' && w.bids && w.bids.length)
+    .sort((a,b)=> weekStart(a.range).localeCompare(weekStart(b.range)));
+  const weekLabels = trendWeeks.map(w=>w.label);
+  const weekXc = trendWeeks.map(w=>w.bids.reduce((s,r)=>s+(isXC(r.project)?parseAmount(r.amount):0),0));
+  const weekNonXc = trendWeeks.map(w=>w.bids.reduce((s,r)=>s+(isXC(r.project)?0:parseAmount(r.amount)),0));
   chartTrend = new Chart(document.getElementById('chartTrend'),{
     type:'line',
-    data:{labels:weekLabels,datasets:[{
-      data:weekAmounts,borderColor:cc.accent,backgroundColor:cc.accentSoft,
-      fill:true,tension:0.35,pointBackgroundColor:cc.accent,pointBorderColor:cc.surface,
-      pointBorderWidth:2,pointRadius:5,pointHoverRadius:7,borderWidth:2.5
-    }]},
+    data:{labels:weekLabels,datasets:[
+      {label:'信创类',data:weekXc,borderColor:cc.clay,backgroundColor:cc.claySoft,fill:true,stack:'amt',tension:0.35,pointBackgroundColor:cc.clay,pointBorderColor:cc.surface,pointBorderWidth:2,pointRadius:4,pointHoverRadius:6,borderWidth:2},
+      {label:'其他',data:weekNonXc,borderColor:cc.accent,backgroundColor:cc.accentSoft,fill:true,stack:'amt',tension:0.35,pointBackgroundColor:cc.accent,pointBorderColor:cc.surface,pointBorderWidth:2,pointRadius:4,pointHoverRadius:6,borderWidth:2}
+    ]},
     options:{
       responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{backgroundColor:cc.surface,titleColor:cc.text,bodyColor:cc.text,borderColor:cc.grid,borderWidth:1,callbacks:{label:c=>'  '+c.parsed.y+' 万元'}}},
+      plugins:{legend:{display:true,position:'top',align:'end',labels:{color:cc.text,font:{size:11},usePointStyle:true,pointStyle:'circle',boxWidth:8}},tooltip:{backgroundColor:cc.surface,titleColor:cc.text,bodyColor:cc.text,borderColor:cc.grid,borderWidth:1,callbacks:{label:c=>'  '+c.dataset.label+'：'+c.parsed.y+' 万元'}}},
       scales:{
         x:{ticks:{color:cc.text,font:{size:11}},grid:{display:false}},
-        y:{ticks:{color:cc.text,font:{size:11}},grid:{color:cc.grid},beginAtZero:true}
+        y:{stacked:true,ticks:{color:cc.text,font:{size:11}},grid:{color:cc.grid},beginAtZero:true}
       }
     }
   });
@@ -1915,10 +1919,39 @@ function initCharts(){
   });
 }
 
+// 主题切换时原地刷新图表配色（避免销毁重建导致的闪烁）
 function updateCharts(){
   if(!chartVendor) return;
-  chartVendor.destroy(); chartTrend.destroy(); chartType.destroy();
-  initCharts();
+  const cc = getChartColors();
+  [chartVendor, chartTrend, chartType].forEach((ch, ci)=>{
+    if(!ch) return;
+    if(ch.options.plugins.tooltip){
+      ch.options.plugins.tooltip.backgroundColor = cc.surface;
+      ch.options.plugins.tooltip.titleColor = cc.text;
+      ch.options.plugins.tooltip.bodyColor = cc.text;
+      ch.options.plugins.tooltip.borderColor = cc.grid;
+    }
+    if(ch.options.plugins.legend && ch.options.plugins.legend.labels){
+      ch.options.plugins.legend.labels.color = cc.text;
+    }
+    if(ch.options.scales){
+      if(ch.options.scales.x && ch.options.scales.x.ticks) ch.options.scales.x.ticks.color = cc.text;
+      if(ch.options.scales.y){
+        if(ch.options.scales.y.ticks) ch.options.scales.y.ticks.color = cc.text;
+        if(ch.options.scales.y.grid) ch.options.scales.y.grid.color = cc.grid;
+      }
+    }
+    if(ch === chartVendor && ch.data.datasets[0]){
+      ch.data.datasets[0].backgroundColor = cc.accent;
+    }
+    if(ch === chartTrend){
+      ch.data.datasets.forEach((ds, idx)=>{
+        ds.borderColor = idx===0 ? cc.clay : cc.accent;
+        ds.backgroundColor = idx===0 ? cc.claySoft : cc.accentSoft;
+      });
+    }
+    ch.update('none');
+  });
 }
 
 // ===== Reveal Animation =====
@@ -1946,11 +1979,31 @@ function buildWeekSelect(){
   sel.value = selectedWeek;
 }
 
+// KPI 数字 count-up（尊重 prefers-reduced-motion）
+function animateCount(el, target, opts){
+  if(!el) return;
+  opts = opts || {};
+  const dur = opts.duration || 900;
+  const fmt = opts.format || (v=>String(Math.round(v)));
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce || !(window.requestAnimationFrame)){ el.textContent = fmt(target); return; }
+  const start = performance.now();
+  el.classList.add('counting');
+  function step(now){
+    const t = Math.min(1,(now-start)/dur);
+    const eased = 1-Math.pow(1-t,3);
+    el.textContent = fmt(target*eased);
+    if(t<1) requestAnimationFrame(step);
+    else { el.textContent = fmt(target); el.classList.remove('counting'); }
+  }
+  requestAnimationFrame(step);
+}
+
 function init(){
   try { buildWeekSelect(); } catch(e){ console.error('buildWeekSelect failed:', e); }
-  try { document.getElementById('kpi-total').textContent = getAllBids().length; } catch(e){ console.error('kpi-total failed:', e); }
-  try { document.getElementById('kpi-amount').textContent = Math.round(getAllBids().reduce((s,r)=>s+parseAmount(r.amount),0)).toLocaleString(); } catch(e){ console.error('kpi-amount failed:', e); }
-  try { document.getElementById('kpi-vendors').textContent = new Set(getAllBids().map(r=>r.winner)).size; } catch(e){ console.error('kpi-vendors failed:', e); }
+  try { animateCount(document.getElementById('kpi-total'), getAllBids().length); } catch(e){ console.error('kpi-total failed:', e); }
+  try { const kpiAmt = Math.round(getAllBids().reduce((s,r)=>s+parseAmount(r.amount),0)); animateCount(document.getElementById('kpi-amount'), kpiAmt, {format:v=>Math.round(v).toLocaleString()}); } catch(e){ console.error('kpi-amount failed:', e); }
+  try { animateCount(document.getElementById('kpi-vendors'), new Set(getAllBids().map(r=>r.winner)).size); } catch(e){ console.error('kpi-vendors failed:', e); }
   try { renderBidsTable(); } catch(e){ console.error('renderBidsTable failed:', e); }
   try { updateCounts(); } catch(e){ console.error('updateCounts failed:', e); }
   try { renderArchive(); } catch(e){ console.error('renderArchive failed:', e); }
