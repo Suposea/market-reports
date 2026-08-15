@@ -489,7 +489,7 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
 /* 打印 / 导出 PDF：零依赖，仅显示内容主体 */
 @media print{
   body{background:#fff}
-  .topbar,.tabs,.icon-btn,.chip,.bd-fold,.radar-history,.search-box{display:none!important}
+  .topbar,.tabs,.icon-btn,.chip,.bd-fold,.radar-history,.search-box,.share-btn,.toast{display:none!important}
   .tab-panel{display:block!important;animation:none!important;margin-bottom:18px}
   .reveal{opacity:1!important;transform:none!important}
   .archive-body{display:block!important}
@@ -498,6 +498,49 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
   #bidsTable{font-size:11px;min-width:0!important}
   .bd-item.bd-extra{max-height:none!important;opacity:1!important;transform:none!important}
 }
+
+/* ===== P2 进阶情报感 ===== */
+/* 数据元信息行（更新时间 + 已核验占比） */
+.data-meta{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:-12px 0 22px;font-size:0.8rem;color:var(--ink-400)}
+.data-meta .dm-item{display:inline-flex;align-items:center;gap:6px}
+.data-meta .dm-item b{color:var(--ink-700);font-weight:600}
+.data-meta .dm-ok b{color:var(--down)}
+.data-meta svg{width:14px;height:14px;opacity:.7}
+
+/* 环比洞察卡片 */
+.compare-card{background:linear-gradient(135deg,var(--surface) 0%,var(--surface-2) 100%);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 24px;margin-bottom:24px;box-shadow:var(--shadow-xs);position:relative;overflow:hidden}
+.compare-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--clay)}
+.cmp-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.cmp-badge{display:inline-flex;align-items:center;gap:5px;background:var(--clay);color:#fff;font-size:0.72rem;font-weight:600;padding:3px 10px;border-radius:999px}
+.cmp-title{font-size:0.92rem;font-weight:600;color:var(--ink-500)}
+.cmp-body{display:flex;flex-wrap:wrap;gap:14px 36px}
+.cmp-item{display:flex;flex-direction:column;gap:3px}
+.cmp-k{font-size:0.74rem;color:var(--ink-400)}
+.cmp-v{font-size:1.15rem;font-weight:600;color:var(--ink-900);font-variant-numeric:tabular-nums}
+.cmp-delta{font-size:0.78rem;font-weight:600;font-style:normal;margin-left:6px}
+.cmp-delta.up{color:var(--up)}
+.cmp-delta.down{color:var(--down)}
+
+/* 在途 / 待明确清单 */
+.pending-list{display:flex;flex-direction:column;gap:8px}
+.pending-item{padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-2)}
+.pending-proj{font-size:0.84rem;font-weight:500;color:var(--ink-900);line-height:1.4;margin-bottom:5px}
+.pending-meta{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:0.74rem;color:var(--ink-500);align-items:center}
+.pending-meta .bd-winner{color:var(--accent-strong);font-weight:600}
+
+/* 表格汇总行 */
+#bidsTable tfoot .foot-row{background:var(--surface-2);border-top:2px solid var(--border-2)}
+#bidsTable tfoot td{font-size:0.82rem;color:var(--ink-700);font-weight:500;padding:11px 16px}
+#bidsTable tfoot .amount-cell{color:var(--accent-strong);font-weight:700}
+
+/* 单条分享按钮 + toast */
+.share-btn{display:inline-flex;align-items:center;gap:4px;margin-top:7px;padding:3px 10px;border:1px solid var(--border-2);background:var(--surface);color:var(--ink-500);font-size:0.72rem;font-weight:500;border-radius:var(--radius-full);cursor:pointer;transition:all .2s ease;font-family:var(--font-sans)}
+.share-btn:hover{border-color:var(--accent);color:var(--accent-strong);background:var(--accent-soft)}
+.share-btn svg{width:11px;height:11px}
+.row-share-hl{animation:shareHl 2s ease}
+@keyframes shareHl{0%{background:var(--accent-soft)}100%{background:transparent}}
+.toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(20px);background:var(--ink-900);color:#fff;font-size:0.84rem;padding:11px 20px;border-radius:var(--radius-full);box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transition:opacity .3s ease,transform .3s ease;z-index:9999}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
@@ -574,7 +617,11 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
       </div>
     </div>
 
+    <div class="data-meta reveal" id="dataMeta"></div>
+
     <div class="tldr reveal" id="tldrCard"></div>
+
+    <div class="compare-card reveal" id="weekCompare"></div>
 
     <div class="big-deals reveal">
       <div class="section-head">
@@ -593,6 +640,16 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
         <div class="wb-sub">按中标单位聚合 · 全量累计（中标数 / 披露金额 / 银行覆盖）</div>
       </div>
       <div class="wb-list" id="warBoard"></div>
+    </div>
+
+    <div class="chart-card reveal" style="margin-bottom:24px">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">在途 / 待明确追踪</div>
+          <div class="chart-sub">金额未披露 / 框架入围等状态，便于跟进后续披露 <span id="pendingCount"></span></div>
+        </div>
+      </div>
+      <div class="pending-list" id="pendingList" style="max-height:260px;overflow:auto"></div>
     </div>
 
     <div class="chart-grid">
@@ -623,9 +680,19 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
           <div class="chart-sub">按系统类型分类统计</div>
         </div>
       </div>
-      <div class="chart-wrapper" style="height:260px"><canvas id="chartType" role="img" aria-label="项目类型分布饼图"></canvas></div>
+        <div class="chart-wrapper" style="height:260px"><canvas id="chartType" role="img" aria-label="项目类型分布饼图"></canvas></div>
+      </div>
+
+      <div class="chart-card reveal" style="margin-bottom:24px">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">厂商中标气泡图</div>
+            <div class="chart-sub">横轴=中标数量，纵轴=已披露金额（万元），气泡大小=金额量级</div>
+          </div>
+        </div>
+        <div class="chart-wrapper" style="height:320px"><canvas id="chartBubble" role="img" aria-label="厂商中标气泡图"></canvas></div>
+      </div>
     </div>
-  </div>
 
   <!-- ===== Tab 2: Bids ===== -->
   <div class="tab-panel" id="tab-bids">
@@ -683,6 +750,7 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
             </tr>
           </thead>
           <tbody id="bidsBody"></tbody>
+          <tfoot id="bidsFoot"></tfoot>
         </table>
       </div>
       <p class="table-hint">长项目名默认收起为两行 · 鼠标悬停或点击该行「项目名称」可展开全文 · 单位名显示简称，悬停可见工商全称</p>
@@ -1320,7 +1388,7 @@ function dateSortKey(d){
 
 // ===== Theme =====
 const THEME_KEY = 'report-theme-v2';
-let chartVendor, chartTrend, chartType;
+let chartVendor, chartTrend, chartType, chartBubble;
 function applyTheme(t){
   document.documentElement.setAttribute('data-theme',t);
   const icon = document.getElementById('themeIcon');
@@ -1697,15 +1765,18 @@ function renderBidsTable(){
     const tags = [];
     if(isXC(r.project)) tags.push('<span class="mini-tag xc">信创</span>');
     if(!hasAmt && r.amount) tags.push(`<span class="mini-tag und">${escapeHtml(r.amount)}</span>`);
-    return `<tr style="--vc:${color}" class="${isWeek?'is-week':''}">
+    const enc = encodeURIComponent(bidSignature(r));
+    return `<tr style="--vc:${color}" class="${isWeek?'is-week':''}" data-sig="${enc}">
       <td><div class="clamp2 cell-org" title="${escapeHtml(r.bidder)}">${escapeHtml(shortOrg(r.bidder))}</div>${isWeek?'<span class="week-badge">最新</span>':''}</td>
       <td><a class="vendor-link" href="javascript:void(0)" onclick="gotoVendor('${escapeHtml(r.winner)}')" title="${escapeHtml(r.winner)}"><span class="vendor-tag" style="border-color:${color}40">${escapeHtml(shortOrg(r.winner))}</span></a></td>
-      <td class="proj-cell" onclick="this.closest('tr').classList.toggle('row-open')" title="${escapeHtml(r.project)}"><div class="clamp2 proj-text">${escapeHtml(r.project)}</div>${tags.length?`<div class="proj-tags">${tags.join('')}</div>`:''}</td>
-      <td class="amount-cell ${amtClass}">${hasAmt ? `<span class="amt-num">${escapeHtml(r.amount)}</span>` : '—'}</td>
+      <td class="proj-cell" onclick="this.closest('tr').classList.toggle('row-open')" title="${escapeHtml(r.project)}"><div class="clamp2 proj-text">${escapeHtml(r.project)}</div>${tags.length?`<div class="proj-tags">${tags.join('')}</div>`:''}<button type="button" class="share-btn" onclick="event.stopPropagation();shareBid('${enc}')" title="复制本条深链"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" stroke-linecap="round" stroke-linejoin="round"/></svg>分享</button></td>
+      <td class="amount-cell ${amtClass}"${hasAmt?` title="约 ${amt.toLocaleString()} 万元"`:''}>${hasAmt ? `<span class="amt-num">${escapeHtml(r.amount)}</span>` : '—'}</td>
       <td>${r.date ? `<span class="date-tag">${escapeHtml(r.date)}</span>` : '<span class="date-tag" style="opacity:.45">—</span>'}</td>
       <td class="source-cell">${sourceCell(r)}</td>
     </tr>`;
   }).join('');
+
+  renderBidsFoot(rows);
 
   document.getElementById('noResults').style.display = rows.length ? 'none' : 'block';
 }
@@ -1866,7 +1937,7 @@ function initCharts(){
     data:{labels:vLabels,datasets:[{data:vData,backgroundColor:cc.accent,borderRadius:5,maxBarThickness:38}]},
     options:{
       responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{backgroundColor:cc.surface,titleColor:cc.text,bodyColor:cc.text,borderColor:cc.grid,borderWidth:1}},
+      plugins:{legend:{display:false},tooltip:{backgroundColor:cc.surface,titleColor:cc.text,bodyColor:cc.text,borderColor:cc.grid,borderWidth:1,callbacks:{label:c=>' '+c.parsed.y+' 条中标'}}},
       scales:{
         x:{ticks:{color:cc.text,font:{size:11}},grid:{display:false}},
         y:{ticks:{color:cc.text,font:{size:11},precision:0},grid:{color:cc.grid},beginAtZero:true}
@@ -1914,7 +1985,44 @@ function initCharts(){
     options:{
       responsive:true,maintainAspectRatio:false,cutout:'62%',
       plugins:{legend:{position:'right',labels:{color:cc.text,font:{size:12},padding:12,usePointStyle:true,pointStyle:'circle'}},
-      tooltip:{backgroundColor:cc.surface,titleColor:cc.text,bodyColor:cc.text,borderColor:cc.grid,borderWidth:1}}
+      tooltip:{backgroundColor:cc.surface,titleColor:cc.text,bodyColor:cc.text,borderColor:cc.grid,borderWidth:1,callbacks:{label:c=>' '+c.label+'：'+c.parsed+' 个'}}}
+    }
+  });
+}
+
+// ===== P2-1 厂商气泡图 =====
+function initBubble(){
+  const cc = getChartColors();
+  const bids = getAllBids();
+  const map = {};
+  bids.forEach(r=>{
+    const w = r.winner;
+    if(!map[w]) map[w] = { name:w, count:0, amt:0 };
+    map[w].count++;
+    map[w].amt += parseAmount(r.amount);
+  });
+  const pts = Object.values(map).map(d=>({
+    name:d.name, count:d.count, amt:d.amt,
+    x:d.count, y:d.amt,
+    r: Math.max(5, Math.min(34, 6 + Math.sqrt(d.amt||0)/9 + d.count*0.7))
+  }));
+  chartBubble = new Chart(document.getElementById('chartBubble'),{
+    type:'bubble',
+    data:{datasets:[{label:'厂商中标',data:pts,
+      backgroundColor: pts.map(p=>hexA(getVendorColor(p.name),0.55)),
+      borderColor: pts.map(p=>getVendorColor(p.name)),
+      borderWidth:1.5
+    }]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{backgroundColor:cc.surface,titleColor:cc.text,bodyColor:cc.text,borderColor:cc.grid,borderWidth:1,
+          callbacks:{title:items=>items[0].raw.name,
+            label:c=>{const d=c.raw;return ['中标 '+d.count+' 条', '已披露 '+(d.amt>0?Math.round(d.amt).toLocaleString()+' 万元':'金额未披露')];}}}},
+      scales:{
+        x:{title:{display:true,text:'中标数量（条）',color:cc.text},ticks:{color:cc.text,font:{size:11}},grid:{color:cc.grid},beginAtZero:true},
+        y:{title:{display:true,text:'已披露金额（万元）',color:cc.text},ticks:{color:cc.text,font:{size:11}},grid:{color:cc.grid},beginAtZero:true}
+      }
     }
   });
 }
@@ -1923,7 +2031,7 @@ function initCharts(){
 function updateCharts(){
   if(!chartVendor) return;
   const cc = getChartColors();
-  [chartVendor, chartTrend, chartType].forEach((ch, ci)=>{
+  [chartVendor, chartTrend, chartType, chartBubble].forEach((ch, ci)=>{
     if(!ch) return;
     if(ch.options.plugins.tooltip){
       ch.options.plugins.tooltip.backgroundColor = cc.surface;
@@ -1966,6 +2074,81 @@ function triggerReveal(){
     el.classList.remove('in');
     io.observe(el);
   });
+}
+
+// ===== P2 进阶情报感：数据元信息 / 环比 / 在途 / 汇总行 / 分享 =====
+function hexA(hex,a){ hex=(hex||'#71737a').replace('#',''); if(hex.length===3) hex=hex.split('').map(c=>c+c).join(''); const n=parseInt(hex,16); return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')'; }
+function renderDataMeta(){
+  const el=document.getElementById('dataMeta'); if(!el) return;
+  const all=getAllBids(); const total=all.length;
+  const verified=all.filter(r=>r.sourceUrl).length;
+  const pct= total? Math.round(verified/total*100):0;
+  const dates=all.map(r=>r.date).filter(Boolean).sort();
+  const upd= dates.length? dates[dates.length-1]:'—';
+  el.innerHTML='<span class="dm-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg>数据更新于 <b>'+upd+'</b></span>'
+    +'<span class="dm-item dm-ok"><span class="src-dot"></span>已核验来源 <b>'+pct+'%</b>（'+verified+'/'+total+'）</span>'
+    +'<span class="dm-item">每周一自动更新 · 纯静态站点</span>';
+}
+function renderWeekCompare(){
+  const el=document.getElementById('weekCompare'); if(!el) return;
+  const cur=currentWeekBids, prev=archiveData[0]||[];
+  const cN=cur.length, pN=prev.length;
+  const cA=Math.round(cur.reduce((s,r)=>s+parseAmount(r.amount),0));
+  const pA=Math.round(prev.reduce((s,r)=>s+parseAmount(r.amount),0));
+  const dN=cN-pN, dA=cA-pA;
+  const pctN= pN? Math.round(dN/pN*100):0, pctA= pA? Math.round(dA/pA*100):0;
+  const arrow=n=> n>=0?'▲':'▼', cls=n=> n>=0?'up':'down';
+  el.innerHTML='<div class="cmp-head"><span class="cmp-badge">环比洞察</span><span class="cmp-title">本周 vs 上周</span></div>'
+    +'<div class="cmp-body">'
+    +'<div class="cmp-item"><span class="cmp-k">中标条数</span><span class="cmp-v">'+cN+' <em class="cmp-delta '+cls(dN)+'">'+arrow(dN)+' '+Math.abs(dN)+'（'+(pctN>=0?'+':'')+pctN+'%）</em></span></div>'
+    +'<div class="cmp-item"><span class="cmp-k">披露金额</span><span class="cmp-v">'+cA.toLocaleString()+'万 <em class="cmp-delta '+cls(dA)+'">'+arrow(dA)+' '+Math.abs(dA).toLocaleString()+'万（'+(pctA>=0?'+':'')+pctA+'%）</em></span></div>'
+    +'</div>';
+}
+function renderPending(){
+  const el=document.getElementById('pendingList'); if(!el) return;
+  const cnt=document.getElementById('pendingCount');
+  const pending=getAllBids().filter(r=>!/\d/.test(r.amount||''));
+  if(cnt) cnt.textContent= pending.length? '共 '+pending.length+' 条':'';
+  if(!pending.length){ el.innerHTML='<div class="bd-empty">暂无在途 / 未披露金额的条目</div>'; return; }
+  el.innerHTML=pending.slice(0,40).map(r=>'<div class="pending-item"><div class="pending-proj">'+escapeHtml(r.project)+'</div>'
+    +'<div class="pending-meta"><span class="bd-winner">'+escapeHtml(r.winner)+'</span><span>'+escapeHtml(shortOrg(r.bidder))+'</span><span class="mini-tag und">'+escapeHtml(r.amount||'未披露')+'</span><span class="bd-date">'+escapeHtml(r.date||'')+'</span></div></div>').join('')
+    + (pending.length>40? '<div class="radar-note">仅显示前 40 条，共 '+pending.length+' 条</div>':'');
+}
+function renderBidsFoot(rows){
+  const tf=document.getElementById('bidsFoot'); if(!tf) return;
+  const valid=rows.filter(r=>/\d/.test(r.amount||''));
+  const sum=Math.round(valid.reduce((s,r)=>s+parseAmount(r.amount),0));
+  const avg= valid.length? Math.round(sum/valid.length):0;
+  tf.innerHTML='<tr class="foot-row"><td colspan="2">已披露金额汇总（共 '+valid.length+' 条有效）</td><td></td>'
+    +'<td class="amount-cell">合计 '+sum.toLocaleString()+' 万元</td>'
+    +'<td class="amount-cell">均值 '+avg.toLocaleString()+' 万元</td><td></td></tr>';
+}
+let _toastEl=null;
+function toast(msg){
+  if(!_toastEl){ _toastEl=document.createElement('div'); _toastEl.className='toast'; document.body.appendChild(_toastEl); }
+  _toastEl.textContent=msg; _toastEl.classList.add('show');
+  clearTimeout(_toastEl._t); _toastEl._t=setTimeout(()=>_toastEl.classList.remove('show'),2600);
+}
+function shareBid(enc){
+  const url=location.origin+location.pathname+'#bid='+enc;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(()=>toast('已复制本条深链，可直接分享给同事')).catch(()=>{ location.hash='bid='+enc; toast('已生成分享链接'); });
+  } else { location.hash='bid='+enc; toast('已生成分享链接'); }
+}
+function initShareTarget(){
+  const raw= location.hash? location.hash.slice(1):'';
+  const m=raw.match(/^bid=(.+)$/); if(!m) return;
+  const enc=m[1];
+  if(selectedWeek!=='all'){ selectedWeek='all'; const sel=document.getElementById('weekSelect'); if(sel) sel.value='all'; updateCounts(); renderBidsTable(); }
+  setTimeout(()=>{
+    const row=document.querySelector('#bidsBody tr[data-sig="'+enc+'"]');
+    if(row){
+      const tab=document.querySelector('.tab[data-tab="bids"]'); if(tab) tab.click();
+      row.scrollIntoView({behavior:'smooth',block:'center'});
+      row.classList.add('row-share-hl'); setTimeout(()=>row.classList.remove('row-share-hl'),2000);
+      row.classList.add('row-open');
+    } else { toast('未在当前数据中找到该分享链接对应的记录'); }
+  },140);
 }
 
 // ===== Init =====
@@ -2011,9 +2194,14 @@ function init(){
   try { renderBigDeals(); } catch(e){ console.error('renderBigDeals failed:', e); }
   try { renderTLDR(); } catch(e){ console.error('renderTLDR failed:', e); }
   try { renderWarBoard(); } catch(e){ console.error('renderWarBoard failed:', e); }
+  try { renderDataMeta(); } catch(e){ console.error('renderDataMeta failed:', e); }
+  try { renderWeekCompare(); } catch(e){ console.error('renderWeekCompare failed:', e); }
+  try { renderPending(); } catch(e){ console.error('renderPending failed:', e); }
   try { renderRadar('all'); } catch(e){ console.error('renderRadar failed:', e); }
   try { initCharts(); } catch(e){ console.error('Charts failed (site still usable):', e); }
+  try { initBubble(); } catch(e){ console.error('Bubble chart failed:', e); }
   try { triggerReveal(); } catch(e){ console.error('triggerReveal failed:', e); }
+  try { initShareTarget(); } catch(e){ console.error('initShareTarget failed:', e); }
 }
 if(document.readyState === 'loading'){
   document.addEventListener('DOMContentLoaded', init);
