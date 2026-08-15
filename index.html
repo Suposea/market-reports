@@ -558,7 +558,7 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
             </span>
             招投标信息汇总
           </div>
-          <div class="panel-sub" id="periodSub">报告周期：2026年8月3日 — 8月9日（含凯美瑞德重点跟踪补全）· 点击列头可排序</div>
+          <div class="panel-sub" id="periodSub">报告周期：2026年8月3日 — 8月9日 · 点击列头可排序</div>
         </div>
         <button class="btn btn-primary" onclick="exportCSV()">
           <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1251,18 +1251,17 @@ const archiveData = [
     {bidder:'太平基金',winner:'森浦',project:'QB终端采购',amount:''},
     {bidder:'兴业数字金融服务',winner:'兆尹信息',project:'兴银理财统一清算系统二期',amount:''},
     {bidder:'财信证券',winner:'QTrade',project:'Qtrade系统账号服务采购',amount:''}
+  ],
+  // ===== 历史补充收集（2026 上半年，已并入总库统一管理，不再单列厂商专题）=====
+  [
+    {bidder:'浦发银行',winner:'凯美瑞德',project:'金融市场系统群重构之金融市场CSA保证金管理系统厂商实施服务',amount:'72.7万元',date:'2026-05-06',source:'招标网',sourceUrl:'https://m.zhaobiao.cn/zb/succeed_v_4ee36f5ca856487d66bb0d4be94c632c.html'},
+    {bidder:'浦发银行',winner:'凯美瑞德',project:'2026-2027金融市场初始保证金系统年度维护服务',amount:'268万元',date:'2026-06-05',source:'浦发银行采购平台',sourceUrl:'https://ebuy.spdb.com.cn/#/noticeDetail?noticeId=1133999529697272725780085407744'},
+    {bidder:'衡水银行',winner:'凯美瑞德',project:'衡芯工程综合收单系统配套改造项目',amount:'67.5万元',date:'2026-02-11'},
+    {bidder:'浦发银行',winner:'凯美瑞德',project:'2026-2029年度金融市场领域信息系统研发专业服务（入围供应商）',amount:'框架入围',date:'2026-04-29',source:'招标网',sourceUrl:'https://m.zhaobiao.cn/zb/succeed_v_08ebf4c3d46140272786ce6e451b142f.html'},
+    {bidder:'邮储银行',winner:'凯美瑞德',project:'2026-2027年总行开发测试类技术资源外包（包4资金资管领域，入围）',amount:'框架入围',date:'2026-06-05',source:'中国邮政储蓄银行',sourceUrl:'https://www.chinapost.com.cn/cn/report/2606/2381-1.htm'},
+    {bidder:'某股份制商业银行',winner:'凯美瑞德',project:'金融市场业务内模法风险计量系统、自研估值系统（中标）',amount:'金额未披露',date:'2026-04-08'},
+    {bidder:'中国进出口银行',winner:'凯美瑞德',project:'新外币资金交易系统建设项目（中标候选人公示，覆盖汇率/利率/衍生品/债券，含信创适配）',amount:'1258万元',date:'2026-07-17',source:'标找找·凯美瑞德招投标',sourceUrl:'https://www.biaozhaozhao.com/company/fa7625efc8a0d5b9662f4fc8336dceda'}
   ]
-];
-
-// ===== 凯美瑞德专题（2026年上半年中标，补充收集） =====
-const kmrdBids = [
-  {bidder:'浦发银行',winner:'凯美瑞德',project:'金融市场系统群重构之金融市场CSA保证金管理系统厂商实施服务',amount:'72.7万元',date:'2026-05-06',source:'招标网',sourceUrl:'https://m.zhaobiao.cn/zb/succeed_v_4ee36f5ca856487d66bb0d4be94c632c.html'},
-  {bidder:'浦发银行',winner:'凯美瑞德',project:'2026-2027金融市场初始保证金系统年度维护服务',amount:'268万元',date:'2026-06-05',source:'浦发银行采购平台',sourceUrl:'https://ebuy.spdb.com.cn/#/noticeDetail?noticeId=1133999529697272725780085407744'},
-  {bidder:'衡水银行',winner:'凯美瑞德',project:'衡芯工程综合收单系统配套改造项目',amount:'67.5万元',date:'2026-02-11'},
-  {bidder:'浦发银行',winner:'凯美瑞德',project:'2026-2029年度金融市场领域信息系统研发专业服务（入围供应商）',amount:'框架入围',date:'2026-04-29',source:'招标网',sourceUrl:'https://m.zhaobiao.cn/zb/succeed_v_08ebf4c3d46140272786ce6e451b142f.html'},
-  {bidder:'邮储银行',winner:'凯美瑞德',project:'2026-2027年总行开发测试类技术资源外包（包4资金资管领域，入围）',amount:'框架入围',date:'2026-06-05',source:'中国邮政储蓄银行',sourceUrl:'https://www.chinapost.com.cn/cn/report/2606/2381-1.htm'},
-  {bidder:'某股份制商业银行',winner:'凯美瑞德',project:'金融市场业务内模法风险计量系统、自研估值系统（中标）',amount:'金额未披露',date:'2026-04-08'},
-  {bidder:'中国进出口银行',winner:'凯美瑞德',project:'新外币资金交易系统建设项目（中标候选人公示，覆盖汇率/利率/衍生品/债券，含信创适配）',amount:'1258万元',date:'2026-07-17',source:'标找找·凯美瑞德招投标',sourceUrl:'https://www.biaozhaozhao.com/company/fa7625efc8a0d5b9662f4fc8336dceda'}
 ];
 
 // ===== 量锐专题（2026年中标，补充收集） =====
@@ -1317,8 +1316,7 @@ const radarItems = [
 
 // ===== Week options for filter (default = most recent week) =====
 const weekOptions = [
-  { id:'current', label:'最新 08.03–08.09', range:'2026年8月3日 — 8月9日（含凯美瑞德重点跟踪补全）', bids: currentWeekBids },
-  { id:'kmrd',    label:'凯美瑞德专题 2026', range:'凯美瑞德 2026年中标专题（2月–6月，补充收集）', bids: kmrdBids },
+  { id:'current', label:'最新 08.03–08.09', range:'2026年8月3日 — 8月9日', bids: currentWeekBids },
   { id:'w0727',   label:'07.27–08.02',      range:'2026年7月27日 — 8月2日', bids: archiveData[0] },
   { id:'w0720',   label:'07.20–07.26',      range:'2026年7月20日 — 7月26日', bids: archiveData[1] },
   { id:'w0713',   label:'07.13–07.19',      range:'2026年7月13日 — 7月19日', bids: archiveData[2] },
@@ -1328,13 +1326,14 @@ const weekOptions = [
   { id:'w0420',   label:'04.20–04.24',      range:'2026年4月20日 — 4月24日', bids: archiveData[6] },
   { id:'w0323',   label:'03.23–03.27',      range:'2026年3月23日 — 3月27日', bids: archiveData[7] },
   { id:'w0126',   label:'01.26–01.30',      range:'2026年1月26日 — 1月30日', bids: archiveData[8] },
+  { id:'w-supp',  label:'历史补充收集',      range:'2026年2月 — 7月 补充收集', bids: archiveData[9] },
   { id:'all',     label:'全部历史汇总',      range:'全部历史周报合并',         bids: null }
 ];
 function bidSignature(r){
   return (r.winner||'')+'|'+(r.project||'')+'|'+(r.bidder||'')+'|'+(r.date||'');
 }
 function getAllBids(){
-  const merged = [ ...currentWeekBids, ...archiveData.flat(), ...kmrdBids, ...liangruiBids ];
+  const merged = [ ...currentWeekBids, ...archiveData.flat(), ...liangruiBids ];
   const seen = new Set(); const out = [];
   merged.forEach(r=>{ const k = bidSignature(r); if(!seen.has(k)){ seen.add(k); out.push(r); } });
   return out;
