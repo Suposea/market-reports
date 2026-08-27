@@ -819,7 +819,7 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
             </span>
             厂商工商信息
           </div>
-          <div class="panel-sub">各中标厂商核心工商登记信息 · 数据来自企查查 / 天眼查（点击卡片内链接查看实时详情）</div>
+          <div class="panel-sub">各中标厂商核心工商登记信息 · 13/14 家已内嵌企查查核验数据（含法定代表人/注册资本/参保人数等）；QTrade 运营主体未在企查查收录，保留入口手动查证</div>
         </div>
       </div>
       <div class="vendor-grid" id="vendorCards"></div>
@@ -1050,7 +1050,7 @@ const VENDOR_PROFILES = [
     addr:'浙江省宁波市鄞州区首南西路88、76号B幢9层901室', creditCode:'91330212551505566A',
     staff:'14人', staffYear:'2025', staffTrend:'▼ 较2024年 15人（-7%）', staffScale:'少于50人',
     qcc:'森浦', tyc:'森浦' },
-  { name:'QTrade', biz:'金融OTC即时通讯与交易终端', qcc:'QTrade', tyc:'QTrade' }
+  { name:'QTrade', biz:'金融OTC即时通讯与交易终端', legal:'上海快确信息科技有限公司（QTrade 运营主体）', note:'运营主体为上海快确信息科技有限公司（腾讯系金融科技），该主体在企查查未收录，核心工商登记信息暂无法内嵌，请通过下方企查查 / 天眼查入口手动查证。', qcc:'QTrade', tyc:'QTrade' }
 ];
 function vendorQccUrl(p){ return 'https://www.qcc.com/web/search?key=' + encodeURIComponent(p.qcc || p.name); }
 function vendorTycUrl(p){ return 'https://www.tianyancha.com/search?key=' + encodeURIComponent(p.tyc || p.name); }
@@ -1076,7 +1076,7 @@ function renderVendorTab(){
           <div class="vc-biz">${p.biz}</div>
         </div>
       </div>
-      ${detail ? `<div class="vc-detail">${detail}</div>` : `<div class="vc-detail vc-hint">核心工商信息请通过下方企查查 / 天眼查入口查看（实时数据）</div>`}
+      ${detail ? `<div class="vc-detail">${detail}</div>` : `<div class="vc-detail vc-hint">${p.note ? escapeHtml(p.note) : '核心工商信息请通过下方企查查 / 天眼查入口查看（实时数据）'}</div>`}
       <div class="vc-legal">${p.legal ? escapeHtml(p.legal) : ''}</div>
       <div class="vc-links">
         <a class="vc-link" href="${vendorQccUrl(p)}" target="_blank" rel="noopener">企查查 ↗</a>
