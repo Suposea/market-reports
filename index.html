@@ -981,7 +981,9 @@ const VENDOR_COLORS = {
   '森浦':'#7a8a94','量锐':'#5a7a8f',
   '凯美瑞德':'#8f7a5a'
 };
-const OTHER_VENDORS = ['QTrade','顶点软件','长亭科技','科蓝软件','森浦'];
+// 专属芯片的 9 家厂商（其余统一归入「其他厂商」芯片）。P0-7：原 OTHER_VENDORS 仅 5 家，
+// 导致「其他」芯片点开为空；现改为"非这 9 家即其他"，与筛选区芯片一一对应。
+const OTHER_VENDORS = ['恒生电子','金仕达','衡泰技术','云赢网络','兆尹信息','时代银通','子午线','凯美瑞德','量锐'];
 
 // ===== 厂商工商信息（含企查查/天眼查直达；部分已抓取核心登记信息） =====
 const VENDOR_PROFILES = [
@@ -1088,8 +1090,12 @@ function renderVendorTab(){
 function gotoVendor(name){
   const tab = document.querySelector('.tab[data-tab="vendor"]');
   if(tab && !tab.classList.contains('active')) tab.click();
-  const idx = VENDOR_PROFILES.findIndex(p=>p.name===name);
-  if(idx<0) return;
+  // P0-1 / P1-6：点击厂商名跳工商档案。原只按 p.name===name 精确匹配，对法律全称（如「凯美瑞德(苏州)...」）
+  // 或归一化前的多家中标串返回 -1 而静默无反应。现增加兜底：归一化名 / 工商全称前缀匹配。
+  let idx = VENDOR_PROFILES.findIndex(p=>p.name===name);
+  if(idx<0) idx = VENDOR_PROFILES.findIndex(p=> WINNER_CANON[name] && p.name===WINNER_CANON[name]);
+  if(idx<0) idx = VENDOR_PROFILES.findIndex(p=> p.legal && typeof p.legal==='string' && (p.legal.indexOf(name)===0 || name.indexOf(p.name)===0));
+  if(idx<0){ toast('厂商「'+(name||'')+'」尚未收录工商档案'); return; }
   setTimeout(()=>{
     const card = document.getElementById('vcard-'+idx);
     if(card){ card.scrollIntoView({behavior:'smooth',block:'center'}); card.classList.add('vc-flash'); setTimeout(()=>card.classList.remove('vc-flash'),1400); }
@@ -1463,18 +1469,10 @@ function getActiveBids(){
     return getAllBids();
   }
   const opt = weekOptions.find(w => w.id === selectedWeek);
-  let bids = (opt && opt.bids) ? opt.bids : currentWeekBids;
-  // 安全过滤：按周范围起止日期过滤，防止数据桶被污染后跨周泄露
-  if(opt && opt.range){
-    const m = opt.range.match(/(\d{4})年(\d{1,2})月(\d{1,2})日[\s\S]*?(\d{1,2})月(\d{1,2})日/);
-    if(m){
-      const year = m[1];
-      const start = `${year}-${String(m[2]).padStart(2,'0')}-${String(m[3]).padStart(2,'0')}`;
-      const end   = `${year}-${String(m[4]).padStart(2,'0')}-${String(m[5]).padStart(2,'0')}`;
-      bids = bids.filter(r => !r.date || (r.date >= start && r.date <= end));
-    }
-  }
-  return bids;
+  // 数据桶即权威来源：直接返回该桶，不做日期范围二次过滤。
+  // 旧逻辑按周 range 过滤会静默丢弃日期落在桶外（多为采集时日期标注偏差）的条目，
+  // 造成"同一周在汇总表与归档表数量不一致"。越界问题改由 P2 的 auditData() 在控制台告警，而非静默丢数。
+  return (opt && opt.bids) ? opt.bids : currentWeekBids;
 }
 function getSelectedRange(){
   const opt = weekOptions.find(w => w.id === selectedWeek);
@@ -1533,8 +1531,24 @@ let selectedWeek = 'current';
 function getVendorColor(v){
   return VENDOR_COLORS[v] || '#71737a';
 }
+// ===== 厂商名归一化（P0-1）=====
+// 数据里中标单位写法不统一：法律全称「凯美瑞德(苏州)信息科技股份有限公司」vs 简称「凯美瑞德」、
+// 多家中标串「恒生电子、衡泰技术」等。若不归一，战况榜/图表会把同一家劈成两列、重复柱，
+// 且 gotoVendor() 对全称返回 -1 导致点击无反应。归一到 VENDOR_PROFILES 的统一名。
+const WINNER_CANON = {
+  '凯美瑞德(苏州)信息科技股份有限公司':'凯美瑞德',
+  '凯美瑞德（苏州）信息科技股份有限公司':'凯美瑞德',
+  '安徽兆尹信息科技股份有限公司':'兆尹信息'
+};
+// 多家中标：以顿号/逗号/斜杠拆分，逐家计入（如「恒生电子、衡泰技术」→ [恒生电子, 衡泰技术]）
+function splitWinners(s){
+  if(!s) return [];
+  return String(s).split(/[、，,/／]/).map(x=>x.trim()).filter(Boolean).map(x=> WINNER_CANON[x] || x);
+}
+function winnerList(r){ return splitWinners(r && r.winner); }
+function primaryWinner(r){ const l = winnerList(r); return l[0] || (r && r.winner) || ''; }
 function isOtherVendor(v){
-  return OTHER_VENDORS.includes(v);
+  return !OTHER_VENDORS.includes(v);
 }
 // 金额解析：统一换算为「万元」数值（支持 "X亿元"→X*10000、"X万元"→X、"X元"→X/10000）
 // 数据准确性铁律：无数字（如"金额未披露"/"框架入围"）一律返回 0，绝不臆造数值
@@ -1650,13 +1664,13 @@ function renderTLDR(){
   const wk = currentWeekBids;
   if(!wk.length){ el.style.display='none'; return; }
   const n = wk.length;
-  const vendors = new Set(wk.map(r=>r.winner));
+  const vendors = new Set(wk.flatMap(r=>winnerList(r)));
   const banks = new Set(wk.map(r=>r.bidder));
   const xc = wk.filter(r=>isXC(r.project)).length;
   const amts = wk.map(r=>({r,a:parseAmount(r.amount)})).filter(x=>x.a>0);
   const max = amts.length ? amts.reduce((m,x)=>x.a>m.a?x:m) : null;
   const cnt = {};
-  wk.forEach(r=>cnt[r.winner]=(cnt[r.winner]||0)+1);
+  wk.forEach(r=>winnerList(r).forEach(w=>cnt[w]=(cnt[w]||0)+1));
   const entries = Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
   const top = entries.slice(0,2).map(([k,v])=>`<b>${k}</b>（${v}条）`).join('、');
   const mostActive = entries[0];
@@ -1689,11 +1703,16 @@ function renderWarBoard(){
   const bids = getAllBids();
   const map = {};
   bids.forEach(r=>{
-    const w = r.winner;
-    if(!map[w]) map[w] = { name:w, count:0, amt:0, banks:new Set() };
-    map[w].count++;
-    map[w].amt += parseAmount(r.amount);
-    if(r.bidder) map[w].banks.add(r.bidder);
+    const ws = winnerList(r);
+    if(!ws.length) return;
+    // 多家中标：金额按中标家数均摊，避免重复计入总额
+    const share = ws.length > 1 ? parseAmount(r.amount) / ws.length : parseAmount(r.amount);
+    ws.forEach(w=>{
+      if(!map[w]) map[w] = { name:w, count:0, amt:0, banks:new Set() };
+      map[w].count++;
+      map[w].amt += share;
+      if(r.bidder) map[w].banks.add(r.bidder);
+    });
   });
   const rows = Object.values(map).sort((a,b)=>b.count-a.count || b.amt-a.amt);
   const maxCount = Math.max(1, ...rows.map(r=>r.count));
@@ -1712,7 +1731,13 @@ function renderWarBoard(){
 // 厂商钻取：点击战况榜任一厂商 → 筛选其全部中标并跳到招投标汇总
 function focusVendor(v){
   currentFilter = v;
-  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active', c.dataset && c.dataset.vendor === v));
+  // P0-8：chip 并无 data-vendor 属性，原按 dataset.vendor 匹配恒为 undefined → 全灭。
+  // 改为解析各 chip 的 onclick 实参，与 v 对齐高亮。
+  document.querySelectorAll('#filterChips .chip').forEach(c=>{
+    const m = /filterBids\('([^']*)'/.exec(c.getAttribute('onclick') || '');
+    const cv = m ? m[1] : '';
+    c.classList.toggle('active', cv === v);
+  });
   renderBidsTable();
   updateCounts();
   const tab = document.querySelector('.tab[data-tab="bids"]');
@@ -1762,7 +1787,7 @@ function radarCard(it, todayStr){
         ${eta ? `<span class="radar-eta${eta.soon?' soon':''}">${eta.txt}</span>` : ''}
       </div>
       <h4>${escapeHtml(it.title)}</h4>
-      <p>${escapeHtml(it.content||'')}</p>
+      <p>${it.content||''}</p>
       ${it.source ? `<a class="src-link ${it.sourceUrl?'src-real':'src-search'}" href="${it.sourceUrl||'#'}" target="_blank" rel="noopener">${it.sourceUrl?'<span class="src-dot" title="已核验 · 直达公告原文"></span>':''}${escapeHtml(it.source)}<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>` : ''}
     </div>`;
 }
@@ -1824,32 +1849,27 @@ function toggleRadarHistory(){
   renderRadar();
 }
 
-function renderBidsTable(){
-  const tbody = document.getElementById('bidsBody');
+// 当前表格的数据视图（筛选 + 搜索 + 排序），招投标表与 CSV 导出共用，确保"所见即所导"。
+function computeRows(){
   let rows = [...getActiveBids()];
-
   if(currentFilter !== 'all'){
     rows = rows.filter(r=>{
-      if(currentFilter === '其他') return isOtherVendor(r.winner);
-      return r.winner === currentFilter;
+      if(currentFilter === '其他') return isOtherVendor(primaryWinner(r));
+      return winnerList(r).includes(currentFilter);
     });
   }
-
   if(searchTerm){
     const term = searchTerm.toLowerCase();
     rows = rows.filter(r=>
-      r.bidder.toLowerCase().includes(term) ||
-      r.winner.toLowerCase().includes(term) ||
-      r.project.toLowerCase().includes(term)
+      (r.bidder||'').toLowerCase().includes(term) ||
+      (r.winner||'').toLowerCase().includes(term) ||
+      (r.project||'').toLowerCase().includes(term)
     );
   }
-
   if(sortCol){
     rows.sort((a,b)=>{
       let va = a[sortCol], vb = b[sortCol];
-      if(sortCol === 'amount'){
-        va = parseAmount(va); vb = parseAmount(vb);
-      }
+      if(sortCol === 'amount'){ va = parseAmount(va); vb = parseAmount(vb); }
       if(va < vb) return sortAsc ? -1 : 1;
       if(va > vb) return sortAsc ? 1 : -1;
       return 0;
@@ -1858,10 +1878,15 @@ function renderBidsTable(){
     // 默认按日期倒序：最新中标排在最前面
     rows.sort((a,b)=> (b.date||'').localeCompare(a.date||''));
   }
+  return rows;
+}
 
+function renderBidsTable(){
+  const tbody = document.getElementById('bidsBody');
+  const rows = computeRows();
   const weekSet = new Set(currentWeekBids.map(bidSignature));
   tbody.innerHTML = rows.map(r=>{
-    const color = getVendorColor(r.winner);
+    const color = getVendorColor(primaryWinner(r));
     const amt = parseAmount(r.amount);
     const hasAmt = !!(r.amount && /\d/.test(r.amount));
     const amtClass = (hasAmt ? '' : 'empty') + (amt >= BIG_DEAL_MIN ? ' big' : '');
@@ -1870,9 +1895,10 @@ function renderBidsTable(){
     if(isXC(r.project)) tags.push('<span class="mini-tag xc">信创</span>');
     if(!hasAmt && r.amount) tags.push(`<span class="mini-tag und">${escapeHtml(r.amount)}</span>`);
     const enc = encodeURIComponent(bidSignature(r));
+    const w = primaryWinner(r);
     return `<tr style="--vc:${color}" class="${isWeek?'is-week':''}" data-sig="${enc}">
       <td><div class="clamp2 cell-org" title="${escapeHtml(r.bidder)}">${escapeHtml(shortOrg(r.bidder))}</div>${isWeek?'<span class="week-badge">最新</span>':''}</td>
-      <td><a class="vendor-link" href="javascript:void(0)" onclick="gotoVendor('${escapeHtml(r.winner)}')" title="${escapeHtml(r.winner)}"><span class="vendor-tag" style="border-color:${color}40">${escapeHtml(shortOrg(r.winner))}</span></a></td>
+      <td><a class="vendor-link" href="javascript:void(0)" onclick="gotoVendor('${escapeHtml(w)}')" title="${escapeHtml(r.winner)}"><span class="vendor-tag" style="border-color:${color}40">${escapeHtml(shortOrg(r.winner))}</span></a></td>
       <td class="proj-cell" onclick="this.closest('tr').classList.toggle('row-open')" title="${escapeHtml(r.project)}"><div class="clamp2 proj-text">${escapeHtml(r.project)}</div>${tags.length?`<div class="proj-tags">${tags.join('')}</div>`:''}<button type="button" class="share-btn" onclick="event.stopPropagation();shareBid('${enc}')" title="复制本条深链"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" stroke-linecap="round" stroke-linejoin="round"/></svg>分享</button></td>
       <td class="amount-cell ${amtClass}"${hasAmt?` title="约 ${amt.toLocaleString()} 万元"`:''}>${hasAmt ? `<span class="amt-num">${escapeHtml(r.amount)}</span>` : '—'}</td>
       <td>${r.date ? `<span class="date-tag">${escapeHtml(r.date)}</span>` : '<span class="date-tag" style="opacity:.45">—</span>'}</td>
@@ -1912,6 +1938,10 @@ function filterBids(vendor, btn){
 
 function handleSearch(val){
   searchTerm = val.trim();
+  // P0-6：搜索框全局可见，但原实现只在隐藏的 bids Tab 重渲染，概览/归档页输入毫无反应。
+  // 改为：输入即跳到招投标汇总并渲染过滤结果，给出可见反馈。
+  const tab = document.querySelector('.tab[data-tab="bids"]');
+  if(tab && !tab.classList.contains('active')) tab.click();
   renderBidsTable();
 }
 
@@ -1932,7 +1962,7 @@ function updateCounts(){
   const all = active.length;
   const counts = {};
   active.forEach(r=>{
-    const key = isOtherVendor(r.winner) ? '其他' : r.winner;
+    const key = isOtherVendor(primaryWinner(r)) ? '其他' : primaryWinner(r);
     counts[key] = (counts[key]||0) + 1;
   });
   document.getElementById('cnt-all').textContent = `(${all})`;
@@ -1950,7 +1980,7 @@ function renderArchive(){
   tl.innerHTML = items.map(w=>{
     const bids = w.bids;
     const cnt = {};
-    bids.forEach(r=>{ const k = isOtherVendor(r.winner)?'其他':r.winner; cnt[k]=(cnt[k]||0)+1; });
+    bids.forEach(r=>{ const k = isOtherVendor(primaryWinner(r))?'其他':primaryWinner(r); cnt[k]=(cnt[k]||0)+1; });
     const top = Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([k,v])=>`${k}×${v}`).join(' · ') || '—';
     return `<div class="timeline-item"><div class="archive-card">
       <div class="archive-head" onclick="toggleArchive(this)">
@@ -1970,7 +2000,7 @@ function renderArchive(){
     const tbody = document.getElementById('arch-'+w.id);
     if(!tbody) return;
     tbody.innerHTML = w.bids.map(r=>{
-      const color = getVendorColor(r.winner);
+      const color = getVendorColor(primaryWinner(r));
       const hasAmt = !!(r.amount && /\d/.test(r.amount));
       const amtClass = (hasAmt ? '' : 'empty') + (parseAmount(r.amount) >= BIG_DEAL_MIN ? ' big' : '');
       const tags = [];
@@ -1978,7 +2008,7 @@ function renderArchive(){
       if(!hasAmt && r.amount) tags.push(`<span class="mini-tag und">${escapeHtml(r.amount)}</span>`);
       return `<tr>
         <td>${escapeHtml(r.bidder)}</td>
-        <td><a class="vendor-link" href="javascript:void(0)" onclick="gotoVendor('${escapeHtml(r.winner)}')"><span class="vendor-tag" style="border-color:${color}40">${r.winner}</span></a></td>
+        <td><a class="vendor-link" href="javascript:void(0)" onclick="gotoVendor('${escapeHtml(primaryWinner(r))}')"><span class="vendor-tag" style="border-color:${color}40">${r.winner}</span></a></td>
         <td>${escapeHtml(r.project)} ${tags.join('')}</td>
         <td class="amount-cell ${amtClass}">${r.amount || '—'}</td>
       </tr>`;
@@ -1996,10 +2026,16 @@ function toggleArchive(head){
 }
 
 // ===== CSV Export =====
+// P0-5：原实现只取 getActiveBids() 忽略 currentFilter/searchTerm/sort，且字段内 `"` 未转义。
+// 现复用 computeRows()（与表格同一视图），并对字段做标准 CSV 转义（" → ""）。
+function csvCell(s){
+  const t = String(s == null ? '' : s);
+  return '"' + t.replace(/"/g,'""') + '"';
+}
 function exportCSV(){
   const headers = ['招标单位','中标单位','项目名称','金额','日期','信息来源'];
-  const rows = getActiveBids().map(r=>[r.bidder,r.winner,r.project,r.amount||'未披露',r.date||'',r.source||'公开信息']);
-  const csv = '\uFEFF' + [headers, ...rows].map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const rows = computeRows().map(r=>[r.bidder, r.winner, r.project, r.amount||'未披露', r.date||'', r.source||'公开信息']);
+  const csv = '\uFEFF' + [headers, ...rows].map(r=>r.map(csvCell).join(',')).join('\n');
   const blob = new Blob([csv],{type:'text/csv;charset=utf-8'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -2030,7 +2066,8 @@ function initCharts(){
   // Vendor bar chart — uniform accent (single color, sorted)
   const vendorCounts = {};
   getAllBids().forEach(r=>{
-    vendorCounts[r.winner] = (vendorCounts[r.winner]||0) + 1;
+    // P0-1：按归一化厂商名计数，避免「凯美瑞德」与「凯美瑞德(苏州)信息科技股份有限公司」劈成两根柱
+    winnerList(r).forEach(w=>{ vendorCounts[w] = (vendorCounts[w]||0) + 1; });
   });
   const sortedVendors = Object.entries(vendorCounts).sort((a,b)=>b[1]-a[1]);
   const vLabels = sortedVendors.map(v=>v[0]);
@@ -2100,10 +2137,15 @@ function initBubble(){
   const bids = getAllBids();
   const map = {};
   bids.forEach(r=>{
-    const w = r.winner;
-    if(!map[w]) map[w] = { name:w, count:0, amt:0 };
-    map[w].count++;
-    map[w].amt += parseAmount(r.amount);
+    // P0-1：多家中标按家数均摊金额，按归一化名聚合
+    const ws = winnerList(r);
+    if(!ws.length) return;
+    const share = ws.length > 1 ? parseAmount(r.amount) / ws.length : parseAmount(r.amount);
+    ws.forEach(w=>{
+      if(!map[w]) map[w] = { name:w, count:0, amt:0 };
+      map[w].count++;
+      map[w].amt += share;
+    });
   });
   const pts = Object.values(map).map(d=>({
     name:d.name, count:d.count, amt:d.amt,
@@ -2196,16 +2238,22 @@ function renderDataMeta(){
 function renderWeekCompare(){
   const el=document.getElementById('weekCompare'); if(!el) return;
   const cur=currentWeekBids, prev=archiveData[0]||[];
+  // P0-3 / P1-5：金额环比受披露率污染（本周披露率 62% vs 上周 24% → 假 "+453%"）。
+  // 改为只比"条数"与"≥500万笔数"两个无口径偏差的指标；金额仅作展示并标注披露率，不再给出误导百分比。
   const cN=cur.length, pN=prev.length;
-  const cA=Math.round(cur.reduce((s,r)=>s+parseAmount(r.amount),0));
-  const pA=Math.round(prev.reduce((s,r)=>s+parseAmount(r.amount),0));
-  const dN=cN-pN, dA=cA-pA;
-  const pctN= pN? Math.round(dN/pN*100):0, pctA= pA? Math.round(dA/pA*100):0;
+  const cBig=cur.filter(r=>parseAmount(r.amount)>=BIG_DEAL_MIN).length;
+  const pBig=prev.filter(r=>parseAmount(r.amount)>=BIG_DEAL_MIN).length;
+  const cAmt=Math.round(cur.reduce((s,r)=>s+parseAmount(r.amount),0));
+  const pAmt=Math.round(prev.reduce((s,r)=>s+parseAmount(r.amount),0));
+  const cDisc=cur.filter(r=>/\d/.test(r.amount||'')).length, pDisc=prev.filter(r=>/\d/.test(r.amount||'')).length;
+  const cRate= cN? Math.round(cDisc/cN*100):0, pRate=pN? Math.round(pDisc/pN*100):0;
+  const dN=cN-pN, dB=cBig-pBig;
   const arrow=n=> n>=0?'▲':'▼', cls=n=> n>=0?'up':'down';
   el.innerHTML='<div class="cmp-head"><span class="cmp-badge">环比洞察</span><span class="cmp-title">本周 vs 上周</span></div>'
     +'<div class="cmp-body">'
-    +'<div class="cmp-item"><span class="cmp-k">中标条数</span><span class="cmp-v">'+cN+' <em class="cmp-delta '+cls(dN)+'">'+arrow(dN)+' '+Math.abs(dN)+'（'+(pctN>=0?'+':'')+pctN+'%）</em></span></div>'
-    +'<div class="cmp-item"><span class="cmp-k">披露金额</span><span class="cmp-v">'+cA.toLocaleString()+'万 <em class="cmp-delta '+cls(dA)+'">'+arrow(dA)+' '+Math.abs(dA).toLocaleString()+'万（'+(pctA>=0?'+':'')+pctA+'%）</em></span></div>'
+    +'<div class="cmp-item"><span class="cmp-k">中标条数</span><span class="cmp-v">'+cN+' <em class="cmp-delta '+cls(dN)+'">'+arrow(dN)+' '+Math.abs(dN)+'</em></span></div>'
+    +'<div class="cmp-item"><span class="cmp-k">大额(≥500万)</span><span class="cmp-v">'+cBig+' 笔 <em class="cmp-delta '+cls(dB)+'">'+arrow(dB)+' '+Math.abs(dB)+'</em></span></div>'
+    +'<div class="cmp-item"><span class="cmp-k">已披露金额</span><span class="cmp-v">'+cAmt.toLocaleString()+' 万 <span class="cmp-delta" style="font-weight:400;color:var(--ink-400)">披露率 '+cRate+'% vs '+pRate+'%</span></span></div>'
     +'</div>';
 }
 function renderPending(){
@@ -2309,6 +2357,22 @@ function applyViewState(st){
   toast('已按分享的筛选条件打开');
 }
 
+// ===== 元信息渲染（P0-4）：周期副标题 + 下次更新时间 随数据动态生成，去掉硬编码 =====
+function nextMondayText(){
+  const d = new Date();
+  const day = (d.getDay() + 6) % 7;        // 周一=0
+  const add = day === 0 ? 7 : (7 - day);
+  d.setDate(d.getDate() + add);
+  return d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日';
+}
+function renderMeta(){
+  const cur = weekOptions.find(w=>w.id==='current');
+  const ps = document.getElementById('periodSub');
+  if(ps && cur) ps.textContent = '报告周期：' + cur.range + ' · 点击列头可排序';
+  const badge = document.querySelector('.update-badge');
+  if(badge) badge.textContent = '⏰ 下次自动更新：' + nextMondayText() + '（每周一早上）';
+}
+
 // ===== Init =====
 // 周下拉由 weekOptions 单一数据源生成，避免新增归档周后下拉漏项
 function buildWeekSelect(){
@@ -2344,7 +2408,9 @@ function init(){
   try { buildWeekSelect(); } catch(e){ console.error('buildWeekSelect failed:', e); }
   try { animateCount(document.getElementById('kpi-total'), getAllBids().length); } catch(e){ console.error('kpi-total failed:', e); }
   try { const kpiAmt = Math.round(getAllBids().reduce((s,r)=>s+parseAmount(r.amount),0)); animateCount(document.getElementById('kpi-amount'), kpiAmt, {format:v=>Math.round(v).toLocaleString()}); } catch(e){ console.error('kpi-amount failed:', e); }
-  try { animateCount(document.getElementById('kpi-vendors'), new Set(getAllBids().map(r=>r.winner)).size); } catch(e){ console.error('kpi-vendors failed:', e); }
+  try { animateCount(document.getElementById('kpi-vendors'), new Set(getAllBids().flatMap(r=>winnerList(r))).size); } catch(e){ console.error('kpi-vendors failed:', e); }
+  try { animateCount(document.getElementById('kpi-weeks'), weekOptions.filter(w=>w.id!=='all').length); } catch(e){ console.error('kpi-weeks failed:', e); }
+  try { renderMeta(); } catch(e){ console.error('renderMeta failed:', e); }
   try { renderBidsTable(); } catch(e){ console.error('renderBidsTable failed:', e); }
   try { updateCounts(); } catch(e){ console.error('updateCounts failed:', e); }
   try { renderArchive(); } catch(e){ console.error('renderArchive failed:', e); }
