@@ -44,6 +44,8 @@
   --soon: #b0842f;
   --soon-soft: #f4ecdd;
   --done: #5b6b7a;
+  --ok: #1f8a4c;
+  --ok-soft: #e7f3ec;
   /* 卡片浮雕层级（替代纯描边，营造"浮起"质感） */
   --elev-1: 0 1px 2px rgba(29,30,32,0.04), 0 10px 26px -16px rgba(29,30,32,0.20);
 
@@ -96,6 +98,7 @@
   --und: #9a9da1;      --und-soft: rgba(154,157,161,0.14);
   --soon: #e0b15f;     --soon-soft: rgba(224,177,95,0.16);
   --done: #8a9bab;
+  --ok: #5cc88a;       --ok-soft: rgba(92,200,138,0.16);
   --elev-1: 0 1px 2px rgba(0,0,0,0.3), 0 12px 30px -16px rgba(0,0,0,0.6);
   --shadow-xs: 0 1px 2px rgba(0,0,0,0.2);
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.25);
@@ -113,11 +116,11 @@ body::before{content:"";position:fixed;inset:-25% -15% auto -15%;height:135%;z-i
     radial-gradient(46% 38% at 12% 6%, color-mix(in srgb,var(--accent) 16%,transparent), transparent 70%),
     radial-gradient(42% 34% at 90% 2%, color-mix(in srgb,var(--clay) 14%,transparent), transparent 70%),
     radial-gradient(58% 48% at 72% 58%, color-mix(in srgb,var(--accent) 10%,transparent), transparent 72%);
-  opacity:.95;animation:aurora 24s ease-in-out infinite alternate;will-change:transform}
+  opacity:.92;animation:none}
 @keyframes aurora{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-2.5%,1.8%,0) scale(1.06)}100%{transform:translate3d(2.2%,-1.2%,0) scale(1.03)}}
-body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04;mix-blend-mode:overlay;
+body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.025;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-[data-theme="dark"] body::after{mix-blend-mode:soft-light;opacity:.05}
+[data-theme="dark"] body::after{mix-blend-mode:soft-light;opacity:.035}
 
 /* ===== Topbar ===== */
 .topbar{position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--surface) 80%,transparent);backdrop-filter:blur(var(--glass-blur)) saturate(165%);-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(165%);border-bottom:1px solid transparent;box-shadow:0 10px 34px -26px rgba(29,30,32,0.6);transition:background .55s ease;overflow:visible}
@@ -146,6 +149,15 @@ body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opac
 .tab-panel{display:none;animation:fadeIn .4s ease}
 .tab-panel.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* P1-1 首屏信息架构：概览区改 flex 列布局，用 order 重排视觉顺序（不动 DOM，保留"改数组即更新"契约） */
+#tab-overview.active{display:flex;flex-direction:column}
+#tab-overview>.data-meta{order:1}
+#tab-overview>.tldr{order:2}
+#tab-overview>.kpi-grid{order:3}
+#tab-overview>.compare-card{order:4}
+#tab-overview>.big-deals{order:5}
+#tab-overview>.chart-card,#tab-overview>.chart-grid{order:6}
+#tab-overview>.war-board{order:8}
 
 /* ===== KPI Cards ===== */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;margin-bottom:30px}
@@ -352,7 +364,7 @@ tbody tr.hidden{display:none}
 .src-link{display:inline;align-items:center;gap:4px;font-size:0.8rem;font-weight:500;color:var(--accent);text-decoration:none;white-space:normal;overflow-wrap:anywhere;word-break:break-word;line-height:1.4}
 .src-link:hover{text-decoration:underline}
 .src-link svg{flex:0 0 auto;opacity:.7;vertical-align:middle}
-.src-link.src-real{color:#1f8a4c}
+.src-link.src-real{color:var(--ok)}
 .src-link.src-real:hover{text-decoration:underline}
 .src-link.src-search{color:var(--accent)}
 .src-dot{width:6px;height:6px;border-radius:50%;background:#1f8a4c;display:inline-block;margin-right:4px;flex:0 0 auto;vertical-align:middle}
@@ -393,6 +405,8 @@ tbody tr.hidden{display:none}
 .tldr-title{font-size:0.95rem;font-weight:600;color:var(--ink-500)}
 .tldr-body{font-size:0.92rem;line-height:1.7;color:var(--ink-500)}
 .tldr-body b{color:var(--accent);font-weight:600}
+.tldr-link{cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.tldr-link:hover{opacity:.8}
 .tldr-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .tldr-stat{flex:1 1 120px;min-width:96px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;text-align:center}
 .tldr-stat .v{font-size:1.3rem;font-weight:700;color:var(--ink-500);line-height:1.15}
@@ -467,19 +481,51 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
 .radar-card.is-future .radar-date{color:var(--ink-700);font-weight:600}
 
 /* ===== P1 焕新：语义状态色 + 卡片浮雕 + 微交互 ===== */
-.kpi-card,.chart-card,.info-card,.vc-card,.radar-card,.archive-card,
-.big-deals,.tldr,.war-board,.compare-card{
+/* P1-8 装饰减负：极光/噪点已收敛；--elev-glass 仅保留给面板级容器（panel/big-deals/tldr），
+   其余卡片统一降为 --shadow-sm，避免"处处悬浮"。 */
+.panel,.big-deals,.tldr{
   box-shadow:var(--elev-glass);
   border-color:color-mix(in srgb,var(--border) 78%,var(--border-2));
+}
+.kpi-card,.chart-card,.info-card,.vc-card,.radar-card,.archive-card,.war-board,.compare-card{
+  box-shadow:var(--shadow-sm);
 }
 .kpi-card .kpi-value{font-size:2.35rem;letter-spacing:-.02em}
 .kpi-value .unit{font-size:0.9rem;color:var(--ink-400);margin-left:3px;font-weight:500}
 
-/* 大额项目：金额高亮为"涨红"，并加比例条 */
-.amount-cell.big{color:var(--up);font-weight:700}
-.bd-amount{color:var(--up)}
+/* 大额项目：用陶土色 + 下划线表达（P1-11 语义色拆分：--up 红专表涨跌，不再兼表大额） */
+.amount-cell.big{color:var(--clay);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+.bd-amount{color:var(--clay)}
 .bd-bar{height:4px;border-radius:var(--radius-full);background:var(--surface-3);overflow:hidden;margin-top:8px}
-.bd-bar span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--up),color-mix(in srgb,var(--up) 55%,var(--clay)));transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.bd-bar span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--clay),color-mix(in srgb,var(--clay) 55%,var(--accent)));transition:width .8s cubic-bezier(.2,.8,.2,1)}
+
+/* ===== P1-1 战况榜默认 TOP10 + 展开全部 ===== */
+.wb-list .wb-extra{display:none}
+.wb-list.expanded .wb-extra{display:grid}
+#warExpand{margin-left:auto}
+
+/* ===== P1-2/3 数据分层 S/A/B/C + 长尾折叠 ===== */
+#bidsTable.hide-tail tr.tail-row{display:none}
+.mini-tag.tier{font-weight:700;letter-spacing:.04em}
+.mini-tag.tier-S{color:#8f7a5a;background:rgba(143,122,90,.14);border-color:rgba(143,122,90,.35)}
+.mini-tag.tier-A{color:var(--accent-strong);background:rgba(91,107,122,.12);border-color:rgba(91,107,122,.3)}
+.mini-tag.tier-B{color:var(--ink-500);background:var(--surface-3);border-color:var(--border)}
+.mini-tag.tier-C{color:var(--und);background:var(--und-soft);border-color:transparent}
+
+/* ===== P1-4 可信度三档条 ===== */
+.dm-bar{flex-basis:100%;display:flex;width:100%;height:6px;border-radius:999px;overflow:hidden;background:var(--surface-3);margin-top:10px;gap:2px}
+.dm-seg{height:100%}
+.dm-seg.ok{background:var(--ok)}
+.dm-seg.nm{background:var(--accent)}
+.dm-seg.nx{background:var(--und)}
+
+/* ===== P1-7 来源列收成一点 + 分享按钮 hover 才显示 ===== */
+.src-link.src-dotonly{display:inline-flex;padding:2px 4px}
+.src-dot.src-dot-grey{background:var(--und)}
+.share-btn{opacity:0;transition:opacity .2s ease}
+#bidsTable tbody tr:hover .share-btn,
+#bidsTable tbody tr:focus-within .share-btn{opacity:1}
+@media (hover:none){ .share-btn{opacity:1} }
 
 /* 战况榜厂商行可点击钻取 */
 .wb-row{cursor:pointer;transition:background .2s ease,transform .2s ease}
@@ -538,7 +584,7 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
 .data-meta{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:-12px 0 22px;font-size:0.8rem;color:var(--ink-400)}
 .data-meta .dm-item{display:inline-flex;align-items:center;gap:6px}
 .data-meta .dm-item b{color:var(--ink-700);font-weight:600}
-.data-meta .dm-ok b{color:var(--down)}
+.data-meta .dm-ok b{color:var(--ok)}
 .data-meta svg{width:14px;height:14px;opacity:.7}
 
 /* 环比洞察卡片 */
@@ -641,14 +687,6 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
         <div class="kpi-label">覆盖厂商数</div>
         <span class="kpi-trend">恒生电子领跑</span>
       </div>
-      <div class="kpi-card reveal">
-        <div class="kpi-icon">
-          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke-width="2" stroke-linecap="round"/></svg>
-        </div>
-        <div class="kpi-value" id="kpi-weeks">7</div>
-        <div class="kpi-label">覆盖周报数</div>
-        <span class="kpi-trend"><span class="arrow">↻</span> 每周一自动更新</span>
-      </div>
     </div>
 
     <div class="data-meta reveal" id="dataMeta"></div>
@@ -670,8 +708,11 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
 
     <div class="war-board reveal">
       <div class="wb-head">
-        <div class="wb-title">厂商战况榜</div>
-        <div class="wb-sub">按中标单位聚合 · 全量累计（中标数 / 披露金额 / 银行覆盖）</div>
+        <div>
+          <div class="wb-title">厂商战况榜</div>
+          <div class="wb-sub">按中标单位聚合 · 全量累计（中标数 / 披露金额 / 银行覆盖）</div>
+        </div>
+        <button type="button" class="btn-sub-src" id="warExpand" onclick="toggleWarBoard()" style="margin-left:auto">展开全部</button>
       </div>
       <div class="wb-list" id="warBoard"></div>
     </div>
@@ -791,7 +832,10 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
           <tfoot id="bidsFoot"></tfoot>
         </table>
       </div>
-      <p class="table-hint">长项目名默认收起为两行 · 鼠标悬停或点击该行「项目名称」可展开全文 · 单位名显示简称，悬停可见工商全称</p>
+      <div class="bd-fold" id="tailFold">
+        <button type="button" onclick="toggleTail()" id="tailToggle" aria-expanded="false"></button>
+      </div>
+      <p class="table-hint">长项目名默认收起为两行 · 鼠标悬停或点击该行「项目名称」可展开全文 · 单位名显示简称，悬停可见工商全称 · 行内标签 S/A/B/C 为数据分层（核心 / 有效 / 背景 / 长尾）</p>
       <div class="no-results" id="noResults" style="display:none">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke-width="2" stroke-linecap="round"/></svg>
         <p>未找到匹配的招投标信息</p>
@@ -975,9 +1019,9 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
 // ===== Data =====
 const VENDOR_COLORS = {
   '恒生电子':'#5b6b7a','金仕达':'#6b7a6e','衡泰技术':'#9a8159',
-  '云赢网络':'#6e6b7a','兆尹信息':'#7a8a94','时代银通':'#5f7268',
+  '云赢网络':'#6e6b7a','兆尹信息':'#6f828c','时代银通':'#5f7268',
   '子午线':'#9c7b66','QTrade':'#8a8278','顶点软件':'#6f7d86',
-  '长亭科技':'#a3675f','科蓝软件':'#5b6b7a',
+  '长亭科技':'#a3675f','科蓝软件':'#4f5d6b',
   '森浦':'#7a8a94','量锐':'#5a7a8f',
   '凯美瑞德':'#8f7a5a'
 };
@@ -1111,14 +1155,20 @@ function isGreenUrl(u){
     return GREEN_DOMAINS.some(d => h === d || h.endsWith('.'+d));
   }catch(e){ return false; }
 }
-function sourceCell(r){
+// P1-4 诚实呈现可信度三档：绿链=已核验直达；蓝=平台署名但未核验原文；灰=无来源（原文未收录，仅检索兜底）。
+// P1-7 compact=true 时来源列只显示一个圆点（绿=已核验 / 灰=无源），完整文字入 title，减少表格噪声。
+function sourceCell(r, compact){
   const text = r.source || '公开信息';
   const real = !!(r.sourceUrl && isGreenUrl(r.sourceUrl));
   const url = r.sourceUrl || ('https://www.baidu.com/s?wd=' + encodeURIComponent((r.project||'') + ' ' + (r.winner||'') + ' 中标'));
-  const cls = real ? 'src-link src-real' : 'src-link src-search';
-  const mark = real ? '<span class="src-dot" title="已核验 · 直达公告原文"></span>' : '';
-  const label = real ? ('已核验来源：' + text) : '未收录原文，点击跳转检索';
-  return `<a class="${cls}" href="${url}" target="_blank" rel="noopener" title="${label}">${mark}${escapeHtml(text)}<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`;
+  const svg = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  if(real){
+    if(compact) return `<a class="src-link src-real src-dotonly" href="${url}" target="_blank" rel="noopener" title="已核验 · 直达公告原文：${escapeHtml(text)}"><span class="src-dot" title="已核验 · 直达公告原文"></span></a>`;
+    return `<a class="src-link src-real" href="${url}" target="_blank" rel="noopener" title="已核验 · 直达公告原文：${escapeHtml(text)}"><span class="src-dot" title="已核验 · 直达公告原文"></span>${escapeHtml(text)}${svg}</a>`;
+  }
+  const label = r.source ? ('平台署名未核验 · ' + text) : '原文未收录 · 点击检索';
+  if(compact) return `<a class="src-link src-search src-dotonly" href="${url}" target="_blank" rel="noopener" title="${escapeHtml(label)}"><span class="src-dot src-dot-grey" title="未核验 / 未收录原文"></span></a>`;
+  return `<a class="src-link src-search" href="${url}" target="_blank" rel="noopener" title="${escapeHtml(label)}">${escapeHtml(label)}${svg}</a>`;
 }
 
 const currentWeekBids = [
@@ -1458,10 +1508,13 @@ const weekOptions = [
 function bidSignature(r){
   return (r.winner||'')+'|'+(r.project||'')+'|'+(r.bidder||'')+'|'+(r.date||'');
 }
+let _allBidsCache = null;
 function getAllBids(){
+  if(_allBidsCache) return _allBidsCache;   // P2-4 缓存：init 内被调用 ~12 次，避免每次重建 227 项 + Set
   const merged = [ ...currentWeekBids, ...archiveData.flat(), ...liangruiBids ];
   const seen = new Set(); const out = [];
   merged.forEach(r=>{ const k = bidSignature(r); if(!seen.has(k)){ seen.add(k); out.push(r); } });
+  _allBidsCache = out;
   return out;
 }
 function getActiveBids(){
@@ -1602,6 +1655,21 @@ function isXC(s){ return XC_RE.test(s || ''); }
 const BIG_DEAL_MIN = 500;   // 大额门槛：单笔 ≥500 万元
 const BIG_DEAL_FOLD = 9;    // 超过 9 条折叠
 
+// P1-2 数据分层（纯函数，渲染层计算，不污染数据）：
+// S核心＝≥500万 或 (头部厂商∩信创)；A有效＝已披露≥100万 或 有绿链；
+// B背景＝有金额<100万 / 框架入围；C长尾＝无金额且无链（默认折叠为"另有 N 条"）。
+const TIER_TOP = ['恒生电子','金仕达','衡泰技术','云赢网络','兆尹信息','时代银通','子午线','凯美瑞德','量锐','中信信托','光大证券','国投证券'];
+function tier(r){
+  const amt = parseAmount(r.amount);
+  const ws = winnerList(r);
+  const isTop = ws.some(w=>TIER_TOP.includes(w));
+  if(amt >= BIG_DEAL_MIN || (isTop && isXC(r.project))) return 'S';
+  if((amt>0 && amt>=100) || (r.sourceUrl && isGreenUrl(r.sourceUrl))) return 'A';
+  if(amt>0 || (r.amount && r.amount.indexOf('框架')>=0)) return 'B';
+  return 'C';
+}
+function tierName(t){ return {S:'核心 S',A:'有效 A',B:'背景 B',C:'长尾 C'}[t] || t; }
+
 function renderBigDeals(){
   const el = document.getElementById('bigDealsList');
   if(!el) return;
@@ -1672,7 +1740,7 @@ function renderTLDR(){
   const cnt = {};
   wk.forEach(r=>winnerList(r).forEach(w=>cnt[w]=(cnt[w]||0)+1));
   const entries = Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
-  const top = entries.slice(0,2).map(([k,v])=>`<b>${k}</b>（${v}条）`).join('、');
+  const top = entries.slice(0,2).map(([k,v])=>`<b class="tldr-link" onclick="focusVendor('${escapeHtml(k)}')" title="点击查看 ${escapeHtml(k)} 全部中标">${k}</b>（${v}条）`).join('、');
   const mostActive = entries[0];
   const dates = wk.map(r=>r.date).filter(Boolean).sort();
   const range = (dates[0] && dates[dates.length-1]) ? `${dates[0]} – ${dates[dates.length-1]}` : '';
@@ -1716,16 +1784,34 @@ function renderWarBoard(){
   });
   const rows = Object.values(map).sort((a,b)=>b.count-a.count || b.amt-a.amt);
   const maxCount = Math.max(1, ...rows.map(r=>r.count));
-  el.innerHTML = rows.map(r=>{
+  const WAR_TOP = 10;   // P1-1 战况榜默认只展示头部 TOP10，避免 45 行长尾稀释"TOP3 占 57%"这一核心结论
+  el.innerHTML = rows.map((r,i)=>{
+    const extra = i >= WAR_TOP ? ' wb-extra' : '';
     const color = getVendorColor(r.name);
     const pct = Math.round(r.count / maxCount * 100);
     const amtTxt = r.amt>0 ? ` · ${Math.round(r.amt).toLocaleString()}万` : '';
-    return `<div class="wb-row" style="--vc:${color}" onclick="focusVendor('${escapeHtml(r.name)}')" title="点击筛选 ${escapeHtml(r.name)} 全部中标">
+    return `<div class="wb-row${extra}" style="--vc:${color}" onclick="focusVendor('${escapeHtml(r.name)}')" title="点击筛选 ${escapeHtml(r.name)} 全部中标">
       <div class="wb-name"><span class="wb-dot"></span><span>${escapeHtml(r.name)}</span></div>
       <div class="wb-track"><div class="wb-fill" style="width:${pct}%"></div></div>
       <div class="wb-meta"><b>${r.count}</b>条<span class="amt">${amtTxt}</span> · ${r.banks.size}行</div>
     </div>`;
   }).join('');
+  const btn = document.getElementById('warExpand');
+  if(btn){
+    if(rows.length > WAR_TOP){
+      btn.style.display = '';
+      btn.textContent = '展开全部 ' + rows.length + ' 家';
+      btn.dataset.rest = String(rows.length - WAR_TOP);
+    } else { btn.style.display = 'none'; }
+  }
+}
+
+function toggleWarBoard(){
+  const list = document.getElementById('warBoard');
+  const btn = document.getElementById('warExpand');
+  if(!list || !btn) return;
+  const open = list.classList.toggle('expanded');
+  btn.textContent = open ? '收起' : '展开全部 ' + (btn.dataset.rest || '') + ' 家';
 }
 
 // 厂商钻取：点击战况榜任一厂商 → 筛选其全部中标并跳到招投标汇总
@@ -1875,8 +1961,13 @@ function computeRows(){
       return 0;
     });
   } else {
-    // 默认按日期倒序：最新中标排在最前面
-    rows.sort((a,b)=> (b.date||'').localeCompare(a.date||''));
+    // P1-3 默认排序：有金额优先 + 金额降序；无金额长尾沉底（按日期倒序），让高价值行浮到最前
+    rows.sort((a,b)=>{
+      const ha=/\d/.test(a.amount||''), hb=/\d/.test(b.amount||'');
+      if(ha!==hb) return ha?-1:1;
+      if(ha&&hb){ const d=parseAmount(b.amount)-parseAmount(a.amount); if(d) return d; }
+      return (b.date||'').localeCompare(a.date||'');
+    });
   }
   return rows;
 }
@@ -1891,24 +1982,57 @@ function renderBidsTable(){
     const hasAmt = !!(r.amount && /\d/.test(r.amount));
     const amtClass = (hasAmt ? '' : 'empty') + (amt >= BIG_DEAL_MIN ? ' big' : '');
     const isWeek = weekSet.has(bidSignature(r));
+    const t = tier(r);
     const tags = [];
+    tags.push(`<span class="mini-tag tier tier-${t}" title="数据分层 · ${tierName(t)}">${t}</span>`);
     if(isXC(r.project)) tags.push('<span class="mini-tag xc">信创</span>');
     if(!hasAmt && r.amount) tags.push(`<span class="mini-tag und">${escapeHtml(r.amount)}</span>`);
     const enc = encodeURIComponent(bidSignature(r));
     const w = primaryWinner(r);
-    return `<tr style="--vc:${color}" class="${isWeek?'is-week':''}" data-sig="${enc}">
+    const tailCls = (t==='C') ? ' tail-row' : '';
+    return `<tr style="--vc:${color}" class="${isWeek?'is-week':''}${tailCls}" data-sig="${enc}">
       <td><div class="clamp2 cell-org" title="${escapeHtml(r.bidder)}">${escapeHtml(shortOrg(r.bidder))}</div>${isWeek?'<span class="week-badge">最新</span>':''}</td>
       <td><a class="vendor-link" href="javascript:void(0)" onclick="gotoVendor('${escapeHtml(w)}')" title="${escapeHtml(r.winner)}"><span class="vendor-tag" style="border-color:${color}40">${escapeHtml(shortOrg(r.winner))}</span></a></td>
       <td class="proj-cell" onclick="this.closest('tr').classList.toggle('row-open')" title="${escapeHtml(r.project)}"><div class="clamp2 proj-text">${escapeHtml(r.project)}</div>${tags.length?`<div class="proj-tags">${tags.join('')}</div>`:''}<button type="button" class="share-btn" onclick="event.stopPropagation();shareBid('${enc}')" title="复制本条深链"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" stroke-linecap="round" stroke-linejoin="round"/></svg>分享</button></td>
       <td class="amount-cell ${amtClass}"${hasAmt?` title="约 ${amt.toLocaleString()} 万元"`:''}>${hasAmt ? `<span class="amt-num">${escapeHtml(r.amount)}</span>` : '—'}</td>
       <td>${r.date ? `<span class="date-tag">${escapeHtml(r.date)}</span>` : '<span class="date-tag" style="opacity:.45">—</span>'}</td>
-      <td class="source-cell">${sourceCell(r)}</td>
+      <td class="source-cell">${sourceCell(r, true)}</td>
     </tr>`;
   }).join('');
 
   renderBidsFoot(rows);
 
+  // P1-2/3 长尾折叠：仅在"全部 + 无搜索"默认视图下，默认收起无金额且无来源的 C 类长尾行
+  const tbl = document.getElementById('bidsTable');
+  const foldable = (currentFilter === 'all' && !searchTerm);
+  if(tbl) tbl.classList.toggle('hide-tail', foldable);
+  const tailFold = document.getElementById('tailFold');
+  const tailBtn = document.getElementById('tailToggle');
+  const tailCount = rows.filter(r=>tier(r)==='C').length;
+  if(tailFold && tailBtn){
+    if(foldable && tailCount > 0){
+      tailFold.classList.add('on');
+      tailBtn.dataset.rest = String(tailCount);
+      tailBtn.textContent = `显示长尾（无金额且无来源）${tailCount} 条`;
+      tailBtn.setAttribute('aria-expanded','false');
+    } else {
+      tailFold.classList.remove('on');
+    }
+  }
+
   document.getElementById('noResults').style.display = rows.length ? 'none' : 'block';
+}
+
+function toggleTail(){
+  const tbl = document.getElementById('bidsTable');
+  const btn = document.getElementById('tailToggle');
+  if(!tbl || !btn) return;
+  // hide-tail 存在 = 长尾收起；点击切换为展开
+  const nowHidden = tbl.classList.toggle('hide-tail');
+  btn.textContent = nowHidden
+    ? `显示长尾（无金额且无来源）${btn.dataset.rest || ''} 条`
+    : '收起长尾';
+  btn.setAttribute('aria-expanded', nowHidden ? 'false' : 'true');
 }
 
 function sortBy(col){
@@ -2227,13 +2351,24 @@ function hexA(hex,a){ hex=(hex||'#71737a').replace('#',''); if(hex.length===3) h
 function renderDataMeta(){
   const el=document.getElementById('dataMeta'); if(!el) return;
   const all=getAllBids(); const total=all.length;
-  const verified=all.filter(r=>r.sourceUrl).length;
-  const pct= total? Math.round(verified/total*100):0;
+  // P1-4 三档诚实拆分：已核验(绿链) / 平台署名未核验 / 无来源
+  const verified=all.filter(r=>r.sourceUrl && isGreenUrl(r.sourceUrl)).length;
+  const named=all.filter(r=>r.source && !(r.sourceUrl && isGreenUrl(r.sourceUrl))).length;
+  const none=all.filter(r=>!r.source).length;
+  const pctV= total? Math.round(verified/total*100):0;
+  const pctN= total? Math.round(named/total*100):0;
+  const pctX= total? Math.round(none/total*100):0;
   const dates=all.map(r=>r.date).filter(Boolean).sort();
   const upd= dates.length? dates[dates.length-1]:'—';
-  el.innerHTML='<span class="dm-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg>数据更新于 <b>'+upd+'</b></span>'
-    +'<span class="dm-item dm-ok"><span class="src-dot"></span>已核验来源 <b>'+pct+'%</b>（'+verified+'/'+total+'）</span>'
-    +'<span class="dm-item">每周一自动更新 · 纯静态站点</span>';
+  const weeks= weekOptions.filter(w=>w.id!=='all' && w.id!=='current').length;
+  const clock='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg>';
+  el.innerHTML='<span class="dm-item">'+clock+'数据更新于 <b>'+upd+'</b></span>'
+    +'<span class="dm-item">覆盖 <b>'+weeks+'</b> 个周次</span>'
+    +'<span class="dm-item dm-ok"><span class="src-dot"></span>已核验 <b>'+pctV+'%</b>（'+verified+'）</span>'
+    +'<span class="dm-item">平台署名未核验 <b>'+pctN+'%</b>（'+named+'）</span>'
+    +'<span class="dm-item">无来源 <b>'+pctX+'%</b>（'+none+'）</span>'
+    +'<span class="dm-item">每周一自动更新 · 纯静态站点</span>'
+    +'<div class="dm-bar" title="可信度构成：已核验 '+pctV+'% / 平台署名未核验 '+pctN+'% / 无来源 '+pctX+'%"><span class="dm-seg ok" style="width:'+pctV+'%"></span><span class="dm-seg nm" style="width:'+pctN+'%"></span><span class="dm-seg nx" style="width:'+pctX+'%"></span></div>';
 }
 function renderWeekCompare(){
   const el=document.getElementById('weekCompare'); if(!el) return;
@@ -2373,6 +2508,27 @@ function renderMeta(){
   if(badge) badge.textContent = '⏰ 下次自动更新：' + nextMondayText() + '（每周一早上）';
 }
 
+// ===== P2-2 数据哨兵（仅 console，绝不碰 DOM）=====
+// 挂在 init() 首行：校验两数组长度一致、必填字段、金额含数字却解析为 0、签名重复、winner 含「、」未拆分等。
+// 替代 P0-2 那种"静默丢数"的处理，问题只在控制台告警，不影响展示与自动化契约。
+function auditData(){
+  const issues = [];
+  const all = getAllBids();
+  all.forEach(r=>{
+    if(!r.bidder || !r.winner || !r.project) issues.push('缺必填字段: ' + (r.project || r.winner || '(unknown)'));
+    if(r.amount && /\d/.test(r.amount) && parseAmount(r.amount) === 0) issues.push('金额含数字但解析为0: ' + r.amount + ' (' + (r.project||'') + ')');
+    if(r.winner && /[、，]/.test(r.winner) && winnerList(r).length < 2) issues.push('winner 含顿号但未被拆分: ' + r.winner);
+  });
+  const sigs = new Set();
+  all.forEach(r=>{ const k = bidSignature(r); if(sigs.has(k)) issues.push('重复签名: ' + k); sigs.add(k); });
+  // 未在册厂商（既非 VENDOR_COLORS 也非"其他"已知）提示，便于发现新厂商是否需登记
+  const unknown = new Set();
+  all.forEach(r=> winnerList(r).forEach(w=>{ if(!VENDOR_COLORS[w] && !OTHER_VENDORS.includes(w)) unknown.add(w); }));
+  if(unknown.size) issues.push('未登记厂商 ' + [...unknown].join('、'));
+  if(issues.length) console.warn('[auditData] 发现 ' + issues.length + ' 处疑似问题：', issues.slice(0, 20));
+  else console.log('[auditData] 校验通过：无重复签名 / 缺字段 / 金额解析异常');
+}
+
 // ===== Init =====
 // 周下拉由 weekOptions 单一数据源生成，避免新增归档周后下拉漏项
 function buildWeekSelect(){
@@ -2405,11 +2561,11 @@ function animateCount(el, target, opts){
 }
 
 function init(){
+  try { auditData(); } catch(e){ console.error('auditData failed:', e); }   // P2-2 哨兵：首行仅 console 告警
   try { buildWeekSelect(); } catch(e){ console.error('buildWeekSelect failed:', e); }
   try { animateCount(document.getElementById('kpi-total'), getAllBids().length); } catch(e){ console.error('kpi-total failed:', e); }
   try { const kpiAmt = Math.round(getAllBids().reduce((s,r)=>s+parseAmount(r.amount),0)); animateCount(document.getElementById('kpi-amount'), kpiAmt, {format:v=>Math.round(v).toLocaleString()}); } catch(e){ console.error('kpi-amount failed:', e); }
   try { animateCount(document.getElementById('kpi-vendors'), new Set(getAllBids().flatMap(r=>winnerList(r))).size); } catch(e){ console.error('kpi-vendors failed:', e); }
-  try { animateCount(document.getElementById('kpi-weeks'), weekOptions.filter(w=>w.id!=='all').length); } catch(e){ console.error('kpi-weeks failed:', e); }
   try { renderMeta(); } catch(e){ console.error('renderMeta failed:', e); }
   try { renderBidsTable(); } catch(e){ console.error('renderBidsTable failed:', e); }
   try { updateCounts(); } catch(e){ console.error('updateCounts failed:', e); }
