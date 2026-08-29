@@ -245,7 +245,8 @@ body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opac
 /* ===== Table ===== */
 .table-wrapper{overflow-x:auto;border-radius:var(--radius-md);border:1px solid var(--border)}
 table{width:100%;border-collapse:collapse;font-size:0.875rem}
-thead th{background:color-mix(in srgb,var(--surface-2) 88%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--ink-500);font-weight:600;text-align:left;padding:13px 16px;white-space:nowrap;border-bottom:1px solid var(--border-2);cursor:pointer;transition:background .2s ease;user-select:none;position:sticky;top:0;z-index:2}
+thead th{background:color-mix(in srgb,var(--surface-2) 88%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--ink-700);font-weight:600;text-align:center;letter-spacing:.02em;padding:13px 16px;white-space:nowrap;border-bottom:1px solid var(--border-2);cursor:pointer;transition:background .2s ease;user-select:none;position:sticky;top:0;z-index:2}
+thead th[data-sort="amount"]{text-align:right}
 thead th:hover{background:var(--surface-3);color:var(--ink-900)}
 thead th .sort-icon{opacity:.35;margin-left:4px;display:inline-block;font-size:.8rem}
 thead th.sorted .sort-icon{opacity:1;color:var(--accent)}
@@ -361,13 +362,14 @@ tbody tr.hidden{display:none}
 .vendor-link{color:inherit;text-decoration:none}
 .vendor-link:hover .vendor-tag{border-color:var(--accent)!important;background:var(--accent-soft)}
 .source-cell{max-width:200px;vertical-align:top}
-.src-link{display:inline;align-items:center;gap:4px;font-size:0.8rem;font-weight:500;color:var(--accent);text-decoration:none;white-space:normal;overflow-wrap:anywhere;word-break:break-word;line-height:1.4}
+.src-link{display:inline;align-items:center;gap:4px;font-size:0.8rem;font-weight:500;color:var(--accent);text-decoration:none;white-space:normal;overflow-wrap:anywhere;word-break:break-word;line-height:1.45}
 .src-link:hover{text-decoration:underline}
 .src-link svg{flex:0 0 auto;opacity:.7;vertical-align:middle}
 .src-link.src-real{color:var(--ok)}
 .src-link.src-real:hover{text-decoration:underline}
+.src-link.src-platform{color:var(--ink-500)}
 .src-link.src-search{color:var(--accent)}
-.src-dot{width:6px;height:6px;border-radius:50%;background:#1f8a4c;display:inline-block;margin-right:4px;flex:0 0 auto;vertical-align:middle}
+.src-dot{width:7px;height:7px;border-radius:50%;background:var(--ok);display:inline-block;margin-right:5px;flex:0 0 auto;vertical-align:middle}
 
 /* ===== Vendor business info grid ===== */
 .vendor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;margin-top:4px}
@@ -428,7 +430,7 @@ tbody tr.hidden{display:none}
 .wb-meta b{color:var(--ink-500);font-weight:600}
 .wb-meta .amt{color:var(--accent)}
 
-#bidsTable tbody tr{box-shadow:inset 3px 0 0 var(--vc,transparent);transition:background .2s ease}
+#bidsTable tbody tr{box-shadow:inset 3px 0 0 var(--vc,transparent);border-bottom:1px solid var(--border);transition:background .2s ease}
 #bidsTable tbody tr.is-week{background:color-mix(in srgb,var(--accent) 7%,transparent)}
 #bidsTable tbody tr.is-week:hover{background:color-mix(in srgb,var(--accent) 13%,transparent)}
 .week-badge{display:inline-block;font-size:0.64rem;font-weight:700;color:#fff;background:var(--accent);padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;letter-spacing:.02em}
@@ -447,7 +449,9 @@ tbody tr.hidden{display:none}
 
 /* ===== 招投标表格：定宽 + 截断 + 层次 ===== */
 #bidsTable{table-layout:fixed;min-width:940px}
-#bidsTable tbody td{vertical-align:top;padding:12px 16px;line-height:1.5}
+#bidsTable tbody td{vertical-align:middle;padding:12px 16px;line-height:1.5}
+#bidsTable td.amount-cell{text-align:right;font-variant-numeric:tabular-nums}
+#bidsTable tbody td:nth-child(5){text-align:center}
 #bidsTable tbody tr:hover .clamp2{-webkit-line-clamp:unset;line-clamp:unset}
 .clamp2{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;overflow-wrap:anywhere}
 .cell-org{font-weight:500;color:var(--ink-800)}
@@ -462,8 +466,7 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
 .amount-cell.big{color:var(--accent-strong)}
 .amount-cell .amt-num{font-size:0.95rem}
 #bidsTable .source-cell{max-width:none}
-#bidsTable .source-cell .src-link{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
-#bidsTable tbody tr:hover .source-cell .src-link{-webkit-line-clamp:unset;line-clamp:unset}
+#bidsTable .source-cell .src-link{display:inline;line-height:1.45}
 .table-hint{font-size:0.74rem;color:var(--ink-400);margin:9px 2px 0}
 
 /* ===== 招采雷达：未来优先 ===== */
@@ -519,8 +522,7 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
 .dm-seg.nm{background:var(--accent)}
 .dm-seg.nx{background:var(--und)}
 
-/* ===== P1-7 来源列收成一点 + 分享按钮 hover 才显示 ===== */
-.src-link.src-dotonly{display:inline-flex;padding:2px 4px}
+/* ===== 来源列状态点 + 分享按钮 hover 才显示 ===== */
 .src-dot.src-dot-grey{background:var(--und)}
 .share-btn{opacity:0;transition:opacity .2s ease}
 #bidsTable tbody tr:hover .share-btn,
@@ -1155,20 +1157,23 @@ function isGreenUrl(u){
     return GREEN_DOMAINS.some(d => h === d || h.endsWith('.'+d));
   }catch(e){ return false; }
 }
-// P1-4 诚实呈现可信度三档：绿链=已核验直达；蓝=平台署名但未核验原文；灰=无来源（原文未收录，仅检索兜底）。
-// P1-7 compact=true 时来源列只显示一个圆点（绿=已核验 / 灰=无源），完整文字入 title，减少表格噪声。
-function sourceCell(r, compact){
+// 信息来源列：显示平台主题名 + 状态点，不再只缩成一个圆点。
+// 绿点=已核验直达原文；灰点+平台名=平台署名但原文未核验；灰点+"原文未收录"=无源（点击检索兜底）。
+function sourceCell(r){
   const text = r.source || '公开信息';
   const real = !!(r.sourceUrl && isGreenUrl(r.sourceUrl));
   const url = r.sourceUrl || ('https://www.baidu.com/s?wd=' + encodeURIComponent((r.project||'') + ' ' + (r.winner||'') + ' 中标'));
   const svg = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const dot = real
+    ? '<span class="src-dot" title="已核验 · 直达公告原文"></span>'
+    : '<span class="src-dot src-dot-grey" title="' + (r.source ? '平台署名未核验' : '原文未收录 · 点击检索') + '"></span>';
   if(real){
-    if(compact) return `<a class="src-link src-real src-dotonly" href="${url}" target="_blank" rel="noopener" title="已核验 · 直达公告原文：${escapeHtml(text)}"><span class="src-dot" title="已核验 · 直达公告原文"></span></a>`;
-    return `<a class="src-link src-real" href="${url}" target="_blank" rel="noopener" title="已核验 · 直达公告原文：${escapeHtml(text)}"><span class="src-dot" title="已核验 · 直达公告原文"></span>${escapeHtml(text)}${svg}</a>`;
+    return `<a class="src-link src-real" href="${url}" target="_blank" rel="noopener" title="已核验 · 直达公告原文：${escapeHtml(text)}">${dot}${escapeHtml(text)}${svg}</a>`;
   }
-  const label = r.source ? ('平台署名未核验 · ' + text) : '原文未收录 · 点击检索';
-  if(compact) return `<a class="src-link src-search src-dotonly" href="${url}" target="_blank" rel="noopener" title="${escapeHtml(label)}"><span class="src-dot src-dot-grey" title="未核验 / 未收录原文"></span></a>`;
-  return `<a class="src-link src-search" href="${url}" target="_blank" rel="noopener" title="${escapeHtml(label)}">${escapeHtml(label)}${svg}</a>`;
+  if(r.source){
+    return `<a class="src-link src-platform" href="${url}" target="_blank" rel="noopener" title="平台署名未核验：${escapeHtml(text)}">${dot}${escapeHtml(text)}${svg}</a>`;
+  }
+  return `<a class="src-link src-search" href="${url}" target="_blank" rel="noopener" title="原文未收录 · 点击检索">${dot}原文未收录${svg}</a>`;
 }
 
 const currentWeekBids = [
@@ -1996,7 +2001,7 @@ function renderBidsTable(){
       <td class="proj-cell" onclick="this.closest('tr').classList.toggle('row-open')" title="${escapeHtml(r.project)}"><div class="clamp2 proj-text">${escapeHtml(r.project)}</div>${tags.length?`<div class="proj-tags">${tags.join('')}</div>`:''}<button type="button" class="share-btn" onclick="event.stopPropagation();shareBid('${enc}')" title="复制本条深链"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" stroke-linecap="round" stroke-linejoin="round"/></svg>分享</button></td>
       <td class="amount-cell ${amtClass}"${hasAmt?` title="约 ${amt.toLocaleString()} 万元"`:''}>${hasAmt ? `<span class="amt-num">${escapeHtml(r.amount)}</span>` : '—'}</td>
       <td>${r.date ? `<span class="date-tag">${escapeHtml(r.date)}</span>` : '<span class="date-tag" style="opacity:.45">—</span>'}</td>
-      <td class="source-cell">${sourceCell(r, true)}</td>
+      <td class="source-cell">${sourceCell(r)}</td>
     </tr>`;
   }).join('');
 
