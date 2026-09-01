@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>千问顾问 · 市场动态周报 AI</title>
+<style>
+:root{
+  --paper:#f4f5f7;--surface:#ffffff;--surface-2:#f0f1f4;--surface-3:#e9eaee;
+  --ink-900:#1c1d1f;--ink-700:#3a3c40;--ink-500:#6a6d73;--ink-400:#8b8e94;
+  --accent:#5b6b7a;--accent-strong:#3f4d5a;--accent-soft:rgba(91,107,122,.12);
+  --ok:#1f8a4c;--clay:#b4552f;--clay-soft:rgba(180,85,47,.12);
+  --border:#e2e4e8;--border-2:#d3d6db;
+  --radius-sm:9px;--radius-md:14px;--radius-lg:18px;
+  --shadow-sm:0 12px 30px -20px rgba(20,22,26,.28);
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;
+}
+[data-theme="dark"]{
+  --paper:#15171b;--surface:#1c1f24;--surface-2:#23272e;--surface-3:#2b3038;
+  --ink-900:#f3f4f6;--ink-700:#c9ccd1;--ink-500:#9aa0a8;--ink-400:#71767e;
+  --accent:#7f8ea0;--accent-strong:#aab6c4;--accent-soft:rgba(127,142,160,.16);
+  --ok:#5cc88a;--clay:#e59a76;--clay-soft:rgba(180,85,47,.18);
+  --border:#2a2f37;--border-2:#343a44;
+  --shadow-sm:0 14px 34px -22px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font-sans);background:var(--paper);color:var(--ink-700);line-height:1.65;-webkit-font-smoothing:antialiased;transition:background .4s ease,color .4s ease;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:14px;padding:12px 22px;background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--ink-900);font-size:1rem}
+.brand .logo{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-strong));display:grid;place-items:center;color:#fff;font-size:.85rem;font-weight:800}
+.topbar .spacer{flex:1}
+a.back{color:var(--ink-500);text-decoration:none;font-size:.84rem;font-weight:500;padding:6px 12px;border:1px solid var(--border-2);border-radius:999px;transition:.2s}
+a.back:hover{color:var(--accent-strong);border-color:var(--accent)}
+.icon-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border-2);background:var(--surface);color:var(--ink-500);cursor:pointer;display:grid;place-items:center;transition:.2s}
+.icon-btn:hover{color:var(--accent-strong);border-color:var(--accent)}
+.container{max-width:920px;margin:0 auto;padding:26px 20px 60px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px 24px;margin-bottom:20px;box-shadow:var(--shadow-sm)}
+.card h2{margin:0 0 4px;font-size:1.05rem;color:var(--ink-900);font-weight:600}
+.card .sub{font-size:.82rem;color:var(--ink-400);margin-bottom:14px}
+.notice{font-size:.8rem;color:var(--ink-400);background:var(--surface-2);border:1px dashed var(--border-2);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:16px;line-height:1.6}
+.key-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.key-row input[type=password],.key-row input[type=text]{flex:1;min-width:220px;padding:10px 14px;border:1px solid var(--border-2);border-radius:var(--radius-sm);background:var(--surface-2);color:var(--ink-900);font-size:.9rem;font-family:ui-monospace,Menlo,Consolas,monospace}
+.key-row input:focus{outline:none;border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:var(--radius-sm);border:1px solid var(--border-2);background:var(--surface);color:var(--ink-700);font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s;font-family:inherit}
+.btn:hover{border-color:var(--accent);color:var(--accent-strong)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#fff;border-color:transparent}
+.btn.primary:hover{opacity:.9;color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.key-status{font-size:.78rem;color:var(--ink-400);margin-top:8px}
+.key-status.ok{color:var(--ok)}
+.controls label{display:block;font-size:.82rem;color:var(--ink-500);margin:14px 0 6px;font-weight:600}
+select,textarea{width:100%;padding:11px 14px;border:1px solid var(--border-2);border-radius:var(--radius-sm);background:var(--surface-2);color:var(--ink-900);font-size:.92rem;font-family:inherit;resize:vertical}
+select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+textarea{min-height:110px;line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+.chip{font-size:.8rem;color:var(--ink-500);background:var(--surface-2);border:1px solid var(--border-2);border-radius:999px;padding:6px 13px;cursor:pointer;transition:.2s}
+.chip:hover{color:var(--accent-strong);border-color:var(--accent);background:var(--accent-soft)}
+.ask-bar{display:flex;gap:10px;align-items:center;margin-top:14px}
+.ask-bar .btn.primary{flex:0 0 auto;padding:11px 26px}
+.answer{min-height:60px}
+.answer .placeholder{color:var(--ink-400);font-size:.9rem}
+.md h1,.md h2,.md h3{color:var(--ink-900);line-height:1.4;margin:1.1em 0 .5em}
+.md h1{font-size:1.25rem}.md h2{font-size:1.1rem}.md h3{font-size:1rem}
+.md p{margin:.6em 0}
+.md ul,.md ol{margin:.5em 0;padding-left:1.4em}
+.md li{margin:.3em 0}
+.md strong{color:var(--accent-strong);font-weight:700}
+.md code{background:var(--surface-3);padding:1px 6px;border-radius:5px;font-size:.86em;font-family:ui-monospace,Menlo,Consolas,monospace}
+.md .err{color:var(--clay);background:var(--clay-soft);border-radius:var(--radius-sm);padding:10px 14px}
+.loading{display:inline-flex;align-items:center;gap:8px;color:var(--ink-500);font-size:.85rem}
+.spinner{width:15px;height:15px;border:2px solid var(--border-2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.foot{text-align:center;font-size:.76rem;color:var(--ink-400);margin-top:10px}
+.foot code{background:var(--surface-3);padding:1px 6px;border-radius:5px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><span class="logo">Q</span><span>千问顾问</span></div>
+  <div class="spacer"></div>
+  <a class="back" href="index.html">← 返回周报</a>
+  <button class="icon-btn" id="themeBtn" title="切换主题" aria-label="切换主题">◐</button>
+</div>
+
+<div class="container">
+  <div class="card">
+    <h2>用千问给你的招投标数据做商业顾问</h2>
+    <div class="sub">基于本站真实招投标数据（银行资金/财资/司库系统市场）提问，获取竞争格局、客户优先级、信创趋势等建议。</div>
+    <div class="notice">
+      🔐 <b>密钥安全</b>：API Key 仅在你本机浏览器输入并存入 localStorage，<b>不会上传到任何服务器、也不会写入代码仓库</b>。每次调用由你的浏览器直连阿里云 DashScope。请勿在公共电脑保存；用完可在下方「清空」。Key 已暴露过的话建议去阿里云控制台重置。
+    </div>
+    <div class="key-row">
+      <input type="password" id="keyInput" placeholder="粘贴你的 DashScope API Key（sk-...）" autocomplete="off" spellcheck="false">
+      <button class="btn" id="showKey" type="button">显示</button>
+      <button class="btn primary" id="saveKey" type="button">保存</button>
+      <button class="btn" id="clearKey" type="button">清空</button>
+    </div>
+    <div class="key-status" id="keyStatus"></div>
+  </div>
+
+  <div class="card">
+    <h2>提问</h2>
+    <div class="sub" id="dataStatus">数据加载中…</div>
+    <label for="model">模型</label>
+    <select id="model">
+      <option value="qwen-plus">qwen-plus（均衡，推荐）</option>
+      <option value="qwen-max">qwen-max（最强推理）</option>
+      <option value="qwen-turbo">qwen-turbo（最快最省）</option>
+      <option value="qwen-long">qwen-long（超长上下文）</option>
+    </select>
+    <label for="question">你的问题</label>
+    <textarea id="question" placeholder="例如：本周哪些厂商值得重点跟进？给出理由和优先级。"></textarea>
+    <div class="chips" id="chips"></div>
+    <div class="ask-bar">
+      <button class="btn primary" id="askBtn" type="button">提问</button>
+      <span class="loading" id="loading" style="display:none"><span class="spinner"></span>千问思考中…</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>回答</h2>
+    <div class="answer" id="answer"><div class="placeholder">输入 Key 与问题后，点击「提问」即可获得基于真实数据的分析。</div></div>
+  </div>
+
+  <div class="foot">数据同源实时取自 <code>index.html</code>（部署后自动最新）· 调用 <code>dashscope.aliyuncs.com</code> OpenAI 兼容接口</div>
+</div>
+
+<script src="qwen-data.js"></script>
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var KEY_STORE = 'qwen_api_key';
+
+  // 主题
+  var themeBtn = $('themeBtn');
+  themeBtn.onclick = function(){
+    var cur = document.documentElement.getAttribute('data-theme');
+    document.documentElement.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+  };
+
+  // Key 管理
+  var keyInput = $('keyInput'), keyStatus = $('keyStatus');
+  function refreshKeyStatus(){
+    var k = localStorage.getItem(KEY_STORE);
+    if(k){ keyStatus.textContent = '✔ 已保存（仅本机）'; keyStatus.className = 'key-status ok'; }
+    else { keyStatus.textContent = '尚未保存，每次需手动输入'; keyStatus.className = 'key-status'; }
+  }
+  var saved = localStorage.getItem(KEY_STORE);
+  if(saved) keyInput.value = saved;
+  refreshKeyStatus();
+  $('showKey').onclick = function(){ keyInput.type = keyInput.type === 'password' ? 'text' : 'password'; };
+  $('saveKey').onclick = function(){
+    var v = keyInput.value.trim();
+    if(!v){ keyStatus.textContent = '请输入 Key 后再保存'; keyStatus.className='key-status'; return; }
+    localStorage.setItem(KEY_STORE, v); refreshKeyStatus();
+  };
+  $('clearKey').onclick = function(){
+    localStorage.removeItem(KEY_STORE); keyInput.value=''; refreshKeyStatus();
+  };
+
+  // 同源实时拉取最新 index.html 覆盖快照
+  var DATA = (window.QWEN_DATA || []);
+  function setDataStatus(n, live){
+    $('dataStatus').textContent = '已加载 ' + n + ' 条招投标数据' + (live ? '（实时同源）' : '（快照 · 部署后自动取最新）');
+  }
+  setDataStatus(DATA.length, false);
+  if(location.protocol.indexOf('http') === 0){
+    fetch('./index.html', {cache:'no-store'}).then(function(r){ return r.text(); }).then(function(txt){
+      var arr = extractAll(txt);
+      if(arr && arr.length) { DATA = arr; window.QWEN_DATA = arr; setDataStatus(arr.length, true); }
+    }).catch(function(){ /* 用快照 */ });
+  }
+
+  function extractAll(html){
+    try{
+      var names = ['currentWeekBids','archiveData','liangruiBids'];
+      var XC = /信创|XC|国产化|自主可控|鲲鹏|海光|ARM|申威|飞腾/;
+      var seen = {}, out = [];
+      names.forEach(function(name){
+        var a = extractArray(html, name); if(!a) return;
+        var flat = (Array.isArray(a) && Array.isArray(a[0])) ? a.flat() : a;
+        flat.forEach(function(b){
+          if(!b || !b.winner) return;
+          var s = [b.bidder,b.winner,b.project,b.date].join('|');
+          if(seen[s]) return; seen[s]=1;
+          out.push({bidder:b.bidder||'',winner:b.winner||'',project:(b.project||'').replace(/\s+/g,' ').trim(),amount:b.amount||'',date:b.date||'',source:b.source||'',xc:XC.test(b.project||'')?1:0});
+        });
+      });
+      return out;
+    }catch(e){ return null; }
+  }
+  function extractArray(html, name){
+    var start = html.indexOf('const ' + name + ' = [');
+    if(start < 0) return null;
+    var i = html.indexOf('[', start), depth=0, inStr=false, esc=false, end=-1;
+    for(; i<html.length; i++){
+      var c = html[i];
+      if(inStr){ if(esc) esc=false; else if(c==='\\') esc=true; else if(c==='"'||c==="'"||c==='`') inStr=false; continue; }
+      if(c==='"'||c==="'"||c==='`'){ inStr=true; continue; }
+      if(c==='[') depth++; else if(c===']'){ depth--; if(depth===0){ end=i+1; break; } }
+    }
+    if(end<0) return null;
+    return new Function('return ' + html.slice(html.indexOf('[',start), end))();
+  }
+
+  // 推荐问题
+  var SUGGEST = [
+    '生成本周市场速读：最大单、最活跃厂商、信创浓度、值得关注的趋势（每条结论带出处）。',
+    '本周哪些厂商值得重点跟进？给出理由与优先级。',
+    '恒生电子 vs 衡泰技术 的竞争格局与差距在哪？',
+    '信创类项目的趋势与客户结构研判。',
+    '基于数据，给我 3 条可落地的商务拓展建议。',
+    '哪些银行客户近期在采购资金/司库系统？优先级怎么排？',
+    '量锐/凯美瑞德等专题厂商近期中标态势如何？'
+  ];
+  var chipsEl = $('chips');
+  SUGGEST.forEach(function(q){
+    var b = document.createElement('button');
+    b.type='button'; b.className='chip'; b.textContent=q;
+    b.onclick = function(){ $('question').value = q; $('question').focus(); };
+    chipsEl.appendChild(b);
+  });
+
+  // 构建 grounding 上下文
+  function buildSystem(){
+    var d = DATA;
+    var byVendor = {}, xc=0, withAmt=0, totalAmt=0, dates=[];
+    d.forEach(function(b){
+      byVendor[b.winner] = (byVendor[b.winner]||0)+1;
+      if(b.xc) xc++;
+      if(b.amount && /\d/.test(b.amount)){ withAmt++; var m=/([\d.]+)\s*万元/.exec(b.amount); if(m) totalAmt += parseFloat(m[1]); }
+      if(b.date) dates.push(b.date);
+    });
+    var top = Object.keys(byVendor).sort(function(a,b){return byVendor[b]-byVendor[a];}).slice(0,12)
+      .map(function(v){ return v + '（' + byVendor[v] + '）'; }).join('、');
+    var span = dates.length ? (dates.slice().sort()[0] + ' ~ ' + dates.slice().sort().pop()) : '未知';
+    var ctx = '【数据概览】共 ' + d.length + ' 条中标（去重），时间跨度 ' + span + '。\n'
+      + '中标厂商 TOP：' + top + '。\n'
+      + '信创类项目 ' + xc + ' 条；已披露金额 ' + withAmt + ' 条，合计约 ' + Math.round(totalAmt) + ' 万元。\n\n'
+      + '【逐条明细（JSON，字段：bidder 招标方 / winner 中标方 / project 项目名 / amount 金额["xxx万元"|"金额未披露"|"框架入围"|空] / date 日期 / source 来源平台 / sourceUrl 原文链接[可能为空]）】\n'
+      + JSON.stringify(d, null, 0) + '\n\n'
+      + '【你的角色】你是银行资金/财资/司库系统领域的资深市场分析师，服务于一家金融 IT 咨询与系统集成公司。\n'
+      + '【硬约束 —— 违反即视为失败】\n'
+      + '1. 仅基于上面提供的数据回答，绝不编造任何数字、厂商或项目；数据中不存在的信息，明确回答"数据未覆盖/无法确定"，不要推测。\n'
+      + '2. 每条有依据的结论都要标注出处：句末用 [来源：平台名](sourceUrl) 引用；若 sourceUrl 为空，至少写明平台名（source 字段）。\n'
+      + '3. 金额口径：遇到"金额未披露"或"框架入围"视为无具体金额，不要当数字参与加总或比较；只有"xxx万元"才统计。\n'
+      + '4. 回答要像金融分析师写的速读：有数字、有归因、有优先级判断；禁止"建议关注/值得期待"类无信息量套话。\n'
+      + '5. 用中文，结构清晰，适当用 markdown（## 标题、**加粗**、- 列表）。';
+    return ctx;
+  }
+
+  // 轻量 markdown 渲染
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function renderMD(md){
+    var lines = esc(md).split(/\n/), html='', i=0, listType=null;
+    function closeList(){ if(listType){ html += listType==='ul'?'</ul>':'</ol>'; listType=null; } }
+    for(; i<lines.length; i++){
+      var ln = lines[i];
+      var h = /^(#{1,3})\s+(.*)$/.exec(ln);
+      var ul = /^[-*]\s+(.*)$/.exec(ln);
+      var ol = /^\d+\.\s+(.*)$/.exec(ln);
+      if(h){ closeList(); var lvl=h[1].length; html += '<h'+lvl+'>'+inline(h[2])+'</h'+lvl+'>'; continue; }
+      if(ul){ if(listType!=='ul'){ closeList(); html+='<ul>'; listType='ul'; } html+='<li>'+inline(ul[1])+'</li>'; continue; }
+      if(ol){ if(listType!=='ol'){ closeList(); html+='<ol>'; listType='ol'; } html+='<li>'+inline(ol[1])+'</li>'; continue; }
+      if(ln.trim()===''){ closeList(); continue; }
+      closeList(); html += '<p>'+inline(ln)+'</p>';
+    }
+    closeList();
+    return html;
+  }
+  function inline(s){
+    return s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+            .replace(/`([^`]+?)`/g,'<code>$1</code>');
+  }
+
+  // 提问
+  var askBtn = $('askBtn'), loading = $('loading'), answerEl = $('answer');
+  askBtn.onclick = function(){
+    var key = (keyInput.value.trim() || localStorage.getItem(KEY_STORE) || '').trim();
+    var q = $('question').value.trim();
+    if(!key){ keyStatus.textContent = '请先输入并保存 API Key'; keyStatus.className='key-status'; keyInput.focus(); return; }
+    if(!q){ alert('请输入你的问题'); return; }
+    askBtn.disabled = true; loading.style.display='inline-flex'; answerEl.innerHTML='';
+    var model = $('model').value;
+    var body = JSON.stringify({
+      model: model,
+      temperature: 0.7,
+      enable_thinking: false,
+      messages: [
+        {role:'system', content: buildSystem()},
+        {role:'user', content: q}
+      ]
+    });
+    fetch('https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+      body: body
+    }).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); })
+      .then(function(res){
+        if(!res.ok){
+          var msg = (res.j && (res.j.error && res.j.error.message)) || ('HTTP ' + (res.j && res.j.code) || '请求失败');
+          throw new Error(msg);
+        }
+        var text = res.j.choices && res.j.choices[0] && res.j.choices[0].message ? res.j.choices[0].message.content : '';
+        answerEl.innerHTML = '<div class="md">' + renderMD(text || '（无内容返回）') + '</div>';
+      })
+      .catch(function(err){
+        answerEl.innerHTML = '<div class="md"><div class="err">调用失败：' + esc(err.message) + '</div>'
+          + '<p class="sub" style="margin-top:10px">常见原因：Key 无效/过期、模型名不支持、额度不足；或该模型需开启相应权限。Key 可去阿里云 DashScope 控制台核对。</p></div>';
+      })
+      .finally(function(){ askBtn.disabled=false; loading.style.display='none'; });
+  };
+})();
+</script>
+</body>
+</html>
