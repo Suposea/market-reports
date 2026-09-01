@@ -153,7 +153,13 @@ textarea{min-height:110px;line-height:1.6}
   //   A. 腾讯云镜像：qwen-key.js 存在 → 内置默认 Key，打开即用，无需任何输入
   //   B. GitHub Pages：qwen-key.js 不存在（404 属预期）→ 需自行输入 Key
   // 优先级：本机 localStorage > 内置默认 Key。留下覆盖口子，方便临时换自己的 Key。
-  var BUILTIN_KEY = (window.QWEN_DEFAULT_KEY || '').trim();
+  // ⚠️ 内置默认 Key（用户已明确选择内置，知晓风险）。
+  // 本站源在公开仓库（GitHub Pages）且已部署公网，Key 会以明文出现在本文件中，
+  // 任何人查看页面源码或翻阅仓库都能拿到并消耗该 Key 所属阿里云账号额度。
+  // 真实止损手段：到阿里云百炼控制台「费用管理 → 消费限额」设月度上限并勾选超限停用（页面 keyNotice 已提示用户）。
+  // 覆盖优先级：本机手动保存(localStorage) > 外部 qwen-key.js 注入 window.QWEN_DEFAULT_KEY > 此内联默认值。
+  // 撤销：把下行括号内值清空即可（页面随即回到"需手动输入"形态）。
+  var BUILTIN_KEY = (window.QWEN_DEFAULT_KEY || 'sk-ws-H.EYHXEXM.K0rd.MEQCIFGHxjlf2lCKeJwwxZpS3RmNaNvb9wkBNmE_nwhoBFi5AiBBsixSuyrZPXVNze55fNkl-vv7lTS0l2nCE2utKa8_JA').trim();
   var keyInput = $('keyInput'), keyStatus = $('keyStatus'), quotaStatus = $('quotaStatus');
 
   function effectiveKey(){
