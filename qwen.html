@@ -134,9 +134,13 @@ textarea{min-height:110px;line-height:1.6}
 
   // 主题
   var themeBtn = $('themeBtn');
+  var savedTheme = localStorage.getItem('qwen_theme');
+  if(savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
   themeBtn.onclick = function(){
     var cur = document.documentElement.getAttribute('data-theme');
-    document.documentElement.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+    var next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('qwen_theme', next);
   };
 
   // Key 管理
@@ -271,7 +275,11 @@ textarea{min-height:110px;line-height:1.6}
   }
   function inline(s){
     return s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-            .replace(/`([^`]+?)`/g,'<code>$1</code>');
+            .replace(/`([^`]+?)`/g,'<code>$1</code>')
+            .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, function(m, t, u){
+              var safe = /^(https?:\/\/)/i.test(u) ? u : '#';
+              return '<a href="'+safe.replace(/"/g,'%22')+'" target="_blank" rel="noopener">'+t+'</a>';
+            });
   }
 
   // 提问
@@ -303,7 +311,8 @@ textarea{min-height:110px;line-height:1.6}
           throw new Error(msg);
         }
         var text = res.j.choices && res.j.choices[0] && res.j.choices[0].message ? res.j.choices[0].message.content : '';
-        answerEl.innerHTML = '<div class="md">' + renderMD(text || '（无内容返回）') + '</div>';
+        answerEl.innerHTML = '<div class="md">' + renderMD(text || '（无内容返回）') + '</div>'
+          + '<div class="key-status" style="margin-top:10px">—— 基于 ' + DATA.length + ' 条真实招投标数据生成，请核对每条结论的原文链接</div>';
       })
       .catch(function(err){
         answerEl.innerHTML = '<div class="md"><div class="err">调用失败：' + esc(err.message) + '</div>'
