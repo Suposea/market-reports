@@ -188,7 +188,11 @@ textarea{min-height:110px;line-height:1.6}
           if(!b || !b.winner) return;
           var s = [b.bidder,b.winner,b.project,b.date].join('|');
           if(seen[s]) return; seen[s]=1;
-          out.push({bidder:b.bidder||'',winner:b.winner||'',project:(b.project||'').replace(/\s+/g,' ').trim(),amount:b.amount||'',date:b.date||'',source:b.source||'',xc:XC.test(b.project||'')?1:0});
+          var rec = {bidder:b.bidder||'',winner:b.winner||'',project:(b.project||'').replace(/\s+/g,' ').trim(),amount:b.amount||'',date:b.date||'',source:b.source||'',xc:XC.test(b.project||'')?1:0};
+          // sourceUrl 仅在有值时才写入：约 2/3 条目无深链，省略可显著降低 token 占用。
+          // 无链接的条目由系统提示词要求模型退回标注平台名（source 字段），不编造 URL。
+          if(b.sourceUrl) rec.sourceUrl = b.sourceUrl;
+          out.push(rec);
         });
       });
       return out;
@@ -242,7 +246,7 @@ textarea{min-height:110px;line-height:1.6}
     var ctx = '【数据概览】共 ' + d.length + ' 条中标（去重），时间跨度 ' + span + '。\n'
       + '中标厂商 TOP：' + top + '。\n'
       + '信创类项目 ' + xc + ' 条；已披露金额 ' + withAmt + ' 条，合计约 ' + Math.round(totalAmt) + ' 万元。\n\n'
-      + '【逐条明细（JSON，字段：bidder 招标方 / winner 中标方 / project 项目名 / amount 金额["xxx万元"|"金额未披露"|"框架入围"|空] / date 日期 / source 来源平台 / sourceUrl 原文链接[可能为空]）】\n'
+      + '【逐条明细（JSON，字段：bidder 招标方 / winner 中标方 / project 项目名 / amount 金额["xxx万元"|"金额未披露"|"框架入围"|空] / date 日期 / source 来源平台 / sourceUrl 原文链接[无深链的条目不含此字段] / xc 是否信创[1|0]）】\n'
       + JSON.stringify(d, null, 0) + '\n\n'
       + '【你的角色】你是银行资金/财资/司库系统领域的资深市场分析师，服务于一家金融 IT 咨询与系统集成公司。\n'
       + '【硬约束 —— 违反即视为失败】\n'
