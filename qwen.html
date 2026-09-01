@@ -86,9 +86,7 @@ textarea{min-height:110px;line-height:1.6}
   <div class="card">
     <h2>用千问给你的招投标数据做商业顾问</h2>
     <div class="sub">基于本站真实招投标数据（银行资金/财资/司库系统市场）提问，获取竞争格局、客户优先级、信创趋势等建议。</div>
-    <div class="notice">
-      🔐 <b>密钥安全</b>：API Key 仅在你本机浏览器输入并存入 localStorage，<b>不会上传到任何服务器、也不会写入代码仓库</b>。每次调用由你的浏览器直连阿里云 DashScope。请勿在公共电脑保存；用完可在下方「清空」。Key 已暴露过的话建议去阿里云控制台重置。
-    </div>
+    <div class="notice" id="keyNotice"></div>
     <div class="key-row">
       <input type="password" id="keyInput" placeholder="粘贴你的 DashScope API Key（sk-...）" autocomplete="off" spellcheck="false">
       <button class="btn" id="showKey" type="button">显示</button>
@@ -96,6 +94,7 @@ textarea{min-height:110px;line-height:1.6}
       <button class="btn" id="clearKey" type="button">清空</button>
     </div>
     <div class="key-status" id="keyStatus"></div>
+    <div class="key-status" id="quotaStatus"></div>
   </div>
 
   <div class="card">
@@ -119,18 +118,24 @@ textarea{min-height:110px;line-height:1.6}
 
   <div class="card">
     <h2>回答</h2>
-    <div class="answer" id="answer"><div class="placeholder">输入 Key 与问题后，点击「提问」即可获得基于真实数据的分析。</div></div>
+    <div class="answer" id="answer"><div class="placeholder">输入问题后点击「提问」即可获得基于真实数据的分析。</div></div>
   </div>
 
   <div class="foot">数据同源实时取自 <code>index.html</code>（部署后自动最新）· 调用 <code>dashscope.aliyuncs.com</code> OpenAI 兼容接口</div>
 </div>
 
 <script src="qwen-data.js"></script>
+<!-- 可选的内置默认 Key。文件已在 .gitignore 中，只部署到腾讯云镜像；GitHub Pages 上不存在（404 属预期）。 -->
+<script src="qwen-key.js"></script>
 <script>
 (function(){
   "use strict";
   var $ = function(id){ return document.getElementById(id); };
   var KEY_STORE = 'qwen_api_key';
+  // 每浏览器每日调用上限：防止共享链接被反复刷或误触循环。
+  // 注意这只是软闸门（清掉 localStorage 即可绕过），真正的硬止损必须在
+  // 阿里云百炼控制台「费用管理 → 消费限额」设置月度上限并勾选"超出后禁止调用"。
+  var DAILY_LIMIT = 80;
 
   // 主题
   var themeBtn = $('themeBtn');
@@ -143,13 +148,54 @@ textarea{min-height:110px;line-height:1.6}
     localStorage.setItem('qwen_theme', next);
   };
 
-  // Key 管理
-  var keyInput = $('keyInput'), keyStatus = $('keyStatus');
-  function refreshKeyStatus(){
-    var k = localStorage.getItem(KEY_STORE);
-    if(k){ keyStatus.textContent = '✔ 已保存（仅本机）'; keyStatus.className = 'key-status ok'; }
-    else { keyStatus.textContent = '尚未保存，每次需手动输入'; keyStatus.className = 'key-status'; }
+  // ── Key 管理 ──────────────────────────────────────────────
+  // 两种部署形态共用同一份代码：
+  //   A. 腾讯云镜像：qwen-key.js 存在 → 内置默认 Key，打开即用，无需任何输入
+  //   B. GitHub Pages：qwen-key.js 不存在（404 属预期）→ 需自行输入 Key
+  // 优先级：本机 localStorage > 内置默认 Key。留下覆盖口子，方便临时换自己的 Key。
+  var BUILTIN_KEY = (window.QWEN_DEFAULT_KEY || '').trim();
+  var keyInput = $('keyInput'), keyStatus = $('keyStatus'), quotaStatus = $('quotaStatus');
+
+  function effectiveKey(){
+    var own = (localStorage.getItem(KEY_STORE) || '').trim();
+    return own || BUILTIN_KEY || '';
   }
+
+  // 每日用量软闸门（按本机计，不上传任何数据）
+  // 用本地日期而非 UTC：toISOString() 会让额度在北京时间早上 8 点翻篇，与文案不符
+  function today(){
+    var d = new Date(), p = function(n){ return (n < 10 ? '0' : '') + n; };
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  }
+  function usedToday(){
+    var q = null;
+    try { q = JSON.parse(localStorage.getItem('qwen_quota') || 'null'); } catch(e){ q = null; }
+    return (q && q.d === today()) ? (q.n || 0) : 0;
+  }
+  function bumpQuota(){
+    var n = usedToday() + 1;
+    try { localStorage.setItem('qwen_quota', JSON.stringify({ d: today(), n: n })); } catch(e){}
+    refreshKeyStatus();
+  }
+  function quotaLeft(){ return Math.max(0, DAILY_LIMIT - usedToday()); }
+
+  function refreshKeyStatus(){
+    var own = (localStorage.getItem(KEY_STORE) || '').trim();
+    if(own){
+      keyStatus.textContent = '✔ 正在使用你本机保存的 Key（优先于内置 Key）';
+      keyStatus.className = 'key-status ok';
+    } else if(BUILTIN_KEY){
+      keyStatus.textContent = '✔ 站点已内置 Key，无需输入，直接提问即可（下方输入框留给想换自己 Key 的人）';
+      keyStatus.className = 'key-status ok';
+    } else {
+      keyStatus.textContent = '本站未内置 Key，请先粘贴你的 DashScope API Key 并保存';
+      keyStatus.className = 'key-status';
+    }
+    var left = quotaLeft();
+    quotaStatus.textContent = '本机今日剩余 ' + left + ' / ' + DAILY_LIMIT + ' 次调用（每日 0 点重置；仅本地计数，不作计费依据）';
+    quotaStatus.className = left > 0 ? 'key-status' : 'key-status';
+  }
+
   var saved = localStorage.getItem(KEY_STORE);
   if(saved) keyInput.value = saved;
   refreshKeyStatus();
@@ -160,8 +206,20 @@ textarea{min-height:110px;line-height:1.6}
     localStorage.setItem(KEY_STORE, v); refreshKeyStatus();
   };
   $('clearKey').onclick = function(){
+    // 清空只删本机 Key，回落到内置 Key；内置 Key 无法从页面上删除。
     localStorage.removeItem(KEY_STORE); keyInput.value=''; refreshKeyStatus();
   };
+
+  // 安全提示文案按部署形态切换
+  $('keyNotice').innerHTML = BUILTIN_KEY
+    ? '🔐 <b>关于密钥</b>：本站点已内置一个共享 API Key，打开即可直接用，费用记在该 Key 所属阿里云账号上。'
+      + '调用由你的浏览器直连阿里云 DashScope，Key 不会经过任何中间服务器。'
+      + '页面另设每机每日 ' + DAILY_LIMIT + ' 次的软限制，<b>但这挡不住存心滥用</b>——'
+      + '真正的止损要在阿里云百炼控制台「费用管理 → 消费限额」设月度上限并勾选「超出限额后禁止调用」。'
+      + '若你想用自己账号的 Key，在下方保存即可，会优先使用。'
+    : '🔐 <b>密钥安全</b>：此版本未内置 Key。API Key 仅在你本机浏览器输入并存入 localStorage，'
+      + '<b>不会上传到任何服务器、也不会写入代码仓库</b>。每次调用由你的浏览器直连阿里云 DashScope。'
+      + '请勿在公共电脑保存；用完可在下方「清空」。';
 
   // 同源实时拉取最新 index.html 覆盖快照
   var DATA = (window.QWEN_DATA || []);
@@ -289,10 +347,16 @@ textarea{min-height:110px;line-height:1.6}
   // 提问
   var askBtn = $('askBtn'), loading = $('loading'), answerEl = $('answer');
   askBtn.onclick = function(){
-    var key = (keyInput.value.trim() || localStorage.getItem(KEY_STORE) || '').trim();
+    // 输入框有值则临时用之（不落盘），否则走「本机已保存 > 站点内置」的优先级
+    var key = (keyInput.value.trim() || effectiveKey()).trim();
     var q = $('question').value.trim();
-    if(!key){ keyStatus.textContent = '请先输入并保存 API Key'; keyStatus.className='key-status'; keyInput.focus(); return; }
+    if(!key){ keyStatus.textContent = '本站未内置 Key，请先输入并保存 API Key'; keyStatus.className='key-status'; keyInput.focus(); return; }
     if(!q){ alert('请输入你的问题'); return; }
+    if(quotaLeft() <= 0){
+      answerEl.innerHTML = '<div class="placeholder">本机今日调用已达上限（' + DAILY_LIMIT + ' 次），北京时间每日 0 点自动重置。<br>'
+        + '如确需继续使用，可在下方保存你自己的 Key——用量闸门对自带 Key 同样生效，但你可以换个账号的额度。</div>';
+      return;
+    }
     askBtn.disabled = true; loading.style.display='inline-flex'; answerEl.innerHTML='';
     var model = $('model').value;
     var body = JSON.stringify({
@@ -315,6 +379,7 @@ textarea{min-height:110px;line-height:1.6}
           throw new Error(msg);
         }
         var text = res.j.choices && res.j.choices[0] && res.j.choices[0].message ? res.j.choices[0].message.content : '';
+        bumpQuota();   // 仅在调用成功后计数，失败不占用额度
         answerEl.innerHTML = '<div class="md">' + renderMD(text || '（无内容返回）') + '</div>'
           + '<div class="key-status" style="margin-top:10px">—— 基于 ' + DATA.length + ' 条真实招投标数据生成，请核对每条结论的原文链接</div>';
       })
