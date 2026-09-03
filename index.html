@@ -243,16 +243,17 @@ body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opac
 .week-select select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 
 /* ===== Table ===== */
-.table-wrapper{overflow-x:auto;border-radius:var(--radius-md);border:1px solid var(--border)}
+.table-wrapper{overflow-x:auto;border-radius:var(--radius-md);border:1px solid var(--border);box-shadow:var(--shadow-xs)}
 table{width:100%;border-collapse:collapse;font-size:0.875rem}
-thead th{background:color-mix(in srgb,var(--surface-2) 88%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--ink-700);font-weight:600;text-align:center;letter-spacing:.02em;padding:13px 16px;white-space:nowrap;border-bottom:1px solid var(--border-2);cursor:pointer;transition:background .2s ease;user-select:none;position:sticky;top:0;z-index:2}
+thead th{background:linear-gradient(180deg,color-mix(in srgb,var(--surface-2) 92%,transparent),color-mix(in srgb,var(--surface-3) 80%,transparent));backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--ink-500);font-weight:600;font-size:0.78rem;letter-spacing:.04em;text-align:left;padding:13px 16px;white-space:nowrap;border-bottom:2px solid var(--border-2);cursor:pointer;transition:background .2s ease,color .2s ease;user-select:none;position:sticky;top:0;z-index:2}
 thead th[data-sort="amount"]{text-align:right}
+thead th[data-sort="date"]{text-align:center}
 thead th:hover{background:var(--surface-3);color:var(--ink-900)}
 thead th .sort-icon{opacity:.35;margin-left:4px;display:inline-block;font-size:.8rem}
 thead th.sorted .sort-icon{opacity:1;color:var(--accent)}
 tbody tr{border-bottom:1px solid var(--border);transition:background .15s ease}
 tbody tr:last-child{border-bottom:none}
-tbody tr:hover{background:var(--accent-soft)}
+tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,var(--surface))}
 tbody td{padding:13px 16px;color:var(--ink-700);vertical-align:middle}
 tbody tr.hidden{display:none}
 
@@ -458,8 +459,8 @@ tbody tr.hidden{display:none}
 .proj-cell{cursor:pointer}
 .proj-text{color:var(--ink-700)}
 tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
-.proj-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
-.mini-tag{display:inline-block;font-size:0.63rem;font-weight:600;letter-spacing:.03em;padding:1px 7px;border-radius:4px;color:var(--ink-500);background:var(--surface-3);border:1px solid var(--border);white-space:nowrap}
+.proj-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.mini-tag{display:inline-block;font-size:0.64rem;font-weight:600;letter-spacing:.03em;padding:2px 8px;border-radius:5px;color:var(--ink-500);background:var(--surface-3);border:1px solid var(--border);white-space:nowrap;line-height:1.5}
 .mini-tag.xc{color:#8f6d3a;background:rgba(196,154,80,.14);border-color:rgba(196,154,80,.35)}
 .mini-tag.und{color:var(--ink-400)}
 [data-theme="dark"] .mini-tag.xc{color:#d8b374;background:rgba(196,154,80,.16);border-color:rgba(196,154,80,.3)}
@@ -507,13 +508,8 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
 .wb-list.expanded .wb-extra{display:grid}
 #warExpand{margin-left:auto}
 
-/* ===== P1-2/3 数据分层 S/A/B/C + 长尾折叠 ===== */
+/* ===== 长尾折叠（无金额且无来源行默认收起） ===== */
 #bidsTable.hide-tail tr.tail-row{display:none}
-.mini-tag.tier{font-weight:700;letter-spacing:.04em}
-.mini-tag.tier-S{color:#8f7a5a;background:rgba(143,122,90,.14);border-color:rgba(143,122,90,.35)}
-.mini-tag.tier-A{color:var(--accent-strong);background:rgba(91,107,122,.12);border-color:rgba(91,107,122,.3)}
-.mini-tag.tier-B{color:var(--ink-500);background:var(--surface-3);border-color:var(--border)}
-.mini-tag.tier-C{color:var(--und);background:var(--und-soft);border-color:transparent}
 
 /* ===== P1-4 可信度三档条 ===== */
 .dm-bar{flex-basis:100%;display:flex;width:100%;height:6px;border-radius:999px;overflow:hidden;background:var(--surface-3);margin-top:10px;gap:2px}
@@ -522,12 +518,8 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
 .dm-seg.nm{background:var(--accent)}
 .dm-seg.nx{background:var(--und)}
 
-/* ===== 来源列状态点 + 分享按钮 hover 才显示 ===== */
+/* ===== 来源列状态点 ===== */
 .src-dot.src-dot-grey{background:var(--und)}
-.share-btn{opacity:0;transition:opacity .2s ease}
-#bidsTable tbody tr:hover .share-btn,
-#bidsTable tbody tr:focus-within .share-btn{opacity:1}
-@media (hover:none){ .share-btn{opacity:1} }
 
 /* 战况榜厂商行可点击钻取 */
 .wb-row{cursor:pointer;transition:background .2s ease,transform .2s ease}
@@ -571,7 +563,7 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
 /* 打印 / 导出 PDF：零依赖，仅显示内容主体 */
 @media print{
   body{background:#fff}
-  .topbar,.tabs,.icon-btn,.chip,.bd-fold,.radar-history,.search-box,.share-btn,.toast{display:none!important}
+  .topbar,.tabs,.icon-btn,.chip,.bd-fold,.radar-history,.search-box,.toast{display:none!important}
   .tab-panel{display:block!important;animation:none!important;margin-bottom:18px}
   .reveal{opacity:1!important;transform:none!important}
   .archive-body{display:block!important}
@@ -615,10 +607,7 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
 #bidsTable tfoot td{font-size:0.82rem;color:var(--ink-700);font-weight:500;padding:11px 16px}
 #bidsTable tfoot .amount-cell{color:var(--accent-strong);font-weight:700}
 
-/* 单条分享按钮 + toast */
-.share-btn{display:inline-flex;align-items:center;gap:4px;margin-top:7px;padding:3px 10px;border:1px solid var(--border-2);background:var(--surface);color:var(--ink-500);font-size:0.72rem;font-weight:500;border-radius:var(--radius-full);cursor:pointer;transition:all .2s ease;font-family:var(--font-sans)}
-.share-btn:hover{border-color:var(--accent);color:var(--accent-strong);background:var(--accent-soft)}
-.share-btn svg{width:11px;height:11px}
+/* 分享深链高亮（打开 index.html#bid=XXX 时定位并闪烁该行） */
 .row-share-hl{animation:shareHl 2s ease}
 @keyframes shareHl{0%{background:var(--accent-soft)}100%{background:transparent}}
 .toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(20px);background:var(--ink-900);color:#fff;font-size:0.84rem;padding:11px 20px;border-radius:var(--radius-full);box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transition:opacity .3s ease,transform .3s ease;z-index:9999}
@@ -838,7 +827,7 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
       <div class="bd-fold" id="tailFold">
         <button type="button" onclick="toggleTail()" id="tailToggle" aria-expanded="false"></button>
       </div>
-      <p class="table-hint">长项目名默认收起为两行 · 鼠标悬停或点击该行「项目名称」可展开全文 · 单位名显示简称，悬停可见工商全称 · 行内标签 S/A/B/C 为数据分层（核心 / 有效 / 背景 / 长尾）</p>
+      <p class="table-hint">长项目名默认收起为两行 · 鼠标悬停或点击该行「项目名称」可展开全文 · 单位名显示简称，悬停可见工商全称</p>
       <div class="no-results" id="noResults" style="display:none">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke-width="2" stroke-linecap="round"/></svg>
         <p>未找到匹配的招投标信息</p>
@@ -2039,7 +2028,6 @@ function renderBidsTable(){
     const isWeek = weekSet.has(bidSignature(r));
     const t = tier(r);
     const tags = [];
-    tags.push(`<span class="mini-tag tier tier-${t}" title="数据分层 · ${tierName(t)}">${t}</span>`);
     if(isXC(r.project)) tags.push('<span class="mini-tag xc">信创</span>');
     if(!hasAmt && r.amount) tags.push(`<span class="mini-tag und">${escapeHtml(r.amount)}</span>`);
     const enc = encodeURIComponent(bidSignature(r));
@@ -2048,7 +2036,7 @@ function renderBidsTable(){
     return `<tr style="--vc:${color}" class="${isWeek?'is-week':''}${tailCls}" data-sig="${enc}">
       <td><div class="clamp2 cell-org" title="${escapeHtml(r.bidder)}">${escapeHtml(shortOrg(r.bidder))}</div>${isWeek?'<span class="week-badge">最新</span>':''}</td>
       <td><a class="vendor-link" href="javascript:void(0)" onclick="gotoVendor('${escapeHtml(w)}')" title="${escapeHtml(r.winner)}"><span class="vendor-tag" style="border-color:${color}40">${escapeHtml(shortOrg(r.winner))}</span></a></td>
-      <td class="proj-cell" onclick="this.closest('tr').classList.toggle('row-open')" title="${escapeHtml(r.project)}"><div class="clamp2 proj-text">${escapeHtml(r.project)}</div>${tags.length?`<div class="proj-tags">${tags.join('')}</div>`:''}<button type="button" class="share-btn" onclick="event.stopPropagation();shareBid('${enc}')" title="复制本条深链"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" stroke-linecap="round" stroke-linejoin="round"/></svg>分享</button></td>
+      <td class="proj-cell" onclick="this.closest('tr').classList.toggle('row-open')" title="${escapeHtml(r.project)}"><div class="clamp2 proj-text">${escapeHtml(r.project)}</div>${tags.length?`<div class="proj-tags">${tags.join('')}</div>`:''}</td>
       <td class="amount-cell ${amtClass}"${hasAmt?` title="约 ${amt.toLocaleString()} 万元"`:''}>${hasAmt ? `<span class="amt-num">${escapeHtml(r.amount)}</span>` : '—'}</td>
       <td>${r.date ? `<span class="date-tag">${escapeHtml(r.date)}</span>` : '<span class="date-tag" style="opacity:.45">—</span>'}</td>
       <td class="source-cell">${sourceCell(r)}</td>
