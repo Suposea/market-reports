@@ -70,6 +70,17 @@ textarea{min-height:110px;line-height:1.6}
 .loading{display:inline-flex;align-items:center;gap:8px;color:var(--ink-500);font-size:.85rem}
 .spinner{width:15px;height:15px;border:2px solid var(--border-2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+.hist-list{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.hist-item{border:1px solid var(--border-2);border-radius:var(--radius-sm);background:var(--surface-2);padding:10px 14px}
+.hist-item summary{display:flex;align-items:baseline;gap:10px;cursor:pointer;list-style:none}
+.hist-item summary::-webkit-details-marker{display:none}
+.hist-q{font-weight:600;color:var(--ink-900);font-size:.9rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hist-time{font-size:.74rem;color:var(--ink-400);flex:0 0 auto;font-variant-numeric:tabular-nums}
+.hist-item .md{margin-top:10px;font-size:.88rem}
+.hist-meta{margin-top:8px;font-size:.76rem;color:var(--ink-400)}
+.hist-refill{color:var(--accent);text-decoration:none}
+.hist-refill:hover{text-decoration:underline}
+.hist-actions{margin-top:14px}
 .foot{text-align:center;font-size:.76rem;color:var(--ink-400);margin-top:10px}
 .foot code{background:var(--surface-3);padding:1px 6px;border-radius:5px}
 </style>
@@ -119,6 +130,12 @@ textarea{min-height:110px;line-height:1.6}
   <div class="card">
     <h2>回答</h2>
     <div class="answer" id="answer"><div class="placeholder">输入问题后点击「提问」即可获得基于真实数据的分析。</div></div>
+  </div>
+
+  <div class="card" id="historyCard">
+    <h2>历史记录 <span class="sub">本机保存 · 每周一自动清除</span></h2>
+    <div class="hist-list" id="histList"></div>
+    <div class="hist-actions"><button class="btn" id="clearHist" type="button">清除全部记录</button></div>
   </div>
 
   <div class="foot">数据同源实时取自 <code>index.html</code>（部署后自动最新）· 调用 <code>dashscope.aliyuncs.com</code> OpenAI 兼容接口</div>
@@ -388,6 +405,14 @@ textarea{min-height:110px;line-height:1.6}
         bumpQuota();   // 仅在调用成功后计数，失败不占用额度
         answerEl.innerHTML = '<div class="md">' + renderMD(text || '（无内容返回）') + '</div>'
           + '<div class="key-status" style="margin-top:10px">—— 基于 ' + DATA.length + ' 条真实招投标数据生成，请核对每条结论的原文链接</div>';
+        // 保存问答历史（本机 localStorage，仅本地，每周一自动清除）
+        (function(){
+          var hh = loadHistory();
+          hh.unshift({q:q, a:text || '（无内容返回）', t:Date.now()});
+          if(hh.length > 50) hh.length = 50;
+          saveHistory(hh);
+          renderHistory();
+        })();
       })
       .catch(function(err){
         answerEl.innerHTML = '<div class="md"><div class="err">调用失败：' + esc(err.message) + '</div>'
@@ -395,6 +420,64 @@ textarea{min-height:110px;line-height:1.6}
       })
       .finally(function(){ askBtn.disabled=false; loading.style.display='none'; });
   };
+
+  // ── 问答历史（本机保存，每周一自动清除）─────────────────────
+  // 仅存于浏览器 localStorage，不上传任何服务器；用户要求"先不删除、每周一清除一波"。
+  var HIST_KEY = 'qwen_history';
+  function loadHistory(){
+    try { var h = JSON.parse(localStorage.getItem(HIST_KEY) || '[]'); return Array.isArray(h) ? h : []; }
+    catch(e){ return []; }
+  }
+  function saveHistory(arr){ try { localStorage.setItem(HIST_KEY, JSON.stringify(arr)); } catch(e){} }
+  function fmtHistTime(t){
+    var d = new Date(t || Date.now()), p = function(n){ return (n<10?'0':'')+n; };
+    return p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
+  }
+  function renderHistory(){
+    var list = $('histList'); if(!list) return;
+    var h = loadHistory();
+    list.innerHTML = '';
+    if(!h.length){
+      list.innerHTML = '<div class="sub" style="margin:0">暂无历史记录。每次提问成功后自动保存，每周一自动清除。</div>';
+      return;
+    }
+    h.forEach(function(item){
+      var det = document.createElement('details');
+      det.className = 'hist-item';
+      var sum = document.createElement('summary');
+      var qEl = document.createElement('span'); qEl.className='hist-q'; qEl.textContent = item.q || '(无问题)';
+      var tEl = document.createElement('span'); tEl.className='hist-time'; tEl.textContent = fmtHistTime(item.t);
+      sum.appendChild(qEl); sum.appendChild(tEl);
+      det.appendChild(sum);
+      var md = document.createElement('div'); md.className='md';
+      md.innerHTML = renderMD(item.a || '');
+      det.appendChild(md);
+      var meta = document.createElement('div'); meta.className='hist-meta';
+      var refill = document.createElement('a'); refill.className='hist-refill'; refill.href='#'; refill.textContent='重新提问';
+      refill.onclick = function(e){ e.preventDefault(); $('question').value = item.q || ''; $('question').focus(); window.scrollTo({top:0,behavior:'smooth'}); };
+      meta.appendChild(refill);
+      det.appendChild(meta);
+      list.appendChild(det);
+    });
+  }
+  $('clearHist').onclick = function(){
+    if(confirm('确认清除全部历史记录？此操作不可恢复。')){ localStorage.removeItem(HIST_KEY); renderHistory(); }
+  };
+  // 每周一自动清除：以"本周一"本地日期为键，首次进入新的一周即清空，本周内不再重复清。
+  // 不依赖具体星期几访问——无论用户哪天打开，只要跨过了周一就清一次。
+  function lastMondayKey(){
+    var d = new Date(), day = d.getDay(), diff = (day === 0 ? -6 : 1 - day);
+    d.setDate(d.getDate() + diff);
+    var p = function(n){ return (n<10?'0':'')+n; };
+    return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
+  }
+  (function(){
+    try {
+      var ck = 'qwen_hist_cleared', mon = lastMondayKey();
+      if(localStorage.getItem(ck) !== mon){ localStorage.removeItem(HIST_KEY); localStorage.setItem(ck, mon); }
+    } catch(e){}
+  })();
+  renderHistory();
 })();
 </script>
 </body>

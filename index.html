@@ -1565,6 +1565,16 @@ function getActiveBids(){
   if(selectedWeek === 'all'){
     return getAllBids();
   }
+  if(selectedWeek && selectedWeek.indexOf('m-') === 0){
+    // 整月汇总：合并该月所有按周归档桶（不含 current / 历史补充收集 / 全部）
+    const mkey = selectedWeek.slice(2);
+    const out = [];
+    weekOptions.forEach(w=>{
+      if(w.id === 'current' || w.id === 'all' || w.id === 'w-supp') return;
+      if(ymKey(w) === mkey && w.bids) out.push.apply(out, w.bids);
+    });
+    return out;
+  }
   const opt = weekOptions.find(w => w.id === selectedWeek);
   // 数据桶即权威来源：直接返回该桶，不做日期范围二次过滤。
   // 旧逻辑按周 range 过滤会静默丢弃日期落在桶外（多为采集时日期标注偏差）的条目，
@@ -1572,6 +1582,7 @@ function getActiveBids(){
   return (opt && opt.bids) ? opt.bids : currentWeekBids;
 }
 function getSelectedRange(){
+  if(selectedWeek && selectedWeek.indexOf('m-') === 0) return monthRangeLabel(selectedWeek);
   const opt = weekOptions.find(w => w.id === selectedWeek);
   return opt ? opt.range : '';
 }
@@ -1583,6 +1594,24 @@ function dateSortKey(d){
   m = /^(\d{4})-(\d{2})$/.exec(d);
   if(m) return m[1]+'-'+m[2]+'-15';
   return d;
+}
+
+// 周→月份推导：用于汇总下拉"近 2 个月按周、更早按月的折叠展示"
+// 仅对有具体起止日期的周桶有效；"全部历史汇总 / 历史补充收集"等无日期桶返回 null（视为特殊项，不参与折叠）
+function ymOf(w){
+  const m = /^(\d{4})年(\d{1,2})月(\d{1,2})日/.exec(w.range || '');
+  if(!m) return null;
+  return (+m[1]) * 12 + (+m[2]);   // 形如 2026*12+8 = 24320，便于按月做数值比较
+}
+function ymKey(w){
+  const ym = ymOf(w); if(ym === null) return null;
+  const y = Math.floor(ym / 12), mo = ym - y * 12;
+  return y + '-' + String(mo).padStart(2, '0');   // 'YYYY-MM'
+}
+function monthRangeLabel(id){
+  const m = /^m-(\d{4})-(\d{2})$/.exec(id || '');
+  if(!m) return '';
+  return m[1] + '年' + (+m[2]) + '月（整月汇总）';
 }
 
 // ===== Theme =====
@@ -2114,11 +2143,17 @@ function handleSearch(val){
 
 function selectWeek(id){
   selectedWeek = id;
-  const opt = weekOptions.find(w=>w.id===id);
-  if(opt){
-    document.getElementById('periodSub').textContent = '报告周期：' + opt.range + ' · 点击列头可排序';
-    document.getElementById('weekNote').style.display = (id === 'current') ? 'block' : 'none';
+  let range = '';
+  if(id && id.indexOf('m-') === 0){
+    range = monthRangeLabel(id);
+  } else {
+    const opt = weekOptions.find(w=>w.id===id);
+    if(opt) range = opt.range;
   }
+  const ps = document.getElementById('periodSub');
+  if(ps) ps.textContent = '报告周期：' + range + ' · 点击列头可排序';
+  const wn = document.getElementById('weekNote');
+  if(wn) wn.style.display = (id === 'current') ? 'block' : 'none';
   updateCounts();
   renderBidsTable();
 }
@@ -2573,13 +2608,45 @@ function auditData(){
 }
 
 // ===== Init =====
-// 周下拉由 weekOptions 单一数据源生成，避免新增归档周后下拉漏项
+// 周下拉由 weekOptions 单一数据源生成，避免新增归档周后下拉漏项。
+// 展示策略：近 2 个日历月（含当月与上月）的周逐条展示；更早的周按"月"折叠，避免下拉过长难看。
 function buildWeekSelect(){
   const sel = document.getElementById('weekSelect');
   if(!sel) return;
-  sel.innerHTML = weekOptions
-    .map(w=>`<option value="${w.id}">${escapeHtml(w.label)}</option>`)
-    .join('');
+  const cur = weekOptions.find(w=>w.id === 'current');
+  const latestYM = cur ? ymOf(cur) : null;            // 以"最新周"为锚，2 个月窗口随之滑动
+  const monthGroups = {};                             // ym -> {year, month, weeks:[]}
+  const recentOpts = [];
+  weekOptions.forEach(w=>{
+    if(w.id === 'current' || w.id === 'all' || w.id === 'w-supp') return;
+    const ym = ymOf(w);
+    if(ym === null) return;                            // 非周桶（无日期），安全跳过
+    if(latestYM !== null && ym >= latestYM - 1){
+      recentOpts.push(w);                             // 近 2 个月：按周
+    } else {
+      if(!monthGroups[ym]){
+        const y = Math.floor(ym / 12), mo = ym - y * 12;
+        monthGroups[ym] = { year:y, month:mo, weeks:[] };
+      }
+      monthGroups[ym].weeks.push(w);                  // 更早：按月折叠
+    }
+  });
+  let html = '';
+  const curOpt = weekOptions.find(w=>w.id === 'current');
+  if(curOpt) html += `<option value="current">${escapeHtml(curOpt.label)}</option>`;
+  html += recentOpts.map(w=>`<option value="${w.id}">${escapeHtml(w.label)}</option>`).join('');
+  // 月折叠项：ym 从大到小（新的月在上）
+  Object.keys(monthGroups).map(Number).sort((a,b)=>b-a).forEach(ym=>{
+    const g = monthGroups[ym];
+    const val = 'm-' + g.year + '-' + String(g.month).padStart(2, '0');
+    const lbl = g.year + '年' + g.month + '月（' + g.weeks.length + '周）';
+    html += `<option value="${val}">${escapeHtml(lbl)}</option>`;
+  });
+  const supp = weekOptions.find(w=>w.id === 'w-supp');
+  if(supp) html += `<option value="w-supp">${escapeHtml(supp.label)}</option>`;
+  const allOpt = weekOptions.find(w=>w.id === 'all');
+  if(allOpt) html += `<option value="all">${escapeHtml(allOpt.label)}</option>`;
+  sel.innerHTML = html;
   sel.value = selectedWeek;
 }
 
