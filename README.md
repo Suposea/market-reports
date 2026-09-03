@@ -7,13 +7,15 @@
 
 ## 🌐 在线访问
 
-| 环境 | 地址 | 说明 |
+| 用途 | 地址 | 说明 |
 | --- | --- | --- |
-| **国内（推荐）** | https://supoman-d9g2fbeci8965fd08-1457021100.tcloudbaseapp.com/market-reports/ | 腾讯云 CloudBase 静态托管，国内直连、无需 VPN |
-| 海外 / 有 VPN | https://suposea.github.io/market-reports/ | GitHub Pages，与国内镜像内容完全同步 |
-| AI 顾问 | https://supoman-d9g2fbeci8965fd08-1457021100.tcloudbaseapp.com/market-reports/qwen.html | 基于站内真实数据，用千问提问商业建议 |
+| **主域名（推荐）** | https://supoman-market-report.com.cn/ | 自定义域名，Vercel 托管。国内直连实测可达，随 GitHub 提交自动更新 |
+| 国内备用 | https://supoman-d9g2fbeci8965fd08-1457021100.tcloudbaseapp.com/market-reports/ | 腾讯云 CloudBase 静态托管，国内直连兜底 |
+| 海外 | https://suposea.github.io/market-reports/ | GitHub Pages，境外访问更快 |
+| AI 顾问 | https://supoman-market-report.com.cn/qwen.html | 基于站内真实数据，用千问提问商业建议 |
 
-> ⚠️ `*.github.io` 在国内访问不稳定。发给同事或领导时，请使用上面的**国内链接**。
+> ⚠️ `*.github.io` 走 Fastly CDN（`185.199.108.0/22`），国内通常打不开，仅作境外入口。
+> 主域名访问异常时切到「国内备用」的 CloudBase 链接 —— 三处内容完全一致。
 
 ---
 
@@ -78,7 +80,7 @@
 | 图表 | Chart.js v4，**本地自托管**（不依赖境外 CDN） |
 | 数据 | 内联 JS 数组，改数组即更新；全站 KPI 与图表均脚本动态计算 |
 | AI | 浏览器直连 DashScope OpenAI 兼容接口（CORS 已验证） |
-| 部署 | 双发布：GitHub Pages + 腾讯云 CloudBase 国内镜像 |
+| 部署 | 三副本自动同步：自定义域名（Vercel，push 即部署）+ GitHub Pages + 腾讯云 CloudBase 国内镜像 |
 
 **设计约束**
 - 三个数据桶：`currentWeekBids`（本周）+ `archiveData`（历史）+ `liangruiBids`（专题，独立桶）
@@ -115,6 +117,11 @@ python -m http.server 8000
 
 ## 🔄 自动化
 
-每周一自动执行：**采集上周招投标数据 → 更新 `currentWeekBids` / `archiveData` → 推送 GitHub Pages → 同步腾讯云镜像**。
+每周一自动执行：**采集上周招投标数据 → 更新 `currentWeekBids` / `archiveData` → push 到 GitHub → 上传腾讯云镜像**。
+
+一次 push 触发三处更新：Vercel 监听到提交后自动构建并部署到主域名，GitHub Pages 同步生效，随后自动化再上传 4 个文件到 CloudBase 国内镜像。
+
+> **为什么 CloudBase 必须传 4 个文件**：`index.html` 顶栏的「AI 顾问」指向同目录 `qwen.html`，而 `qwen.html` 依赖 `qwen-data.js` 作离线兜底 —— 少传任何一个，国内镜像点「AI 顾问」就 404。
+> Vercel 与 GitHub Pages 直接从仓库取文件，不存在这个问题。
 
 数据口径、收录边界与金额规则全部固化在自动化流程中，确保每周产出一致。
