@@ -150,8 +150,8 @@ textarea{min-height:110px;line-height:1.6}
   var $ = function(id){ return document.getElementById(id); };
   var KEY_STORE = 'qwen_api_key';
   // 每浏览器每日调用上限：防止共享链接被反复刷或误触循环。
-  // 注意这只是软闸门（清掉 localStorage 即可绕过），真正的硬止损必须在
-  // 阿里云百炼控制台「费用管理 → 消费限额」设置月度上限并勾选"超出后禁止调用"。
+  // 注意这只是软闸门（清掉 localStorage 即可绕过），真正的硬止损在
+  // 阿里云百炼控制台。目前该 Key 已开启「免费额度用完即停」，额度耗尽后自动停用。
   var DAILY_LIMIT = 80;
 
   // 主题
@@ -173,7 +173,7 @@ textarea{min-height:110px;line-height:1.6}
   // ⚠️ 内置默认 Key（用户已明确选择内置，知晓风险）。
   // 本站源在公开仓库（GitHub Pages）且已部署公网，Key 会以明文出现在本文件中，
   // 任何人查看页面源码或翻阅仓库都能拿到并消耗该 Key 所属阿里云账号额度。
-  // 真实止损手段：到阿里云百炼控制台「费用管理 → 消费限额」设月度上限并勾选超限停用（页面 keyNotice 已提示用户）。
+  // 真实止损手段：到阿里云百炼控制台开启「免费额度用完即停」，额度耗尽后自动停用（页面 keyNotice 已提示用户）。
   // 覆盖优先级：本机手动保存(localStorage) > 外部 qwen-key.js 注入 window.QWEN_DEFAULT_KEY > 此内联默认值。
   // 撤销：把下行括号内值清空即可（页面随即回到"需手动输入"形态）。
   var BUILTIN_KEY = (window.QWEN_DEFAULT_KEY || 'sk-ws-H.EYHXEXM.K0rd.MEQCIFGHxjlf2lCKeJwwxZpS3RmNaNvb9wkBNmE_nwhoBFi5AiBBsixSuyrZPXVNze55fNkl-vv7lTS0l2nCE2utKa8_JA').trim();
@@ -235,10 +235,10 @@ textarea{min-height:110px;line-height:1.6}
 
   // 安全提示文案按部署形态切换
   $('keyNotice').innerHTML = BUILTIN_KEY
-    ? '🔐 <b>关于密钥</b>：本站点已内置一个共享 API Key，打开即可直接用，费用记在该 Key 所属阿里云账号上。'
+    ? '🔐 <b>关于密钥</b>：本站点已内置共享 API Key，打开即可直接用。'
       + '调用由你的浏览器直连阿里云 DashScope，Key 不会经过任何中间服务器。'
-      + '页面另设每机每日 ' + DAILY_LIMIT + ' 次的软限制，<b>但这挡不住存心滥用</b>——'
-      + '真正的止损要在阿里云百炼控制台「费用管理 → 消费限额」设月度上限并勾选「超出限额后禁止调用」。'
+      + '该 Key 已在百炼控制台开启「免费额度用完即停」，免费额度耗尽后自动停用，避免额外扣费。'
+      + '页面另设每机每日 ' + DAILY_LIMIT + ' 次软限制。'
       + '若你想用自己账号的 Key，在下方保存即可，会优先使用。'
     : '🔐 <b>密钥安全</b>：此版本未内置 Key。API Key 仅在你本机浏览器输入并存入 localStorage，'
       + '<b>不会上传到任何服务器、也不会写入代码仓库</b>。每次调用由你的浏览器直连阿里云 DashScope。'
