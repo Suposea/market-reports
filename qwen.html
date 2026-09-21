@@ -111,13 +111,13 @@ textarea{min-height:110px;line-height:1.6}
   <div class="card">
     <h2>提问</h2>
     <div class="sub" id="dataStatus">数据加载中…</div>
-    <label for="model">模型</label>
+    <label for="model">模型（已锁定免费额度模型）</label>
     <select id="model">
-      <option value="qwen-plus">qwen-plus（均衡，推荐）</option>
-      <option value="qwen-max">qwen-max（最强推理）</option>
-      <option value="qwen-turbo">qwen-turbo（最快最省）</option>
-      <option value="qwen-long">qwen-long（超长上下文）</option>
+      <option value="qwen3.7-plus">qwen3.7-plus（免费额度内 · 默认）</option>
     </select>
+    <div style="margin-top:10px;font-size:.84rem;color:var(--ink-500)">
+      <label style="cursor:pointer"><input type="checkbox" id="fullCtx"> 深挖模式：附带全部历史逐条明细（token 消耗约 8 倍，仅在需要逐条历史证据时勾选；默认只发本周明细+全库聚合统计）</label>
+    </div>
     <label for="question">你的问题</label>
     <textarea id="question" placeholder="例如：本周哪些厂商值得重点跟进？给出理由和优先级。"></textarea>
     <div class="chips" id="chips"></div>
@@ -273,6 +273,8 @@ textarea{min-height:110px;line-height:1.6}
           // sourceUrl 仅在有值时才写入：约 2/3 条目无深链，省略可显著降低 token 占用。
           // 无链接的条目由系统提示词要求模型退回标注平台名（source 字段），不编造 URL。
           if(b.sourceUrl) rec.sourceUrl = b.sourceUrl;
+          // 本周标记：默认只把本周明细塞进 system prompt（省 token），历史走聚合统计
+          if(name === 'currentWeekBids') rec.cur = 1;
           out.push(rec);
         });
       });
@@ -312,30 +314,46 @@ textarea{min-height:110px;line-height:1.6}
   });
 
   // 构建 grounding 上下文
-  function buildSystem(){
+  // token 成本控制（2026-09-21）：全量明细已涨到 384 条/104.5KB ≈ 24k~39k tokens/次，
+  // 100 万免费额度只够 ~30 问。默认只发「本周逐条明细 + 全库聚合统计」；
+  // 勾选深挖模式(full) 才附带全部历史逐条明细。离线旧快照无 cur 标记时自动回退全量，避免明细为空。
+  function buildSystem(full){
     var d = DATA;
-    var byVendor = {}, xc=0, withAmt=0, totalAmt=0, dates=[];
+    var byVendor = {}, xc=0, withAmt=0, totalAmt=0, dates=[], byMonth={}, big=[];
     d.forEach(function(b){
       byVendor[b.winner] = (byVendor[b.winner]||0)+1;
       if(b.xc) xc++;
-      if(b.amount && /\d/.test(b.amount)){ withAmt++; var m=/([\d.]+)\s*万元/.exec(b.amount); if(m) totalAmt += parseFloat(m[1]); }
-      if(b.date) dates.push(b.date);
+      if(b.amount && /\d/.test(b.amount)){ withAmt++; var m=/([\d.]+)\s*万元/.exec(b.amount); if(m){ var v=parseFloat(m[1]); totalAmt += v; if(v>=500) big.push(b); } }
+      if(b.date){ dates.push(b.date); var ym = /^(\d{4}-\d{2})/.exec(b.date); if(ym) byMonth[ym[1]] = (byMonth[ym[1]]||0)+1; }
     });
     var top = Object.keys(byVendor).sort(function(a,b){return byVendor[b]-byVendor[a];}).slice(0,12)
       .map(function(v){ return v + '（' + byVendor[v] + '）'; }).join('、');
     var span = dates.length ? (dates.slice().sort()[0] + ' ~ ' + dates.slice().sort().pop()) : '未知';
-    var ctx = '【数据概览】共 ' + d.length + ' 条中标（去重），时间跨度 ' + span + '。\n'
-      + '中标厂商 TOP：' + top + '。\n'
-      + '信创类项目 ' + xc + ' 条；已披露金额 ' + withAmt + ' 条，合计约 ' + Math.round(totalAmt) + ' 万元。\n\n'
-      + '【逐条明细（JSON，字段：bidder 招标方 / winner 中标方 / project 项目名 / amount 金额["xxx万元"|"金额未披露"|"框架入围"|空] / date 日期 / source 来源平台 / sourceUrl 原文链接[无深链的条目不含此字段] / xc 是否信创[1|0]）】\n'
-      + JSON.stringify(d, null, 0) + '\n\n'
+    var months = Object.keys(byMonth).sort()
+      .map(function(k){ return k + '：' + byMonth[k] + ' 条'; }).join('；');
+    var bigs = big.sort(function(a,b){
+        var na=(/([\d.]+)\s*万元/.exec(a.amount)||[0,0])[1], nb=(/([\d.]+)\s*万元/.exec(b.amount)||[0,0])[1];
+        return nb-na; }).slice(0,10)
+      .map(function(b){ return b.date + ' ' + b.bidder + ' → ' + b.winner + ' ' + b.amount + '（' + b.project.slice(0,40) + '）'; }).join('\n');
+    // 明细范围：默认仅本周；勾选深挖、或数据无本周标记（离线旧快照）时为全量
+    var hasCur = d.some(function(b){ return b.cur; });
+    var detail = (hasCur && !full) ? d.filter(function(b){ return b.cur; }) : d;
+    var scopeTxt = (detail.length === d.length) ? '全部历史' : '最近一周（其余历史仅提供下方聚合统计）';
+    var ctx = '【数据概览】全库共 ' + d.length + ' 条中标（去重），时间跨度 ' + span + '。\n'
+      + '中标厂商 TOP12：' + top + '。\n'
+      + '信创类项目 ' + xc + ' 条；已披露金额 ' + withAmt + ' 条，合计约 ' + Math.round(totalAmt) + ' 万元。\n'
+      + '【月度中标条数】' + (months || '无日期数据') + '\n'
+      + '【大额项目 TOP（≥500万元，最多10条）】\n' + (bigs || '无') + '\n\n'
+      + '【逐条明细（JSON，字段：bidder 招标方 / winner 中标方 / project 项目名 / amount 金额["xxx万元"|"金额未披露"|"框架入围"|空] / date 日期 / source 来源平台 / sourceUrl 原文链接[无深链的条目不含此字段] / xc 是否信创[1|0]）——当前覆盖范围：' + scopeTxt + '】\n'
+      + JSON.stringify(detail, null, 0) + '\n\n'
       + '【你的角色】你是银行资金/财资/司库系统领域的资深市场分析师，服务于一家金融 IT 咨询与系统集成公司。\n'
       + '【硬约束 —— 违反即视为失败】\n'
       + '1. 仅基于上面提供的数据回答，绝不编造任何数字、厂商或项目；数据中不存在的信息，明确回答"数据未覆盖/无法确定"，不要推测。\n'
-      + '2. 每条有依据的结论都要标注出处：句末用 [来源：平台名](sourceUrl) 引用；若 sourceUrl 为空，至少写明平台名（source 字段）。\n'
+      + '2. 每条有依据的结论都要标注出处：句末用 [来源：平台名](sourceUrl) 引用；若 sourceUrl 为空，至少写明平台名（source 字段）。仅聚合统计支撑的结论注明"（据聚合统计）"。\n'
       + '3. 金额口径：遇到"金额未披露"或"框架入围"视为无具体金额，不要当数字参与加总或比较；只有"xxx万元"才统计。\n'
       + '4. 回答要像金融分析师写的速读：有数字、有归因、有优先级判断；禁止"建议关注/值得期待"类无信息量套话。\n'
-      + '5. 用中文，结构清晰，适当用 markdown（## 标题、**加粗**、- 列表）。';
+      + '5. 用中文，结构清晰，适当用 markdown（## 标题、**加粗**、- 列表）。\n'
+      + '6. 若问题需要未加载的历史逐条明细，基于聚合统计作答并明确提示"历史明细未加载，可在提问区勾选深挖模式后重问"；不要臆造明细。';
     return ctx;
   }
 
@@ -382,12 +400,13 @@ textarea{min-height:110px;line-height:1.6}
     }
     askBtn.disabled = true; loading.style.display='inline-flex'; answerEl.innerHTML='';
     var model = $('model').value;
+    var full = !!($('fullCtx') && $('fullCtx').checked);
     var body = JSON.stringify({
       model: model,
       temperature: 0.7,
       enable_thinking: false,
       messages: [
-        {role:'system', content: buildSystem()},
+        {role:'system', content: buildSystem(full)},
         {role:'user', content: q}
       ]
     });
@@ -404,7 +423,7 @@ textarea{min-height:110px;line-height:1.6}
         var text = res.j.choices && res.j.choices[0] && res.j.choices[0].message ? res.j.choices[0].message.content : '';
         bumpQuota();   // 仅在调用成功后计数，失败不占用额度
         answerEl.innerHTML = '<div class="md">' + renderMD(text || '（无内容返回）') + '</div>'
-          + '<div class="key-status" style="margin-top:10px">—— 基于 ' + DATA.length + ' 条真实招投标数据生成，请核对每条结论的原文链接</div>';
+          + '<div class="key-status" style="margin-top:10px">—— 基于 ' + (full ? ('全量 ' + DATA.length + ' 条明细') : ('本周明细 + 全库 ' + DATA.length + ' 条聚合统计')) + '（模型 ' + model + '）生成，请核对每条结论的原文链接</div>';
         // 保存问答历史（本机 localStorage，仅本地，每周一自动清除）
         (function(){
           var hh = loadHistory();
