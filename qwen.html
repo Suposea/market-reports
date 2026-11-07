@@ -176,7 +176,13 @@ textarea{min-height:110px;line-height:1.6}
   // 真实止损手段：到阿里云百炼控制台开启「免费额度用完即停」，额度耗尽后自动停用（页面 keyNotice 已提示用户）。
   // 覆盖优先级：本机手动保存(localStorage) > 外部 qwen-key.js 注入 window.QWEN_DEFAULT_KEY > 此内联默认值。
   // 撤销：把下行括号内值清空即可（页面随即回到"需手动输入"形态）。
-  var BUILTIN_KEY = (window.QWEN_DEFAULT_KEY || 'sk-ws-H.EYHXEXM.K0rd.MEQCIFGHxjlf2lCKeJwwxZpS3RmNaNvb9wkBNmE_nwhoBFi5AiBBsixSuyrZPXVNze55fNkl-vv7lTS0l2nCE2utKa8_JA').trim();
+  // ⚠️ 安全红线（2026-11-07 整改）：本页 **不再内置任何明文 API Key**。
+  // 原先这里有一段内联兜底 Key，它随本文件一起提交进了 PUBLIC 公开仓库，
+  // 且 qwen.html 页面源码本身公开可取 —— 结果是任何人查看源码即可拿走该 Key，
+  // 在自己脚本里刷你的阿里云额度（已实证导致账户欠费 Arrearage）。
+  // 现在唯一来源是本机 localStorage（用户自行粘贴并保存），或由站外私有部署注入 window.QWEN_DEFAULT_KEY。
+  // 切勿在此处写入任何真实 Key：git 历史不可撤回，删文件也仍可被提取。
+  var BUILTIN_KEY = (window.QWEN_DEFAULT_KEY || '').trim();
   var keyInput = $('keyInput'), keyStatus = $('keyStatus'), quotaStatus = $('quotaStatus');
 
   function effectiveKey(){
@@ -240,8 +246,11 @@ textarea{min-height:110px;line-height:1.6}
       + '该 Key 已在百炼控制台开启「免费额度用完即停」，免费额度耗尽后自动停用，避免额外扣费。'
       + '页面另设每机每日 ' + DAILY_LIMIT + ' 次软限制。'
       + '若你想用自己账号的 Key，在下方保存即可，会优先使用。'
-    : '🔐 <b>密钥安全</b>：此版本未内置 Key。API Key 仅在你本机浏览器输入并存入 localStorage，'
-      + '<b>不会上传到任何服务器、也不会写入代码仓库</b>。每次调用由你的浏览器直连阿里云 DashScope。'
+    : '🔐 <b>密钥安全</b>：本页<b>不再内置共享 Key</b>——此前内联的 Key 随源码进入了公开仓库，'
+      + '任何人查看页面源码即可取走并盗刷你的阿里云额度（已发生过欠费）。'
+      + '因此现在改为：<b>粘贴你自己的 DashScope API Key</b>，仅存于本机浏览器的 localStorage，'
+      + '<b>不上传任何服务器、不写入代码仓库</b>，每次调用由你的浏览器直连 DashScope。'
+      + '<br>建议：使用<b>独立子账号 Key</b>并设置<b>单日消费上限</b>，即使将来意外泄露，损失也封顶。'
       + '请勿在公共电脑保存；用完可在下方「清空」。';
 
   // 同源实时拉取最新 index.html 覆盖快照

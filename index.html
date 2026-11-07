@@ -152,12 +152,23 @@ body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opac
 /* P1-1 首屏信息架构：概览区改 flex 列布局，用 order 重排视觉顺序（不动 DOM，保留"改数组即更新"契约） */
 #tab-overview.active{display:flex;flex-direction:column}
 #tab-overview>.data-meta{order:1}
+#tab-overview>.trust-bar{order:1.5}
 #tab-overview>.tldr{order:2}
 #tab-overview>.kpi-grid{order:3}
 #tab-overview>.compare-card{order:4}
 #tab-overview>.big-deals{order:5}
 #tab-overview>.chart-card,#tab-overview>.chart-grid{order:6}
 #tab-overview>.war-board{order:8}
+
+/* ===== 数据可信度条（U1：把来源质量变成一眼可见的数字）===== */
+.trust-bar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:12px 20px;margin:-12px 0 20px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--radius-md);font-size:.8rem;color:var(--ink-400);box-shadow:var(--shadow-xs)}
+.trust-tag{display:inline-flex;align-items:center;gap:7px;font-weight:600;color:var(--ink-500);font-size:.78rem;letter-spacing:.02em}
+.trust-tag::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent)}
+.trust-sep{width:1px;height:14px;background:var(--border)}
+.trust-item{display:inline-flex;align-items:baseline;gap:6px}
+.trust-item b{font-size:.94rem;font-weight:600;color:var(--ink-700);font-variant-numeric:tabular-nums}
+.trust-item.is-warn b{color:var(--clay)}
+.trust-note{margin-left:auto;font-size:.75rem;color:var(--ink-400)}
 
 /* ===== KPI Cards ===== */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;margin-bottom:30px}
@@ -430,6 +441,9 @@ tbody tr.hidden{display:none}
 .wb-meta{text-align:right;font-size:0.78rem;color:var(--ink-400);white-space:nowrap}
 .wb-meta b{color:var(--ink-500);font-weight:600}
 .wb-meta .amt{color:var(--accent)}
+/* U2：本期中标数与新进厂商标记 */
+.wb-cur{margin-left:6px;padding:1px 7px;border-radius:999px;font-size:.7rem;font-weight:600;color:var(--ink-400);background:var(--surface-2);border:1px solid var(--border);white-space:nowrap}
+.wb-cur.is-new{color:var(--clay);background:var(--clay-soft);border-color:transparent}
 
 #bidsTable tbody tr{box-shadow:inset 3px 0 0 var(--vc,transparent);border-bottom:1px solid var(--border);transition:background .2s ease}
 #bidsTable tbody tr.is-week{background:color-mix(in srgb,var(--accent) 7%,transparent)}
@@ -693,6 +707,8 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
     </div>
 
     <div class="data-meta reveal" id="dataMeta"></div>
+
+    <div class="trust-bar reveal" id="trustBar"></div>
 
     <div class="tldr reveal" id="tldrCard"></div>
 
@@ -958,7 +974,7 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
           <span class="tag">2026-10-26 至 11-01 剔除提醒</span>
           <h4>纯硬件剔除提醒：北京银行服务器三标段 3965.72 万、唐山银行服务器 D 包 750 万等均不收录</h4>
           <p>本周多起大额“信创”名义采购实为硬件，按“只关注软件”边界规则全部剔除：北京银行 2026 年第二批服务器采购三标段合计 <b>3965.72 万元</b>（分布式数据库服务器/国产容器服务器，10-27 定标）；唐山银行<b>生产环境服务器 D 包</b>由南天信息 <b>750 万元</b>中标（10-26）；长城华西银行 AI 智算服务器 380.55 万（10-23）；湖州银行 AI 算力服务器 680 万（10-27 评审）；兴业银行武汉分行机房信创版环境监控系统（动环，10-31）；国开行数据中心网络安全防护产品、青海分行机房制冷设备等。</p>
-        </div></div></div>  <!-- ===== Tab 4: Archive ===== -->
+        </div></div></div></div>  <!-- ===== Tab 4: Archive ===== -->
   <div class="tab-panel" id="tab-archive">
     <div class="panel reveal">
       <div class="panel-title">
@@ -2330,16 +2346,33 @@ function renderWarBoard(){
   });
   const rows = Object.values(map).sort((a,b)=>b.count-a.count || b.amt-a.amt);
   const maxCount = Math.max(1, ...rows.map(r=>r.count));
+  // ===== U2：本期维度与新进厂商标记 =====
+  // 累计榜看"谁强"，本期数看"谁这周在动"，新进标记看"新玩家入场"——这是竞对情报的核心增量
+  const curCnt = {}, curAmt = {};
+  const histVendors = new Set();
+  (archiveData[0]||[]).forEach(r=>winnerList(r).forEach(w=>histVendors.add(w)));
+  currentWeekBids.forEach(r=>{
+    const ws = winnerList(r);
+    if(!ws.length) return;
+    const share = ws.length > 1 ? parseAmount(r.amount) / ws.length : parseAmount(r.amount);
+    ws.forEach(w=>{ curCnt[w] = (curCnt[w]||0)+1; curAmt[w] = (curAmt[w]||0)+share; });
+  });
   const WAR_TOP = 10;   // P1-1 战况榜默认只展示头部 TOP10，避免 45 行长尾稀释"TOP3 占 57%"这一核心结论
   el.innerHTML = rows.map((r,i)=>{
     const extra = i >= WAR_TOP ? ' wb-extra' : '';
     const color = getVendorColor(r.name);
     const pct = Math.round(r.count / maxCount * 100);
     const amtTxt = r.amt>0 ? ` · ${Math.round(r.amt).toLocaleString()}万` : '';
+    const cc = curCnt[r.name] || 0;
+    const cAmt = curAmt[r.name] || 0;
+    const isNew = cc > 0 && !histVendors.has(r.name);
+    const curTag = cc > 0
+      ? `<span class="wb-cur${isNew?' is-new':''}">${isNew?'新进':''}${cc}单${cAmt>0?' '+Math.round(cAmt).toLocaleString()+'万':''}</span>`
+      : '';
     return `<div class="wb-row${extra}" style="--vc:${color}" onclick="focusVendor('${escapeHtml(r.name)}')" title="点击筛选 ${escapeHtml(r.name)} 全部中标">
       <div class="wb-name"><span class="wb-dot"></span><span>${escapeHtml(r.name)}</span></div>
       <div class="wb-track"><div class="wb-fill" style="width:${pct}%"></div></div>
-      <div class="wb-meta"><b>${r.count}</b>条<span class="amt">${amtTxt}</span> · ${r.banks.size}行</div>
+      <div class="wb-meta"><b>${r.count}</b>条<span class="amt">${amtTxt}</span> · ${r.banks.size}行${curTag}</div>
     </div>`;
   }).join('');
   const btn = document.getElementById('warExpand');
@@ -3074,6 +3107,27 @@ function renderMeta(){
   if(badge) badge.textContent = '⏰ 下次自动更新：' + nextMondayText() + '（每周一早上）';
 }
 
+// ===== U1 数据可信度条 =====
+// 把「来源是否可靠」从隐性的灰色小圆点，变成显性的可读数字：本期有多少条能点开公告原文。
+// 全站金额实证为离线核验快照（VERIFIED_SNAPSHOT），带核验日期，不随数据自动过期，需定期重跑核验脚本更新。
+const VERIFIED_SNAPSHOT = { asOf:'2026-11-07', total:113, scope:'199 条带金额记录' };
+function renderTrustBar(){
+  const el = document.getElementById('trustBar');
+  if(!el) return;
+  const cur = currentWeekBids || [];
+  if(!cur.length){ el.style.display='none'; return; }
+  const linked = cur.filter(r=>r.sourceUrl).length;
+  const platformOnly = cur.length - linked;
+  const pct = Math.round(linked / cur.length * 100);
+  el.innerHTML =
+    `<span class="trust-tag">数据可信度</span>`
+    + `<span class="trust-sep"></span>`
+    + `<span class="trust-item">本期 <b>${cur.length}</b> 条中标</span>`
+    + `<span class="trust-item">可点开公告原文 <b>${linked}</b> 条（${pct}%）</span>`
+    + `<span class="trust-item ${platformOnly?'is-warn':''}">仅平台署名 <b>${platformOnly}</b> 条</span>`
+    + `<span class="trust-note">全站 ${VERIFIED_SNAPSHOT.scope}中 <b>${VERIFIED_SNAPSHOT.total}</b> 条金额已在公告原文逐条实证（核验于 ${VERIFIED_SNAPSHOT.asOf}）</span>`;
+}
+
 // ===== P2-2 数据哨兵（仅 console，绝不碰 DOM）=====
 // 挂在 init() 首行：校验两数组长度一致、必填字段、金额含数字却解析为 0、签名重复、winner 含「、」未拆分等。
 // 替代 P0-2 那种"静默丢数"的处理，问题只在控制台告警，不影响展示与自动化契约。
@@ -3188,6 +3242,7 @@ function init(){
   try { animateCount(document.getElementById('kpi-vendors'), new Set(currentWeekBids.flatMap(r=>winnerList(r))).size); } catch(e){ console.error('kpi-vendors failed:', e); }
   try { renderKpiFoot(); } catch(e){ console.error('renderKpiFoot failed:', e); }
   try { renderMeta(); } catch(e){ console.error('renderMeta failed:', e); }
+  try { renderTrustBar(); } catch(e){ console.error('renderTrustBar failed:', e); }
   try { renderBidsTable(); } catch(e){ console.error('renderBidsTable failed:', e); }
   try { updateCounts(); } catch(e){ console.error('updateCounts failed:', e); }
   try { renderArchive(); } catch(e){ console.error('renderArchive failed:', e); }
