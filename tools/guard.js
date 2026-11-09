@@ -58,7 +58,7 @@ if (qsc.length) { try { new Function(qsc[qsc.length - 1]); say(true, 'qwen.html 
 
 // ── 2. HTML 嵌套 / tab 兄弟关系（语法检查查不出来的部分）──
 console.log('\n[2] HTML 嵌套与 tab 兄弟关系');
-const ids = ['tab-overview', 'tab-bids', 'tab-vendor', 'tab-policy', 'tab-archive', 'tab-radar'];
+const ids = ['tab-overview', 'tab-bids', 'tab-vendor', 'tab-policy', 'tab-archive', 'tab-radar', 'tab-unverified'];
 const rs = ids.map(id => { const p = idx.indexOf('id="' + id + '"'); const o = idx.lastIndexOf('<div', p); return { id, o, c: o >= 0 ? matchClose(idx, o) : -1 }; });
 rs.forEach((r, i) => {
   if (r.o < 0) { say(false, r.id + ' 未找到', true); return; }
@@ -101,6 +101,30 @@ console.log('\n[5] 安全红线（明文 Key）');
   const hits = t.match(KEY_RE);
   say(!hits, f + (hits ? ' 含 ' + hits.length + ' 处明文 Key！' : ' 无明文 Key'), true);
 });
+
+// ── 6. 证据等级标注一致性（2026-11-09）──
+console.log('\n[6] 证据等级标注一致性');
+const allBids = (() => {
+  try {
+    const cur = evalArray(idx, 'currentWeekBids') || [];
+    const arc = evalArray(idx, 'archiveData') || [];
+    return [...cur, ...arc.flat()];
+  } catch (e) { return []; }
+})();
+if (allBids.length) {
+  const noSource = allBids.filter(r => !r.source && !r.sourceUrl);
+  const marked = allBids.filter(r => r.v === 'none');
+  say(marked.length === noSource.length,
+    '无来源记录均已标记 v:none（标记 ' + marked.length + ' / 实际 ' + noSource.length + '）', true);
+  const badV = allBids.filter(r => r.v && !['full', 'platform', 'summary', 'none'].includes(r.v));
+  say(badV.length === 0, 'v 字段取值合法（full/platform/summary/none）' + (badV.length ? '，异常 ' + badV.length + ' 条' : ''), true);
+  // 隔离生效：主表不得出现 v:none
+  const crSrc = (idx.match(/function computeRows\(\)\{[\s\S]*?\n\}/) || [''])[0];
+  say(/evidenceLevel\(r\)!=='none'/.test(crSrc), '主表 computeRows 已过滤 v:none（不混入待核验记录）', true);
+  // 四档渲染函数在位
+  say(/function evidenceLevel\(r\)/.test(idx), 'evidenceLevel() 存在');
+  say(/EVIDENCE_META/.test(idx), 'EVIDENCE_META 四档定义存在');
+}
 
 console.log('\n' + '='.repeat(60));
 if (fatal) { console.log(`❌ 门禁未通过：${fatal} 项阻断（禁止 push）${warn ? '，' + warn + ' 项提醒' : ''}`); process.exit(1); }

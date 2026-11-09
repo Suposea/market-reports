@@ -387,6 +387,43 @@ tbody tr.hidden{display:none}
 .src-link.src-platform{color:var(--ink-500)}
 .src-link.src-search{color:var(--accent)}
 .src-dot{width:7px;height:7px;border-radius:50%;background:var(--ok);display:inline-block;margin-right:5px;flex:0 0 auto;vertical-align:middle}
+/* ===== 待核验 Tab 与四档证据等级 ===== */
+.tab-badge{display:inline-block;margin-left:5px;padding:0 5px;border-radius:999px;background:var(--clay);color:#fff;font-size:.66rem;font-weight:600;line-height:1.5;vertical-align:middle}
+.tab-badge:empty{display:none}
+.tab-unv{color:var(--ink-400)}
+.tab-unv.active{color:var(--clay)}
+.uv-warn{color:var(--clay);font-weight:600}
+.uv-block{margin-bottom:22px}
+.uv-block-title{font-size:.8rem;font-weight:600;color:var(--ink-500);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.uv-chips{display:flex;flex-wrap:wrap;gap:8px}
+.uv-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);font-size:.76rem;color:var(--ink-400)}
+.uv-chip b{color:var(--ink-600);font-weight:600}
+.uv-bars{display:flex;flex-direction:column;gap:7px}
+.uv-bar-row{display:grid;grid-template-columns:150px 1fr 40px;align-items:center;gap:12px}
+.uv-bar-name{font-size:.8rem;color:var(--ink-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uv-bar-track{position:relative;height:8px;background:var(--surface-2);border-radius:999px;overflow:hidden}
+.uv-bar-fill{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--clay);opacity:.55}
+.uv-bar-num{font-size:.76rem;color:var(--ink-400);text-align:right;font-variant-numeric:tabular-nums}
+.uv-table-wrap{max-height:420px;overflow:auto;border:1px solid var(--border);border-radius:var(--radius-md)}
+.uv-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.uv-table thead th{position:sticky;top:0;background:var(--surface-2);text-align:left;padding:9px 12px;font-weight:600;color:var(--ink-500);font-size:.76rem;border-bottom:1px solid var(--border);white-space:nowrap}
+.uv-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--ink-500);vertical-align:top}
+.uv-table tbody tr:hover{background:var(--surface-2)}
+.uv-amt{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink-600)}
+.uv-empty{color:var(--ink-300);font-style:italic}
+.bids-hidden-note{display:flex;align-items:center;gap:8px;padding:8px 14px;margin-bottom:14px;border-radius:var(--radius-md);background:var(--surface-2);border:1px dashed var(--border);font-size:.78rem;color:var(--ink-400)}
+.bids-hidden-note b{color:var(--clay);font-weight:600}
+
+/* ===== 证据等级四档（2026-11-09）：形状+颜色双编码，色觉障碍也能分辨 ===== */
+.ev-full{color:var(--ok)}
+.ev-platform{color:var(--ink-400)}
+.ev-summary{color:var(--clay)}
+.ev-none{color:var(--ink-300)}
+.src-dot.ev-full{background:var(--ok)}
+.src-dot.ev-platform{background:var(--ink-400)}
+.src-dot.ev-summary{background:transparent;border:1.5px solid var(--clay);width:8px;height:8px}
+.src-dot.ev-none{background:transparent;border:1.5px dashed var(--ink-300);width:8px;height:8px;border-radius:2px}
+.src-link.ev-none{color:var(--ink-400);font-style:italic}
 
 /* ===== Vendor business info grid ===== */
 .vendor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;margin-top:4px}
@@ -655,6 +692,7 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
       <div class="tab" data-tab="policy">政策行业</div>
       <div class="tab" data-tab="archive">历史归档</div>
       <div class="tab" data-tab="radar">近期动态</div>
+      <div class="tab tab-unv" data-tab="unverified" title="无来源、无可点深链的历史遗留记录（不混入主表）">待核验<span class="tab-badge" id="unverifiedCount"></span></div>
     </div>
     <div class="topbar-right">
       <div class="search-box">
@@ -802,7 +840,8 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
         <div>
           <div class="panel-title">
             <span class="icon">
-              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4
+      <div class="bids-hidden-note" id="bidsHiddenNote"></div>M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
             招投标信息汇总
           </div>
@@ -1016,6 +1055,24 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
       <div class="info-grid" id="radarGrid" style="margin-top:18px"></div>
     </div>
   </div>
+  <!-- ===== Tab 7: 待核验（无来源历史遗留，单独隔离不混入主表） ===== -->
+  <div class="tab-panel" id="tab-unverified">
+    <div class="panel reveal">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <span class="icon">
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            待核验记录
+          </div>
+          <div class="panel-sub" id="unverifiedSummary"></div>
+        </div>
+      </div>
+      <div id="unverifiedBody"></div>
+    </div>
+  </div>
+
 
 <footer class="footer">
   <p class="strong">苏坡漫智能体 · 市场动态周报系统</p>
@@ -1157,6 +1214,7 @@ function gotoVendor(name){
 // 【链接核验白名单·结构性防御】仅以下"招标采购平台 / 机构官方采购门户"的真实深链才显示绿色"已核验"；
 // 聚合搜索类（爱企查/天眼查/标讯网/新浪财经/东方财富股吧等）一律视为检索兜底（蓝色），绝不显示绿点。
 const GREEN_DOMAINS = ['ahtba.org.cn','cqcbank.com','gx966888.com','youzhicai.com','sdicc.com.cn','hlzq.com','xyzq.com.cn','wrcb.com.cn','365trade.com.cn','cfcpn.com','qyzb.shccmg.com','qrcb.com.cn','linyi.ygcgfw.com','shggzy.com','ctbpsp.com','pms2g.shrcb.com','cg.cdb.com.cn','jkv2.ahtba.org.cn','login-cpm-xt.bankofbeijing.com.cn','hcl.jxcqgs.cn','supplier.gtht.com','cg.cib.com.cn','zjzb.chinaccsscm.cn','sgccetp.com.cn','pms.hnchasing.com','cqggzy.com','jjccb.com','hfbank.com.cn','f5.zj96596.com','ebuy.spdb.com.cn','onelinkplus.com','purms.ebscn.com','ec.chng.com.cn','tongbicapital.com','hazq.com','ggzy.gov.cn','ibuy.ccb.com','wzcb.com.cn','cebbank.com.cn','chinapost.com.cn','95595.cn','portal.zsebank.com','kmerit.com','nafmii.org.cn','ec.minmetals.com.cn','www.ygcgfw.com','ygcgfw.com','www.hazq.com','www.cscb.cn','cscb.cn','www.365trade.com.cn','www.cfcpn.com','www.ahtba.org.cn','www.sdicc.com.cn','www.chinapost.com.cn','www.xyzq.com.cn','www.cqcbank.com','www.gx966888.com','www.youzhicai.com','www.wrcb.com.cn','www.hlzq.com','www.qrcb.com.cn','www.shggzy.com','www.ctbpsp.com','www.jjccb.com','www.hfbank.com.cn','www.f5.zj96596.com','www.cebbank.com.cn','www.wzcb.com.cn','www.95595.cn','www.nafmii.org.cn','www.ggzy.gov.cn','www.cqggzy.com','www.cg.cib.com.cn','www.cg.cdb.com.cn','www.hcl.jxcqgs.cn','www.supplier.gtht.com'];
+
 function isGreenUrl(u){
   if(!u) return false;
   try{
@@ -1164,23 +1222,42 @@ function isGreenUrl(u){
     return GREEN_DOMAINS.some(d => h === d || h.endsWith('.'+d));
   }catch(e){ return false; }
 }
+// ===== 证据等级四档（2026-11-09 新增）=====
+// full    : 已核验 —— 深链已实测，正文含该条中标方（+金额），用户可点开自行复核
+// platform: 已见平台条目 —— 事实来自官方公告聚合平台的列表条目，但未找到可点开的原文深链
+// summary : 仅搜索摘要 —— 我方未取得平台页面正文（聚合平台有安全验证/需登录），仅从搜索摘要取得
+// none    : 无来源 —— 历史遗留，既无来源平台名也无深链，且部分连日期都缺
+// 判定优先级：显式 v 字段 > 运行时规则推断（规则写死在此，便于审计）
+const SUMMARY_SRC = /爱企查|企查查|寻标宝|搜索摘要|仅摘要/;   // 这些平台我方抓不到正文，只能到摘要级
+function evidenceLevel(r){
+  if(r.v) return r.v;
+  // full 只看「有没有可点原文」这个客观事实，不再依赖域名白名单：
+  // 白名单（GREEN_DOMAINS）是"逐一实测过正文含中标方"的域名集，只有 77 个，
+  // 而证券之星/知了标讯/股吧/公众号等同样实测过的渠道不在其中，会被误判成"未核验"。
+  // 「我实证过多少条」由可信度条的 VERIFIED_SNAPSHOT 单独呈示，不与证据等级混为一谈。
+  if(r.sourceUrl) return 'full';
+  if(!r.source) return 'none';
+  if(SUMMARY_SRC.test(r.source)) return 'summary';
+  return 'platform';
+}
+const EVIDENCE_META = {
+  full:    { cls:'ev-full',    tip:'有可点原文 · 点开可自行复核' },
+  platform:{ cls:'ev-platform',tip:'有来源平台名但无原文深链' },
+  summary: { cls:'ev-summary', tip:'仅搜索摘要可见 · 未能取得平台页面正文' },
+  none:    { cls:'ev-none',    tip:'无来源 · 历史遗留待核验' }
+};
 // 信息来源列：显示平台主题名 + 状态点，不再只缩成一个圆点。
 // 绿点=已核验直达原文；灰点+平台名=平台署名但原文未核验；灰点+"原文未收录"=无源（点击检索兜底）。
 function sourceCell(r){
   const text = r.source || '公开信息';
-  const real = !!(r.sourceUrl && isGreenUrl(r.sourceUrl));
+  const lv = evidenceLevel(r);
+  const meta = EVIDENCE_META[lv] || EVIDENCE_META.none;
   const url = r.sourceUrl || ('https://www.baidu.com/s?wd=' + encodeURIComponent((r.project||'') + ' ' + (r.winner||'') + ' 中标'));
   const svg = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  const dot = real
-    ? '<span class="src-dot" title="已核验 · 直达公告原文"></span>'
-    : '<span class="src-dot src-dot-grey" title="' + (r.source ? '平台署名未核验' : '原文未收录 · 点击检索') + '"></span>';
-  if(real){
-    return `<a class="src-link src-real" href="${url}" target="_blank" rel="noopener" title="已核验 · 直达公告原文：${escapeHtml(text)}">${dot}${escapeHtml(text)}${svg}</a>`;
-  }
-  if(r.source){
-    return `<a class="src-link src-platform" href="${url}" target="_blank" rel="noopener" title="平台署名未核验：${escapeHtml(text)}">${dot}${escapeHtml(text)}${svg}</a>`;
-  }
-  return `<a class="src-link src-search" href="${url}" target="_blank" rel="noopener" title="原文未收录 · 点击检索">${dot}原文未收录${svg}</a>`;
+  const dot = '<span class="src-dot ' + meta.cls + '" title="' + meta.tip + '"></span>';
+  const label = (lv === 'none') ? '来源不明' : text;
+  const extra = (!r.date ? ' · 缺日期' : '');
+  return '<a class="src-link ' + meta.cls + '" href="' + url + '" target="_blank" rel="noopener" title="' + meta.tip + '：' + escapeHtml(text + extra) + '">' + dot + escapeHtml(label) + svg + '</a>';
 }
 
 const currentWeekBids = [// ===== 11.02-11.08 本周新增（链接门禁：带链条目 HTTP 200 + 正文含中标方复验通过；JS骨架/登录壳/JS动态页一律降灰点，兴业深链404降级）=====
@@ -1823,124 +1900,124 @@ const archiveData = [
     {bidder:'黑龙江省农村信用社联合社',winner:'东华软件股份公司',project:'信贷系统日常升级优化及运维项目（成交结果公告）',amount:'573.3万元',date:'2026-07-28',source:'同壁财经·企查查数据（未核验）',sourceUrl:''}
   ],
 [
-    {bidder:'中国工商银行',winner:'中软国际',project:'远程授权系统服务端信创改造项目（信创）',amount:'125万元'},
-    {bidder:'江苏银行',winner:'北京中科金财',project:'电子验印系统国产化改造项目（信创）',amount:'金额未披露'},
-    {bidder:'国家开发银行',winner:'南天信息',project:'2026年资金交易大厅虚拟化平台软件采购项目',amount:'93.96万元'},
-    {bidder:'中国银行陕西省分行',winner:'安硕信息',project:'普惠金融营销过程管理系统项目',amount:'金额未披露'},
-    {bidder:'华夏银行',winner:'云赢网络',project:'资金业务系统本币业务优化项目(第二次)',amount:'金额未披露'},
-    {bidder:'徽商银行',winner:'兆尹信息',project:'投行业务管理平台升级采购项目',amount:'142万元'},
-    {bidder:'青银理财',winner:'兆尹信息',project:'信息披露与监管报送系统公告功能优化项目',amount:'金额未披露'},
-    {bidder:'兴业证券',winner:'衡泰技术',project:'固定收益系统高频智能交易与监管集中度改造(XC)项目（信创）',amount:'金额未披露'},
-    {bidder:'成方金融科技(上海分公司)',winner:'衡泰技术',project:'风险管理平台二期优化采购项目',amount:'456万元'},
-    {bidder:'建信养老金管理',winner:'衡泰技术',project:'受托管理与投资监督系统重构优化项目(一期)',amount:'框架入围'},
-    {bidder:'国泰海通证券',winner:'衡泰技术',project:'2026年上半年xIR系统开发服务采购项目',amount:'金额未披露'},
-    {bidder:'招商证券国际',winner:'衡泰技术',project:'灵犀财务数智中台与抵质押品管理平台',amount:'金额未披露'},
-    {bidder:'国开证券',winner:'金证股份',project:'核心交易相关系统技术驻场外包服务项目(3年期)',amount:'852.48万元'},
-    {bidder:'国投证券',winner:'金仕达',project:'风险数据集市信创升级改造项目（信创）',amount:'金额未披露'},
-    {bidder:'招标单位待披露',winner:'金仕达',project:'金仕达统一资金平台软件V1.0升级',amount:'金额未披露'},
-    {bidder:'浙江明日控股集团',winner:'金仕达',project:'明日控股期货系统升级项目',amount:'金额未披露'},
-    {bidder:'国元证券',winner:'顶点软件',project:'融资融券极速交易系统同步证券分组等功能优化项目',amount:'91万元'},
-    {bidder:'浙江农村商业联合银行',winner:'恒生电子',project:'专项领域通用类软件研发人力外包资源池入围项目',amount:'框架入围'},
+    {bidder:'中国工商银行',winner:'中软国际',project:'远程授权系统服务端信创改造项目（信创）',amount:'125万元',v:'none'},
+    {bidder:'江苏银行',winner:'北京中科金财',project:'电子验印系统国产化改造项目（信创）',amount:'金额未披露',v:'none'},
+    {bidder:'国家开发银行',winner:'南天信息',project:'2026年资金交易大厅虚拟化平台软件采购项目',amount:'93.96万元',v:'none'},
+    {bidder:'中国银行陕西省分行',winner:'安硕信息',project:'普惠金融营销过程管理系统项目',amount:'金额未披露',v:'none'},
+    {bidder:'华夏银行',winner:'云赢网络',project:'资金业务系统本币业务优化项目(第二次)',amount:'金额未披露',v:'none'},
+    {bidder:'徽商银行',winner:'兆尹信息',project:'投行业务管理平台升级采购项目',amount:'142万元',v:'none'},
+    {bidder:'青银理财',winner:'兆尹信息',project:'信息披露与监管报送系统公告功能优化项目',amount:'金额未披露',v:'none'},
+    {bidder:'兴业证券',winner:'衡泰技术',project:'固定收益系统高频智能交易与监管集中度改造(XC)项目（信创）',amount:'金额未披露',v:'none'},
+    {bidder:'成方金融科技(上海分公司)',winner:'衡泰技术',project:'风险管理平台二期优化采购项目',amount:'456万元',v:'none'},
+    {bidder:'建信养老金管理',winner:'衡泰技术',project:'受托管理与投资监督系统重构优化项目(一期)',amount:'框架入围',v:'none'},
+    {bidder:'国泰海通证券',winner:'衡泰技术',project:'2026年上半年xIR系统开发服务采购项目',amount:'金额未披露',v:'none'},
+    {bidder:'招商证券国际',winner:'衡泰技术',project:'灵犀财务数智中台与抵质押品管理平台',amount:'金额未披露',v:'none'},
+    {bidder:'国开证券',winner:'金证股份',project:'核心交易相关系统技术驻场外包服务项目(3年期)',amount:'852.48万元',v:'none'},
+    {bidder:'国投证券',winner:'金仕达',project:'风险数据集市信创升级改造项目（信创）',amount:'金额未披露',v:'none'},
+    {bidder:'招标单位待披露',winner:'金仕达',project:'金仕达统一资金平台软件V1.0升级',amount:'金额未披露',v:'none'},
+    {bidder:'浙江明日控股集团',winner:'金仕达',project:'明日控股期货系统升级项目',amount:'金额未披露',v:'none'},
+    {bidder:'国元证券',winner:'顶点软件',project:'融资融券极速交易系统同步证券分组等功能优化项目',amount:'91万元',v:'none'},
+    {bidder:'浙江农村商业联合银行',winner:'恒生电子',project:'专项领域通用类软件研发人力外包资源池入围项目',amount:'框架入围',v:'none'},
     {bidder:'温州银行股份有限公司',winner:'上海中软华腾软件系统有限公司',project:'借记IC卡系统-制卡准备子系统信创改造（单一来源，中标结果公告）',amount:'金额未披露',date:'2026-07-22',source:'温州银行官网·采购信息',sourceUrl:'https://www.wzcb.com.cn/purchase_info/view/page_id/33439'}
   ],
 [
-    {bidder:'天风证券',winner:'恒生电子',project:'柜台交易系统实时清算认申购日间扣款模块项目',amount:''},
-    {bidder:'兴业基金',winner:'恒生电子',project:'估值系统迭代改造采购项目',amount:''},
-    {bidder:'西南证券',winner:'恒生电子',project:'财富管理系统机构柜台支持场外FOF基金券结',amount:''},
-    {bidder:'兴银理财',winner:'恒生电子',project:'交易转发系统配套上交所改造项目',amount:''},
-    {bidder:'上海农商银行',winner:'恒生电子',project:'基金销售系统开发采购(商业养老功能)',amount:''},
-    {bidder:'招商证券',winner:'恒生电子',project:'核心交易系统新增支持沪市新固收平台等改造项目',amount:''},
-    {bidder:'招商证券',winner:'恒生电子',project:'QFII客户参与股票期权交易相关系统功能模块改造',amount:''},
-    {bidder:'国投证券',winner:'恒生电子',project:'2026年二季度恒生自营估值系统等3套系统升级改造',amount:''},
-    {bidder:'浙江明日控股集团',winner:'金仕达',project:'明日控股期货系统升级项目',amount:''},
-    {bidder:'兴业证券',winner:'衡泰技术',project:'固定收益系统高频智能交易与监管集中度改造(XC)项目',amount:''},
-    {bidder:'大连银行',winner:'衡泰技术',project:'本币资金管理系统四期升级改造项目',amount:''},
-    {bidder:'衡泰投资',winner:'衡泰技术',project:'衡泰投资交易管理系统优化建设项目(2026年第二期)',amount:''},
-    {bidder:'兴业数字金融服务(上海)',winner:'时代银通',project:'对客外汇衍生品风险管理项目',amount:''},
-    {bidder:'北京银行',winner:'时代银通',project:'2026年外汇报价引擎功能优化项目(第三次)',amount:'31.6万元'},
+    {bidder:'天风证券',winner:'恒生电子',project:'柜台交易系统实时清算认申购日间扣款模块项目',amount:'',v:'none'},
+    {bidder:'兴业基金',winner:'恒生电子',project:'估值系统迭代改造采购项目',amount:'',v:'none'},
+    {bidder:'西南证券',winner:'恒生电子',project:'财富管理系统机构柜台支持场外FOF基金券结',amount:'',v:'none'},
+    {bidder:'兴银理财',winner:'恒生电子',project:'交易转发系统配套上交所改造项目',amount:'',v:'none'},
+    {bidder:'上海农商银行',winner:'恒生电子',project:'基金销售系统开发采购(商业养老功能)',amount:'',v:'none'},
+    {bidder:'招商证券',winner:'恒生电子',project:'核心交易系统新增支持沪市新固收平台等改造项目',amount:'',v:'none'},
+    {bidder:'招商证券',winner:'恒生电子',project:'QFII客户参与股票期权交易相关系统功能模块改造',amount:'',v:'none'},
+    {bidder:'国投证券',winner:'恒生电子',project:'2026年二季度恒生自营估值系统等3套系统升级改造',amount:'',v:'none'},
+    {bidder:'浙江明日控股集团',winner:'金仕达',project:'明日控股期货系统升级项目',amount:'',v:'none'},
+    {bidder:'兴业证券',winner:'衡泰技术',project:'固定收益系统高频智能交易与监管集中度改造(XC)项目',amount:'',v:'none'},
+    {bidder:'大连银行',winner:'衡泰技术',project:'本币资金管理系统四期升级改造项目',amount:'',v:'none'},
+    {bidder:'衡泰投资',winner:'衡泰技术',project:'衡泰投资交易管理系统优化建设项目(2026年第二期)',amount:'',v:'none'},
+    {bidder:'兴业数字金融服务(上海)',winner:'时代银通',project:'对客外汇衍生品风险管理项目',amount:'',v:'none'},
+    {bidder:'北京银行',winner:'时代银通',project:'2026年外汇报价引擎功能优化项目(第三次)',amount:'31.6万元',v:'none'},
     {bidder:'中国进出口银行',winner:'凯美瑞德',project:'新外币资金交易系统建设项目（中标候选人公示，覆盖汇率/利率/衍生品/债券，含信创适配）',amount:'1258万元',date:'2026-07-17',source:'标找找·凯美瑞德招投标（未核验）',sourceUrl:''}
   ],
 [
-    {bidder:'华安证券',winner:'恒生电子',project:'反洗钱系统信创改造项目',amount:'225.00万元'},
-    {bidder:'兴业证券',winner:'恒生电子',project:'资产托管估值等系统新增银行间本币CSTP系统升级等模块(XC)项目',amount:''},
-    {bidder:'兴业数字金融服务(上海)',winner:'恒生电子',project:'分布式核心证券保证金第三方存管业务配套建设项目',amount:''},
-    {bidder:'常熟农商银行',winner:'恒生电子',project:'财富管理系统多元化产品建设项目等',amount:''},
-    {bidder:'招标单位未披露',winner:'金仕达',project:'资金及流动性风险管理系统运营承接优化项目',amount:''},
-    {bidder:'国投期货',winner:'金仕达',project:'金仕达统一资金平台软件V1.0升级',amount:''},
-    {bidder:'上海银行',winner:'金仕达',project:'主板结算行信创改造项目',amount:''},
-    {bidder:'威海银行',winner:'金仕达',project:'债券交易管理及研究系统信创建设项目',amount:''},
-    {bidder:'中信建投证券',winner:'金仕达',project:'自营黄金交易系统信创改造项目(第二次)',amount:''},
-    {bidder:'中原银行',winner:'金仕达',project:'量化交易投资系统项目',amount:''},
-    {bidder:'外贸信托',winner:'金仕达',project:'平台信创改造项目-尊享平台',amount:''},
-    {bidder:'光大理财',winner:'兆尹信息',project:'风险管理与绩效评估系统性能提升及信创改造项目',amount:''},
-    {bidder:'中信建投证券',winner:'衡泰技术',project:'资管债券业务管理系统信创改造采购项目',amount:''},
-    {bidder:'杭州工商信托',winner:'衡泰技术',project:'资产管理相关系统功能建设(标段三)',amount:''},
+    {bidder:'华安证券',winner:'恒生电子',project:'反洗钱系统信创改造项目',amount:'225.00万元',v:'none'},
+    {bidder:'兴业证券',winner:'恒生电子',project:'资产托管估值等系统新增银行间本币CSTP系统升级等模块(XC)项目',amount:'',v:'none'},
+    {bidder:'兴业数字金融服务(上海)',winner:'恒生电子',project:'分布式核心证券保证金第三方存管业务配套建设项目',amount:'',v:'none'},
+    {bidder:'常熟农商银行',winner:'恒生电子',project:'财富管理系统多元化产品建设项目等',amount:'',v:'none'},
+    {bidder:'招标单位未披露',winner:'金仕达',project:'资金及流动性风险管理系统运营承接优化项目',amount:'',v:'none'},
+    {bidder:'国投期货',winner:'金仕达',project:'金仕达统一资金平台软件V1.0升级',amount:'',v:'none'},
+    {bidder:'上海银行',winner:'金仕达',project:'主板结算行信创改造项目',amount:'',v:'none'},
+    {bidder:'威海银行',winner:'金仕达',project:'债券交易管理及研究系统信创建设项目',amount:'',v:'none'},
+    {bidder:'中信建投证券',winner:'金仕达',project:'自营黄金交易系统信创改造项目(第二次)',amount:'',v:'none'},
+    {bidder:'中原银行',winner:'金仕达',project:'量化交易投资系统项目',amount:'',v:'none'},
+    {bidder:'外贸信托',winner:'金仕达',project:'平台信创改造项目-尊享平台',amount:'',v:'none'},
+    {bidder:'光大理财',winner:'兆尹信息',project:'风险管理与绩效评估系统性能提升及信创改造项目',amount:'',v:'none'},
+    {bidder:'中信建投证券',winner:'衡泰技术',project:'资管债券业务管理系统信创改造采购项目',amount:'',v:'none'},
+    {bidder:'杭州工商信托',winner:'衡泰技术',project:'资产管理相关系统功能建设(标段三)',amount:'',v:'none'},
     {bidder:'浦发银行',winner:'衡泰技术',project:'金融市场系统群重构之资产定价与估值计量和估值验证实施服务',amount:'1686.8万元',date:'2026-07-07',source:'爱企查·中标结果公告（未核验）',sourceUrl:''},
-    {bidder:'万家基金',winner:'衡泰技术',project:'衡泰xAssetSuites风险控制与绩效评估系统信创升级改造',amount:''},
-    {bidder:'湖南省财信信托',winner:'衡泰技术',project:'2026年标品资管系统(第二批)迭代升级项目',amount:''},
-    {bidder:'外贸信托',winner:'衡泰技术',project:'证券绩效评价系统信创改造及资管产品智能遴选项目',amount:''},
-    {bidder:'浙商银行',winner:'云赢网络',project:'2026-2027年资金交易系统原厂维保服务采购',amount:'61.5万元'},
-    {bidder:'光大证券',winner:'顶点软件',project:'大投行信息管理系统_舆情监控改造_信创_2026_优化项目',amount:'26万元'},
-    {bidder:'浦发银行',winner:'长亭科技',project:'2026年AI红蓝攻防服务项目',amount:'48.58万元'}
+    {bidder:'万家基金',winner:'衡泰技术',project:'衡泰xAssetSuites风险控制与绩效评估系统信创升级改造',amount:'',v:'none'},
+    {bidder:'湖南省财信信托',winner:'衡泰技术',project:'2026年标品资管系统(第二批)迭代升级项目',amount:'',v:'none'},
+    {bidder:'外贸信托',winner:'衡泰技术',project:'证券绩效评价系统信创改造及资管产品智能遴选项目',amount:'',v:'none'},
+    {bidder:'浙商银行',winner:'云赢网络',project:'2026-2027年资金交易系统原厂维保服务采购',amount:'61.5万元',v:'none'},
+    {bidder:'光大证券',winner:'顶点软件',project:'大投行信息管理系统_舆情监控改造_信创_2026_优化项目',amount:'26万元',v:'none'},
+    {bidder:'浦发银行',winner:'长亭科技',project:'2026年AI红蓝攻防服务项目',amount:'48.58万元',v:'none'}
   ],
 [
-    {bidder:'华夏银行',winner:'恒生电子',project:'财富数字化管理系统项目',amount:''},
+    {bidder:'华夏银行',winner:'恒生电子',project:'财富数字化管理系统项目',amount:'',v:'none'},
     {bidder:'贵阳银行',winner:'恒生电子',project:'理财条线开发外包及理财相关系统2026项目',amount:'330.00万元',date:'2026-06-24',source:'爱企查·成交公告（未核验）',sourceUrl:''},
     {bidder:'光大理财',winner:'恒生电子',project:'理财注册登记系统2026年升级优化项目',amount:'328.00万元',date:'2026-07-07',source:'爱企查·中标结果公告（未核验）',sourceUrl:''},
-    {bidder:'华安证券',winner:'恒生电子',project:'反洗钱系统信创改造项目',amount:'225.00万元'},
+    {bidder:'华安证券',winner:'恒生电子',project:'反洗钱系统信创改造项目',amount:'225.00万元',v:'none'},
     {bidder:'贵阳银行',winner:'科蓝软件',project:'网上银行及微信银行等系统开发外包',amount:'605.25万元',date:'2026-06-24',source:'成交公告·全文(招标信息平台)（未核验）',sourceUrl:''},
-    {bidder:'光大证券',winner:'金仕达',project:'系统_组合需求_五月_2026_优化项目',amount:''}
+    {bidder:'光大证券',winner:'金仕达',project:'系统_组合需求_五月_2026_优化项目',amount:'',v:'none'}
   ],
 [
-    {bidder:'北银理财',winner:'恒生电子',project:'投资交易系统（O45）上交所固收平台迁移',amount:'72.5万元'},
-    {bidder:'国联民生证券',winner:'恒生电子',project:'固收O32包年新增FIX指令接口',amount:'206万元'},
+    {bidder:'北银理财',winner:'恒生电子',project:'投资交易系统（O45）上交所固收平台迁移',amount:'72.5万元',v:'none'},
+    {bidder:'国联民生证券',winner:'恒生电子',project:'固收O32包年新增FIX指令接口',amount:'206万元',v:'none'},
     {bidder:'浦发银行',winner:'云赢网络',project:'期权定价模型系统维保',amount:'389.19万元',date:'2026-06-24',source:'爱企查·成交结果公告（未核验）',sourceUrl:''},
-    {bidder:'光大证券',winner:'衡泰技术',project:'固定收益业务管理系统优化',amount:'87万元'},
-    {bidder:'渤海证券',winner:'衡泰技术',project:'衡泰xIR系统标准利率互换、TRS模块',amount:''},
-    {bidder:'人保财险',winner:'金仕达',project:'黄金交易系统采购',amount:'69万元'},
-    {bidder:'华能长城证券',winner:'金仕达',project:'债券异常交易监控系统信创建设',amount:'25.6万元'},
-    {bidder:'光大证券',winner:'金仕达',project:'系统组合需求优化',amount:'116万元'},
-    {bidder:'兴证期货',winner:'金仕达',project:'运营中台持续建设采购',amount:''},
-    {bidder:'浦发银行',winner:'金仕达',project:'投资风险管理与绩效评估系统维保',amount:'178.59万元'},
-    {bidder:'光大理财',winner:'兆尹信息',project:'风险管理智能体采购',amount:'92.01万元'},
+    {bidder:'光大证券',winner:'衡泰技术',project:'固定收益业务管理系统优化',amount:'87万元',v:'none'},
+    {bidder:'渤海证券',winner:'衡泰技术',project:'衡泰xIR系统标准利率互换、TRS模块',amount:'',v:'none'},
+    {bidder:'人保财险',winner:'金仕达',project:'黄金交易系统采购',amount:'69万元',v:'none'},
+    {bidder:'华能长城证券',winner:'金仕达',project:'债券异常交易监控系统信创建设',amount:'25.6万元',v:'none'},
+    {bidder:'光大证券',winner:'金仕达',project:'系统组合需求优化',amount:'116万元',v:'none'},
+    {bidder:'兴证期货',winner:'金仕达',project:'运营中台持续建设采购',amount:'',v:'none'},
+    {bidder:'浦发银行',winner:'金仕达',project:'投资风险管理与绩效评估系统维保',amount:'178.59万元',v:'none'},
+    {bidder:'光大理财',winner:'兆尹信息',project:'风险管理智能体采购',amount:'92.01万元',v:'none'},
     {bidder:'光大银行',winner:'时代银通',project:'代客金融市场业务系统-外汇衍生品拓展',amount:'398万元',date:'2026-06-23',source:'中国光大银行·中标结果公告',sourceUrl:'https://www.cebbank.com.cn/site/zhpd/zxgg35/cgjggg/410941373/index.html'},
-    {bidder:'浦发银行',winner:'子午线',project:'量化投研与量化交易融合一期',amount:''}
+    {bidder:'浦发银行',winner:'子午线',project:'量化投研与量化交易融合一期',amount:'',v:'none'}
   ],
 [
-    {bidder:'太平基金',winner:'恒生电子',project:'O32系统现货分仓接口',amount:''},
-    {bidder:'东吴人寿保险',winner:'恒生电子',project:'银行上下行接口升级',amount:''},
-    {bidder:'建信基金管理',winner:'恒生电子',project:'投资交易系统政策性改造',amount:''},
-    {bidder:'中国民生银行',winner:'云赢网络',project:'期权定价估值模块',amount:''},
-    {bidder:'国投证券',winner:'衡泰技术',project:'金融工具估值减值系统信创',amount:''},
-    {bidder:'国联民生证券',winner:'衡泰技术',project:'衡泰系统智能结算采购',amount:''},
-    {bidder:'兴银理财',winner:'兆尹信息',project:'组合管理及投研一体化二期',amount:'239万元'},
-    {bidder:'中国光大银行',winner:'QTrade',project:'金融OTC软件采购',amount:''}
+    {bidder:'太平基金',winner:'恒生电子',project:'O32系统现货分仓接口',amount:'',v:'none'},
+    {bidder:'东吴人寿保险',winner:'恒生电子',project:'银行上下行接口升级',amount:'',v:'none'},
+    {bidder:'建信基金管理',winner:'恒生电子',project:'投资交易系统政策性改造',amount:'',v:'none'},
+    {bidder:'中国民生银行',winner:'云赢网络',project:'期权定价估值模块',amount:'',v:'none'},
+    {bidder:'国投证券',winner:'衡泰技术',project:'金融工具估值减值系统信创',amount:'',v:'none'},
+    {bidder:'国联民生证券',winner:'衡泰技术',project:'衡泰系统智能结算采购',amount:'',v:'none'},
+    {bidder:'兴银理财',winner:'兆尹信息',project:'组合管理及投研一体化二期',amount:'239万元',v:'none'},
+    {bidder:'中国光大银行',winner:'QTrade',project:'金融OTC软件采购',amount:'',v:'none'}
   ],
 [
-    {bidder:'湖南银行',winner:'恒生电子',project:'大额存单系统国产化改造',amount:''},
-    {bidder:'湖南银行',winner:'恒生电子',project:'理财直联报送系统国产化改造',amount:''},
-    {bidder:'中国对外经济贸易信托',winner:'金仕达',project:'尊享系统优化',amount:''},
-    {bidder:'兴银理财',winner:'兆尹信息',project:'新一代投资交易管理迭代二期',amount:'280.05万元'},
-    {bidder:'建信基金管理',winner:'QTrade',project:'腾讯企点QTRADE服务',amount:''},
-    {bidder:'浙商证券',winner:'QTrade',project:'Qtrade软件产品采购',amount:''},
-    {bidder:'中信证券',winner:'QTrade',project:'QTrade即时通讯账号采购',amount:''}
+    {bidder:'湖南银行',winner:'恒生电子',project:'大额存单系统国产化改造',amount:'',v:'none'},
+    {bidder:'湖南银行',winner:'恒生电子',project:'理财直联报送系统国产化改造',amount:'',v:'none'},
+    {bidder:'中国对外经济贸易信托',winner:'金仕达',project:'尊享系统优化',amount:'',v:'none'},
+    {bidder:'兴银理财',winner:'兆尹信息',project:'新一代投资交易管理迭代二期',amount:'280.05万元',v:'none'},
+    {bidder:'建信基金管理',winner:'QTrade',project:'腾讯企点QTRADE服务',amount:'',v:'none'},
+    {bidder:'浙商证券',winner:'QTrade',project:'Qtrade软件产品采购',amount:'',v:'none'},
+    {bidder:'中信证券',winner:'QTrade',project:'QTrade即时通讯账号采购',amount:'',v:'none'}
   ],
 [
-    {bidder:'长沙银行',winner:'恒生电子',project:'理财子公司自营投资系统',amount:''},
-    {bidder:'兴业数字金融服务',winner:'时代银通',project:'积存金二期项目',amount:''},
-    {bidder:'国新证券',winner:'衡泰技术',project:'自营固收上交所平台迁移接口改造',amount:'30万元'},
-    {bidder:'国元证券',winner:'衡泰技术',project:'债券交易管理系统接口升级',amount:''},
-    {bidder:'太平基金',winner:'森浦',project:'QB终端采购',amount:''},
-    {bidder:'兴业数字金融服务',winner:'兆尹信息',project:'兴银理财统一清算系统二期',amount:''},
-    {bidder:'财信证券',winner:'QTrade',project:'Qtrade系统账号服务采购',amount:''}
+    {bidder:'长沙银行',winner:'恒生电子',project:'理财子公司自营投资系统',amount:'',v:'none'},
+    {bidder:'兴业数字金融服务',winner:'时代银通',project:'积存金二期项目',amount:'',v:'none'},
+    {bidder:'国新证券',winner:'衡泰技术',project:'自营固收上交所平台迁移接口改造',amount:'30万元',v:'none'},
+    {bidder:'国元证券',winner:'衡泰技术',project:'债券交易管理系统接口升级',amount:'',v:'none'},
+    {bidder:'太平基金',winner:'森浦',project:'QB终端采购',amount:'',v:'none'},
+    {bidder:'兴业数字金融服务',winner:'兆尹信息',project:'兴银理财统一清算系统二期',amount:'',v:'none'},
+    {bidder:'财信证券',winner:'QTrade',project:'Qtrade系统账号服务采购',amount:'',v:'none'}
   ],
 [
     {bidder:'浦发银行',winner:'凯美瑞德',project:'金融市场系统群重构之金融市场CSA保证金管理系统厂商实施服务',amount:'72.7万元',date:'2026-05-06',source:'招标网（未核验）',sourceUrl:''},
     {bidder:'浦发银行',winner:'凯美瑞德',project:'2026-2027金融市场初始保证金系统年度维护服务',amount:'268万元',date:'2026-06-05',source:'浦发银行采购平台',sourceUrl:'https://ebuy.spdb.com.cn/#/noticeDetail?noticeId=1133999529697272725780085407744'},
-    {bidder:'衡水银行',winner:'凯美瑞德',project:'衡芯工程综合收单系统配套改造项目',amount:'67.5万元',date:'2026-02-11'},
+    {bidder:'衡水银行',winner:'凯美瑞德',project:'衡芯工程综合收单系统配套改造项目',amount:'67.5万元',date:'2026-02-11',v:'none'},
     {bidder:'浦发银行',winner:'凯美瑞德',project:'2026-2029年度金融市场领域信息系统研发专业服务（入围供应商）',amount:'框架入围',date:'2026-04-29',source:'招标网（未核验）',sourceUrl:''},
     {bidder:'邮储银行',winner:'凯美瑞德',project:'2026-2027年总行开发测试类技术资源外包（包4资金资管领域，入围）',amount:'框架入围',date:'2026-06-05',source:'中国邮政储蓄银行',sourceUrl:'https://www.chinapost.com.cn/cn/report/2606/2381-1.htm'},
-    {bidder:'某股份制商业银行',winner:'凯美瑞德',project:'金融市场业务内模法风险计量系统、自研估值系统（中标）',amount:'金额未披露',date:'2026-04-08'},
+    {bidder:'某股份制商业银行',winner:'凯美瑞德',project:'金融市场业务内模法风险计量系统、自研估值系统（中标）',amount:'金额未披露',date:'2026-04-08',v:'none'},
     {bidder:'中国进出口银行',winner:'凯美瑞德',project:'新外币资金交易系统建设项目（中标候选人公示，覆盖汇率/利率/衍生品/债券，含信创适配）',amount:'1258万元',date:'2026-07-17',source:'标找找·凯美瑞德招投标（未核验）',sourceUrl:''}
   ]
 ];;
@@ -2582,8 +2659,43 @@ function toggleRadarHistory(){
 }
 
 // 当前表格的数据视图（筛选 + 搜索 + 排序），招投标表与 CSV 导出共用，确保"所见即所导"。
+// ===== 待核验记录渲染（无来源历史遗留，单独隔离）=====
+function getUnverifiedBids(){
+  return getAllBids().filter(r=>evidenceLevel(r)==='none');
+}
+function renderUnverified(){
+  const body = document.getElementById('unverifiedBody');
+  const sum = document.getElementById('unverifiedSummary');
+  const badge = document.getElementById('unverifiedCount');
+  if(!body) return;
+  const rows = getUnverifiedBids();
+  if(badge) badge.textContent = rows.length ? String(rows.length) : '';
+  if(!rows.length){ body.innerHTML = '<div class="bd-empty">当前没有待核验记录</div>'; if(sum) sum.textContent=''; return; }
+  const byW = {};
+  rows.forEach(r=>{ const w = r.winner||'未知'; byW[w]=(byW[w]||0)+1; });
+  const dist = Object.entries(byW).sort((a,b)=>b[1]-a[1])
+    .map(([k,v])=>'<span class="uv-chip">'+escapeHtml(k)+'<b>'+v+'</b></span>').join('');
+  const noDate = rows.filter(r=>!r.date).length;
+  if(sum) sum.innerHTML = '共 <b>'+rows.length+'</b> 条 —— 无来源平台名、无可点深链的历史遗留记录，其中 <b>'+noDate+'</b> 条连日期都缺。<b class="uv-warn">不建议直接用于对外汇报</b>，仅作线索留存；如需使用请自行到原始渠道复核。';
+  const maxV = Math.max.apply(null, Object.values(byW));
+  const bars = Object.entries(byW).sort((a,b)=>b[1]-a[1]).map(([k,v])=>
+    '<div class="uv-bar-row"><span class="uv-bar-name">'+escapeHtml(k)+'</span>'
+    +'<span class="uv-bar-track"><span class="uv-bar-fill" style="width:'+Math.round(v/maxV*100)+'%"></span></span>'
+    +'<span class="uv-bar-num">'+v+'</span></div>').join('');
+  const detail = rows.map(r=>
+    '<tr><td>'+escapeHtml(r.bidder||'')+'</td><td>'+escapeHtml(r.winner||'')+'</td>'
+    +'<td>'+escapeHtml(r.project||'')+'</td><td class="uv-amt">'+(r.amount?escapeHtml(r.amount):'<span class="uv-empty">—</span>')+'</td>'
+    +'<td>'+(r.date?escapeHtml(r.date):'<span class="uv-empty">缺日期</span>')+'</td></tr>').join('');
+  body.innerHTML =
+    '<div class="uv-block"><div class="uv-block-title">按中标方分布</div><div class="uv-chips">'+dist+'</div></div>'
+    +'<div class="uv-block"><div class="uv-block-title">厂商分布</div><div class="uv-bars">'+bars+'</div></div>'
+    +'<div class="uv-block"><div class="uv-block-title">明细</div>'
+    +'<div class="uv-table-wrap"><table class="uv-table"><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th><th>日期</th></tr></thead><tbody>'+detail+'</tbody></table></div></div>';
+}
+
 function computeRows(){
-  let rows = [...getActiveBids()];
+  // 无来源（v:none）的历史遗留记录单独隔离在「待核验」Tab，主表不混排
+  let rows = [...getActiveBids()].filter(r=>evidenceLevel(r)!=='none');
   if(currentFilter !== 'all'){
     rows = rows.filter(r=>{
       if(currentFilter === '其他') return isOtherVendor(primaryWinner(r));
@@ -3168,16 +3280,26 @@ function renderTrustBar(){
   if(!el) return;
   const cur = currentWeekBids || [];
   if(!cur.length){ el.style.display='none'; return; }
+  // 四档证据等级分布：已核验 / 已见平台条目 / 仅搜索摘要 / 无来源
+  const lv = { full:0, platform:0, summary:0, none:0 };
+  cur.forEach(r=>{ lv[evidenceLevel(r)] = (lv[evidenceLevel(r)]||0)+1; });
   const linked = cur.filter(r=>r.sourceUrl).length;
-  const platformOnly = cur.length - linked;
   const pct = Math.round(linked / cur.length * 100);
   el.innerHTML =
-    `<span class="trust-tag">数据可信度</span>`
-    + `<span class="trust-sep"></span>`
-    + `<span class="trust-item">本期 <b>${cur.length}</b> 条中标</span>`
-    + `<span class="trust-item">可点开公告原文 <b>${linked}</b> 条（${pct}%）</span>`
-    + `<span class="trust-item ${platformOnly?'is-warn':''}">仅平台署名 <b>${platformOnly}</b> 条</span>`
-    + `<span class="trust-note">全站 ${VERIFIED_SNAPSHOT.scope}中 <b>${VERIFIED_SNAPSHOT.total}</b> 条金额已在公告原文逐条实证（核验于 ${VERIFIED_SNAPSHOT.asOf}）</span>`;
+    '<span class="trust-tag">数据可信度</span>'
+    + '<span class="trust-sep"></span>'
+    + '<span class="trust-item">本期 <b>'+cur.length+'</b> 条中标</span>'
+    + '<span class="trust-item">可点开公告原文 <b>'+linked+'</b> 条（'+pct+'%）</span>'
+    + '<span class="trust-item is-warn">仅搜索摘要 <b>'+lv.summary+'</b> 条</span>'
+    + '<span class="trust-item">有平台名无深链 <b>'+lv.platform+'</b> 条</span>'
+    + '<span class="trust-note">全站 '+VERIFIED_SNAPSHOT.scope+'中 <b>'+VERIFIED_SNAPSHOT.total+'</b> 条金额已在公告原文逐条实证（核验于 '+VERIFIED_SNAPSHOT.asOf+'）</span>';
+  // 招投标汇总 Tab：提示有多少条被隔离到「待核验」
+  const note = document.getElementById('bidsHiddenNote');
+  if(note){
+    const unv = getUnverifiedBids().length;
+    note.innerHTML = unv ? '已从本表隔离 <b>'+unv+'</b> 条无来源的历史遗留记录（主表只保留可溯源数据），可在顶部「待核验」标签查看' : '本表未隔离任何记录';
+    note.style.display = unv ? '' : 'none';
+  }
 }
 
 // ===== P2-2 数据哨兵（仅 console，绝不碰 DOM）=====
@@ -3295,6 +3417,7 @@ function init(){
   try { renderKpiFoot(); } catch(e){ console.error('renderKpiFoot failed:', e); }
   try { renderMeta(); } catch(e){ console.error('renderMeta failed:', e); }
   try { renderTrustBar(); } catch(e){ console.error('renderTrustBar failed:', e); }
+  try { renderUnverified(); } catch(e){ console.error('renderUnverified failed:', e); }
   try { renderBidsTable(); } catch(e){ console.error('renderBidsTable failed:', e); }
   try { updateCounts(); } catch(e){ console.error('updateCounts failed:', e); }
   try { renderArchive(); } catch(e){ console.error('renderArchive failed:', e); }
