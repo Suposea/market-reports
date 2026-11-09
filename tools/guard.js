@@ -118,9 +118,14 @@ if (allBids.length) {
     '无来源记录均已标记 v:none（标记 ' + marked.length + ' / 实际 ' + noSource.length + '）', true);
   const badV = allBids.filter(r => r.v && !['full', 'platform', 'summary', 'none'].includes(r.v));
   say(badV.length === 0, 'v 字段取值合法（full/platform/summary/none）' + (badV.length ? '，异常 ' + badV.length + ' 条' : ''), true);
-  // 隔离生效：主表不得出现 v:none
+  // 隔离生效：主表只允许出现 full（宁缺毋滥），其余全部沉入线索池
   const crSrc = (idx.match(/function computeRows\(\)\{[\s\S]*?\n\}/) || [''])[0];
-  say(/evidenceLevel\(r\)!=='none'/.test(crSrc), '主表 computeRows 已过滤 v:none（不混入待核验记录）', true);
+  say(/evidenceLevel\(r\)==='full'/.test(crSrc), '主表 computeRows 只保留 full（宁缺毋滥：不混排未核验记录）', true);
+  const radarSrc = (idx.match(/const pool = allPool\.filter\([^\n]*\)/) || [''])[0];
+  say(/sourceUrl/.test(radarSrc), '招采动态(radar)只渲染有可点原文的条目', true);
+  say(/id="tab-unverified"/.test(idx) && /线索池/.test(idx), '线索池 Tab 存在且已改名');
+  // 只匹配 source 字段「值」里含 404/失效 的自述失效条目；URL 里偶然含 404 字样不算
+  say(!/source:'[^']*(404|失效|打不开|已下线)[^']*'/.test(idx), '无自述"深链已404/失效"的条目残留');
   // 四档渲染函数在位
   say(/function evidenceLevel\(r\)/.test(idx), 'evidenceLevel() 存在');
   say(/EVIDENCE_META/.test(idx), 'EVIDENCE_META 四档定义存在');

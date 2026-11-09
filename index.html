@@ -411,6 +411,8 @@ tbody tr.hidden{display:none}
 .uv-table tbody tr:hover{background:var(--surface-2)}
 .uv-amt{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink-600)}
 .uv-empty{color:var(--ink-300);font-style:italic}
+.uv-lv{font-size:.74rem;color:var(--ink-400);white-space:nowrap}
+.uv-chip-lv{background:var(--surface);border-style:dashed}
 .bids-hidden-note{display:flex;align-items:center;gap:8px;padding:8px 14px;margin-bottom:14px;border-radius:var(--radius-md);background:var(--surface-2);border:1px dashed var(--border);font-size:.78rem;color:var(--ink-400)}
 .bids-hidden-note b{color:var(--clay);font-weight:600}
 
@@ -692,7 +694,7 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
       <div class="tab" data-tab="policy">政策行业</div>
       <div class="tab" data-tab="archive">历史归档</div>
       <div class="tab" data-tab="radar">近期动态</div>
-      <div class="tab tab-unv" data-tab="unverified" title="无来源、无可点深链的历史遗留记录（不混入主表）">待核验<span class="tab-badge" id="unverifiedCount"></span></div>
+      <div class="tab tab-unv" data-tab="unverified" title="未核验线索：有平台名但无原文深链 / 仅搜索摘要 / 无来源（不混入主表）">线索池<span class="tab-badge" id="unverifiedCount"></span></div>
     </div>
     <div class="topbar-right">
       <div class="search-box">
@@ -1064,7 +1066,7 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
             <span class="icon">
               <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
-            待核验记录
+            线索池（未核验，勿直接引用）
           </div>
           <div class="panel-sub" id="unverifiedSummary"></div>
         </div>
@@ -1231,6 +1233,7 @@ function isGreenUrl(u){
 const SUMMARY_SRC = /爱企查|企查查|寻标宝|搜索摘要|仅摘要/;   // 这些平台我方抓不到正文，只能到摘要级
 function evidenceLevel(r){
   if(r.v) return r.v;
+  if(r.__lead) return 'lead';
   // full 只看「有没有可点原文」这个客观事实，不再依赖域名白名单：
   // 白名单（GREEN_DOMAINS）是"逐一实测过正文含中标方"的域名集，只有 77 个，
   // 而证券之星/知了标讯/股吧/公众号等同样实测过的渠道不在其中，会被误判成"未核验"。
@@ -2036,8 +2039,6 @@ const radarItems = [
   { type:'plan', bank:'中国建设银行四川省分行', date:'2026-11-04', title:'华西医院财务结算数据应用系统等项目公开招标（预算271.12万元）', content:'建行四川省分行对华西医院财务结算数据应用系统等项目公开招标，预算 <b>271.12 万元</b>（标包1：医院财务结算数据应用系统+医院结算资金精准管理系统；标包2：国有资产结算管理信息系统平台），招标文件获取 11-04 至 11-10，财务结算/资金管理类系统标的。下一步：关注 11 月下旬开标与中标结果。', source:'中招联合招标采购平台', sourceUrl:'https://www.365trade.com.cn/zfwzb/891500.jhtml' },
   { type:'plan', bank:'三亚环境农业投资集团（国企司库标的）', date:'2026-11-05', title:'司库信息系统项目（一期）招标公告', content:'三亚环境农业投资集团在建设银行龙集采平台发布<b>司库信息系统项目（一期）</b>招标公告（11-05），国企司库系统建设标的，与银行间资金管理/司库市场直接相关。龙集采为 JS 平台，深链待结果公告补充。下一步：跟踪中标候选人公示。', source:'建行龙集采平台（未核验）', sourceUrl:'' },
   { type:'plan', bank:'中国建设银行厦门市分行', date:'2026-11-05', title:'2026年智慧海关财务系统开发候选供应商第三次征集（截止11-10）', content:'建行厦门市分行智慧海关财务系统开发项目候选供应商第三次征集，截止 <b>2026-11-10</b>，财务系统开发类标的，征集公告在龙集采平台发布。', source:'建行龙集采平台（未核验）', sourceUrl:'' },
-  { type:'plan', bank:'兴业银行', date:'2026-11-05', title:'新安统一支付系统迭代开发项目供应商征集（截止11-12）', content:'兴业银行「新安统一支付系统迭代开发项目」供应商征集调研，截止 <b>2026-11-12</b>，支付系统迭代开发标的。同期征集：企金决策支持提升项目一期、2027-2029 年地图数据服务项目（均截止 11-12）。兴业采购平台本周深链批量 404，深链待结果公告补核。', source:'兴业银行集中采购管理平台（深链已404，未核验）', sourceUrl:'' },
-  { type:'plan', bank:'兴业银行', date:'2026-11-05', title:'企金决策支持提升项目一期供应商征集（截止11-12）', content:'兴业银行「企金决策支持提升项目一期」供应商征集调研，截止 <b>2026-11-12</b>，企业金融决策支持类系统建设标的。', source:'兴业银行集中采购管理平台（深链已404，未核验）', sourceUrl:'' },
   { type:'news', bank:'中国农业发展银行 / 凯美瑞德', date:'2026-11-04', title:'农发行资金交易系统功能优化软件开发服务单一来源采前公示（凯美瑞德）', content:'农发行资金交易系统功能优化项目软件开发服务单一来源<b>采前公示</b>（11-04），供应商为凯美瑞德——政策性银行资金交易系统持续迭代投入，公示阶段金额未披露。下一步：关注农发行采购平台正式成交公告。', source:'爱企查·招投标动态（未核验）', sourceUrl:'' },
   { type:'news', bank:'凯美瑞德', date:'2026-11-05', title:'凯美瑞德发布「驾驭工程平台」：多智能体接入/协同/治理', content:'凯美瑞德 11-05 发布 <b>「驾驭工程平台」（Harness Engineering Platform）</b>：统一接入多来源 AI 能力、多智能体协同编排、金融级合规治理（权限/审批/风控/审计、全链路可观测），兼容主流 Agent Runtime，宣称让 AI 成为"企业级可控生产力"。资金系统厂商开始把 AI Agent 工程化包装为标准平台能力。', source:'中国经济新闻网', sourceUrl:'https://www.cet.com.cn/wzsy/cyzx/10648926.shtml' },
   // ===== 上周（10.26–11.01）结转 =====
@@ -2608,7 +2609,10 @@ function renderRadar(filter){
 
   const todayStr = ymd(new Date());
   const cutoff = radarCutoff();
-  const pool = radarItems.filter(it => radarFilter === 'all' || it.type === radarFilter);
+  // 宁缺毋滥（2026-11-09）：招采动态只展示有可点原文的条目，未核验线索移入「线索池」
+  const allPool = radarItems.filter(it => radarFilter === 'all' || it.type === radarFilter);
+  const pool = allPool.filter(it => !!it.sourceUrl);
+  const radarHidden = allPool.length - pool.length;
 
   const future = [], recent = [], older = [];
   pool.forEach(it=>{
@@ -2645,7 +2649,8 @@ function renderRadar(filter){
     (shownPast.length
       ? `<div class="radar-group">近 ${RADAR_MONTHS} 个月 · ${shownPast.length}/${recent.length} 条</div>` + shownPast.map(it=>radarCard(it,todayStr)).join('')
       : '') +
-    (older.length ? `<div class="radar-note">已隐藏 ${older.length} 条 ${RADAR_MONTHS} 个月前的历史动态（聚焦未来，不再展示）</div>` : '');
+    (older.length ? `<div class="radar-note">已隐藏 ${older.length} 条 ${RADAR_MONTHS} 个月前的历史动态（聚焦未来，不再展示）</div>` : '') +
+    (radarHidden ? `<div class="radar-note">另有 <b>${radarHidden}</b> 条未核验线索已收进「线索池」Tab，不在主界面展示</div>` : '');
 }
 function filterRadar(type,btn){
   document.querySelectorAll('#tab-radar .chip').forEach(c=>c.classList.remove('active'));
@@ -2661,7 +2666,11 @@ function toggleRadarHistory(){
 // 当前表格的数据视图（筛选 + 搜索 + 排序），招投标表与 CSV 导出共用，确保"所见即所导"。
 // ===== 待核验记录渲染（无来源历史遗留，单独隔离）=====
 function getUnverifiedBids(){
-  return getAllBids().filter(r=>evidenceLevel(r)==='none');
+  // 线索池 = 所有非「有可点原文」的记录（有平台名无深链 / 仅搜索摘要 / 无来源）
+  return getAllBids().filter(r=>evidenceLevel(r)!=='full');
+}
+function getRadarLeads(){
+  return (typeof radarItems!=='undefined' ? radarItems : []).filter(it=>!it.sourceUrl);
 }
 function renderUnverified(){
   const body = document.getElementById('unverifiedBody');
@@ -2669,15 +2678,29 @@ function renderUnverified(){
   const badge = document.getElementById('unverifiedCount');
   if(!body) return;
   const rows = getUnverifiedBids();
-  if(badge) badge.textContent = rows.length ? String(rows.length) : '';
-  if(!rows.length){ body.innerHTML = '<div class="bd-empty">当前没有待核验记录</div>'; if(sum) sum.textContent=''; return; }
+  const radarLeads = getRadarLeads();
+  const total = rows.length + radarLeads.length;
+  if(badge) badge.textContent = total ? String(total) : '';
+  if(!total){ body.innerHTML = '<div class="bd-empty">当前没有未核验线索</div>'; if(sum) sum.textContent=''; return; }
+
+  // 按证据档位统计
+  const lvName = { platform:'有平台名无深链', summary:'仅搜索摘要', none:'无来源' };
+  const cnt = { platform:0, summary:0, none:0 };
+  rows.forEach(r=>{ const k = evidenceLevel(r); if(cnt[k]!==undefined) cnt[k]++; });
+
+  // 招投标线索：厂商分布
   const byW = {};
   rows.forEach(r=>{ const w = r.winner||'未知'; byW[w]=(byW[w]||0)+1; });
   const dist = Object.entries(byW).sort((a,b)=>b[1]-a[1])
     .map(([k,v])=>'<span class="uv-chip">'+escapeHtml(k)+'<b>'+v+'</b></span>').join('');
   const noDate = rows.filter(r=>!r.date).length;
-  if(sum) sum.innerHTML = '共 <b>'+rows.length+'</b> 条 —— 无来源平台名、无可点深链的历史遗留记录，其中 <b>'+noDate+'</b> 条连日期都缺。<b class="uv-warn">不建议直接用于对外汇报</b>，仅作线索留存；如需使用请自行到原始渠道复核。';
-  const maxV = Math.max.apply(null, Object.values(byW));
+
+  if(sum) sum.innerHTML = '共 <b>'+total+'</b> 条线索（招投标 '+rows.length+' + 招采动态 '+radarLeads.length+'）—— '
+    + '均<b>没有可点开的公告原文</b>，按「宁缺毋滥」原则已从主界面全部移出。'
+    + '其中招投标部分 <b>'+noDate+'</b> 条连日期都缺。<b class="uv-warn">仅作线索留存，不可直接用于对外汇报</b>，'
+    + '如需引用请自行到原始渠道复核后再用。';
+
+  const maxV = Math.max.apply(null, Object.values(byW).concat([1]));
   const bars = Object.entries(byW).sort((a,b)=>b[1]-a[1]).map(([k,v])=>
     '<div class="uv-bar-row"><span class="uv-bar-name">'+escapeHtml(k)+'</span>'
     +'<span class="uv-bar-track"><span class="uv-bar-fill" style="width:'+Math.round(v/maxV*100)+'%"></span></span>'
@@ -2685,17 +2708,28 @@ function renderUnverified(){
   const detail = rows.map(r=>
     '<tr><td>'+escapeHtml(r.bidder||'')+'</td><td>'+escapeHtml(r.winner||'')+'</td>'
     +'<td>'+escapeHtml(r.project||'')+'</td><td class="uv-amt">'+(r.amount?escapeHtml(r.amount):'<span class="uv-empty">—</span>')+'</td>'
-    +'<td>'+(r.date?escapeHtml(r.date):'<span class="uv-empty">缺日期</span>')+'</td></tr>').join('');
-  body.innerHTML =
-    '<div class="uv-block"><div class="uv-block-title">按中标方分布</div><div class="uv-chips">'+dist+'</div></div>'
-    +'<div class="uv-block"><div class="uv-block-title">厂商分布</div><div class="uv-bars">'+bars+'</div></div>'
-    +'<div class="uv-block"><div class="uv-block-title">明细</div>'
-    +'<div class="uv-table-wrap"><table class="uv-table"><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th><th>日期</th></tr></thead><tbody>'+detail+'</tbody></table></div></div>';
-}
+    +'<td>'+(r.date?escapeHtml(r.date):'<span class="uv-empty">缺日期</span>')+'</td>'
+    +'<td class="uv-lv">'+escapeHtml(lvName[evidenceLevel(r)]||'—')+'</td></tr>').join('');
 
-function computeRows(){
-  // 无来源（v:none）的历史遗留记录单独隔离在「待核验」Tab，主表不混排
-  let rows = [...getActiveBids()].filter(r=>evidenceLevel(r)!=='none');
+  // 招采动态线索
+  const rDetail = radarLeads.map(it=>
+    '<tr><td>'+escapeHtml(it.date||'')+'</td><td>'+escapeHtml(it.bank||'')+'</td>'
+    +'<td>'+escapeHtml(it.title||'')+'</td><td class="uv-lv">'+escapeHtml(it.source||'未标来源')+'</td></tr>').join('');
+
+  body.innerHTML =
+    '<div class="uv-block"><div class="uv-block-title">招投标线索 · 按中标方分布</div><div class="uv-chips">'+dist+'</div>'
+    +'<div class="uv-chips" style="margin-top:10px">'
+    +   Object.keys(lvName).map(k=>'<span class="uv-chip uv-chip-lv">'+lvName[k]+'<b>'+(cnt[k]||0)+'</b></span>').join('')
+    +'</div></div>'
+    +'<div class="uv-block"><div class="uv-block-title">招投标线索 · 厂商分布</div><div class="uv-bars">'+bars+'</div></div>'
+    +'<div class="uv-block"><div class="uv-block-title">招投标线索 · 明细（'+rows.length+' 条）</div>'
+    +'<div class="uv-table-wrap"><table class="uv-table"><thead><tr><th>招标单位</th><th>中标单位</th><th>项目名称</th><th>金额</th><th>日期</th><th>证据档位</th></tr></thead><tbody>'+detail+'</tbody></table></div></div>'
+    +'<div class="uv-block"><div class="uv-block-title">招采动态线索 · 明细（'+radarLeads.length+' 条）</div>'
+    +'<div class="uv-table-wrap"><table class="uv-table"><thead><tr><th>日期</th><th>机构</th><th>标题</th><th>来源</th></tr></thead><tbody>'+rDetail+'</tbody></table></div></div>';
+}function computeRows(){
+  // 宁缺毋滥（2026-11-09）：主表只保留「有可点公告原文」的记录；
+  // 其余（有平台名无深链 / 仅搜索摘要 / 无来源）全部沉入「线索池」Tab，不在主界面混排。
+  let rows = [...getActiveBids()].filter(r=>evidenceLevel(r)==='full');
   if(currentFilter !== 'all'){
     rows = rows.filter(r=>{
       if(currentFilter === '其他') return isOtherVendor(primaryWinner(r));
@@ -3283,7 +3317,7 @@ function renderTrustBar(){
   // 四档证据等级分布：已核验 / 已见平台条目 / 仅搜索摘要 / 无来源
   const lv = { full:0, platform:0, summary:0, none:0 };
   cur.forEach(r=>{ lv[evidenceLevel(r)] = (lv[evidenceLevel(r)]||0)+1; });
-  const linked = cur.filter(r=>r.sourceUrl).length;
+  const linked = cur.filter(r=>evidenceLevel(r)==='full').length;
   const pct = Math.round(linked / cur.length * 100);
   el.innerHTML =
     '<span class="trust-tag">数据可信度</span>'
@@ -3297,7 +3331,8 @@ function renderTrustBar(){
   const note = document.getElementById('bidsHiddenNote');
   if(note){
     const unv = getUnverifiedBids().length;
-    note.innerHTML = unv ? '已从本表隔离 <b>'+unv+'</b> 条无来源的历史遗留记录（主表只保留可溯源数据），可在顶部「待核验」标签查看' : '本表未隔离任何记录';
+    note.innerHTML = '按「宁缺毋滥」原则，本表<b>只展示有可点公告原文</b>的记录；'
+      + '未核验线索（无深链 / 仅搜索摘要 / 无来源）已全部收进顶部「<b>线索池</b>」标签，不在此混排';
     note.style.display = unv ? '' : 'none';
   }
 }
