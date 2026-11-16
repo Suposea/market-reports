@@ -158,6 +158,21 @@ if (allBids.length) {
     say(bad.length === 0, '无防盗链域名的链接（REF_BLOCKED_HOSTS: ' + blockedHosts.join(', ') + '）'
       + (bad.length ? ' —— 命中 ' + bad.length + ' 条：' + bad.slice(0, 2).join(' / ') : ''), true);
   }
+
+  // ── HTML 结构完整性：SVG/标签被劈开检测（2026-11-16 新增）──
+  // 背景：2026-11-05 用正则往 panel-title 里插入提示条，正则匹配到 <path d="..." 行，
+  // 结果把 SVG 的 path 标签劈成两半 → 浏览器把 path 的属性当纯文本渲染出来（界面出现乱码）。
+  // JS 语法校验与 tab 嵌套校验都查不出这类破坏（JS 独立于 HTML），故必须单独检查。
+  console.log('\n[7] HTML 结构完整性');
+  const svgBlocks = [...idx.matchAll(/<svg\b[^>]*>([\s\S]*?)<\/svg>/g)];
+  const polluted = svgBlocks.filter(m => /<(div|span|table|tr|td|th|a|button|p|ul|li|h\d)\b/i.test(m[1]));
+  say(polluted.length === 0, '所有 <svg> 内部无 HTML 标签污染' + (polluted.length ? '（异常 ' + polluted.length + ' 个）' : ''), true);
+  // 孤立 path 属性片段（path 被劈开后 d 值与属性会漏到文本节点）
+  const orphans = [...idx.matchAll(/>([^<>]{0,24}M\d{1,2}\s\d+[^<>]{0,160})</g)];
+  say(orphans.length === 0, '无孤立的 SVG path 属性片段' + (orphans.length ? '（命中 ' + orphans.length + ' 处：' + orphans[0][1].slice(0, 50) + '）' : ''), true);
+  // 常见属性断裂：形如 =" 单独出现（属性值引号未闭合）
+  const brokenAttr = [...idx.matchAll(/<[a-z][a-z0-9-]*[^>]*?\s[a-z-]+="[^"]*$/gim)];
+  say(brokenAttr.length === 0, '无未闭合的属性引号' + (brokenAttr.length ? '（命中 ' + brokenAttr.length + ' 处）' : ''), true);
 }
 
 console.log('\n' + '='.repeat(60));

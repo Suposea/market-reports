@@ -861,8 +861,7 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;overflow:visible}
         <div>
           <div class="panel-title">
             <span class="icon">
-              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4
-      <div class="bids-hidden-note" id="bidsHiddenNote"></div>M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
             招投标信息汇总
           </div>
@@ -945,7 +944,7 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;overflow:visible}
             </span>
             厂商工商信息
           </div>
-          <div class="panel-sub">各中标厂商核心工商登记信息 · 13/14 家已内嵌企查查核验数据（含法定代表人/注册资本/参保人数等）；QTrade 运营主体未在企查查收录，保留入口手动查证</div>
+          <div class="panel-sub" id="vendorSummary"></div>
         </div>
       </div>
       <div class="vendor-grid" id="vendorCards"></div>
@@ -1211,6 +1210,15 @@ function vendorTycUrl(p){ return 'https://www.tianyancha.com/search?key=' + enco
 function renderVendorTab(){
   const el = document.getElementById('vendorCards');
   if(!el) return;
+  // 厂商页说明：动态计算已内嵌核验数据的家数（新增厂商后不会漏改）
+  const sumEl = document.getElementById('vendorSummary');
+  if(sumEl){
+    const total = VENDOR_PROFILES.length;
+    const embedded = VENDOR_PROFILES.filter(p=>p.legalPerson && p.regCap && p.creditCode).length;
+    const missing = VENDOR_PROFILES.filter(p=>!(p.legalPerson && p.regCap && p.creditCode)).map(p=>p.name);
+    sumEl.innerHTML = '各中标厂商核心工商登记信息 · <b>'+embedded+'/'+total+'</b> 家已内嵌企查查核验数据（含法定代表人/注册资本/参保人数等）'
+      + (missing.length ? '；' + missing.join('、') + ' 运营主体未在企查查收录，保留入口手动查证' : '');
+  }
   el.innerHTML = VENDOR_PROFILES.map((p,i)=>{
     const color = getVendorColor(p.name);
     const detail = (p.legalPerson) ? `
