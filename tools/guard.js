@@ -129,6 +129,20 @@ if (allBids.length) {
   // 四档渲染函数在位
   say(/function evidenceLevel\(r\)/.test(idx), 'evidenceLevel() 存在');
   say(/EVIDENCE_META/.test(idx), 'EVIDENCE_META 四档定义存在');
+  // 全站重复提示（bidSignature 去重后仍重复的，说明同一笔被收录两次）
+  const sig = r => (r.winner || '') + '|' + (r.project || '') + '|' + (r.bidder || '') + '|' + (r.date || '');
+  const seenS = new Set(); let dupS = 0;
+  allBids.forEach(r => { const k = sig(r); if (seenS.has(k)) dupS++; else seenS.add(k); });
+  say(dupS === 0, '全站无同笔重复收录' + (dupS ? '（重复 ' + dupS + ' 条，历史遗留；getAllBids 已按 bidSignature 去重，统计不受影响）' : ''));
+  // 本期不得含窗口外日期（按公告日期归期：越界记录应移入对应归档组）
+  const wk = (idx.match(/label:\s*'\s*最新\s*([\d.]+)-([\d.]+)/) || []);
+  if (wk.length === 3) {
+    // label 形如 "最新 11.09-11.15" → 补成年份后转成 YYYY-MM-DD
+    const toDate = v => '2026-' + v.slice(0, 2) + '-' + v.slice(3, 5);
+    const lo = toDate(wk[1]), hi = toDate(wk[2]);
+    const outWin = cur.filter(r => { const d = (r.date || '').slice(0, 10); return d && (d < lo || d > hi); });
+    say(outWin.length === 0, '本期记录日期全部落在 ' + lo + ' ~ ' + hi + ' 窗口内' + (outWin.length ? '（越界 ' + outWin.length + ' 条）' : ''), true);
+  }
 }
 
 console.log('\n' + '='.repeat(60));
