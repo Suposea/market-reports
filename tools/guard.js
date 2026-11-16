@@ -143,6 +143,21 @@ if (allBids.length) {
     const outWin = cur.filter(r => { const d = (r.date || '').slice(0, 10); return d && (d < lo || d > hi); });
     say(outWin.length === 0, '本期记录日期全部落在 ' + lo + ' ~ ' + hi + ' 窗口内' + (outWin.length ? '（越界 ' + outWin.length + ' 条）' : ''), true);
   }
+  // 防盗链域名黑名单（2026-11-16 新增）：
+  // 这些站点对 Referer 做校验，裸访问（我方脚本）正常，但用户从本站点开必 403/拦截。
+  // 写入 sourceUrl 前必须带本站 Referer 再测一次，命中名单的不得写入。
+  const blockedHosts = (idx.match(/const REF_BLOCKED_HOSTS = \[([\s\S]*?)\]/) || [, ''])[1]
+    .match(/'([^']+)'/g).map(x => x.replace(/'/g, ''));
+  if (blockedHosts && blockedHosts.length) {
+    const bad = [];
+    allBids.forEach(r => {
+      if (!r.sourceUrl) return;
+      const h = (r.sourceUrl.match(/^https?:\/\/([^/]+)/) || [, ''])[1].toLowerCase();
+      if (blockedHosts.includes(h)) bad.push(h + ' | ' + (r.project || '').slice(0, 40));
+    });
+    say(bad.length === 0, '无防盗链域名的链接（REF_BLOCKED_HOSTS: ' + blockedHosts.join(', ') + '）'
+      + (bad.length ? ' —— 命中 ' + bad.length + ' 条：' + bad.slice(0, 2).join(' / ') : ''), true);
+  }
 }
 
 console.log('\n' + '='.repeat(60));

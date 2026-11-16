@@ -513,6 +513,25 @@ tbody tr.hidden{display:none}
 .proj-text{color:var(--ink-700)}
 tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
 .proj-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+/* ===== 表格精致化（2026-11-16）：减负视觉元素、统一行高、收敛标签 ===== */
+.cell-org{display:flex;align-items:center;gap:7px;min-width:0}
+.cell-org .org-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500;color:var(--ink-800)}
+.week-badge{flex:0 0 auto;display:inline-block;font-size:.6rem;font-weight:700;color:#fff;background:var(--accent);padding:1px 5px;border-radius:3px;letter-spacing:.02em;line-height:1.45}
+.vendor-link{display:inline-flex;align-items:center;gap:7px;min-width:0;max-width:100%;text-decoration:none}
+.vendor-link .vdot{width:6px;height:6px;border-radius:2px;flex:0 0 auto}
+.vendor-link .vname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink-700);font-size:.8rem;font-weight:500}
+.vendor-link:hover .vname{color:var(--accent);text-decoration:underline}
+.proj-cell{cursor:pointer;vertical-align:middle}
+.proj-text{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.55;color:var(--ink-700);font-size:.83rem}
+tr.row-open .proj-text{-webkit-line-clamp:unset;overflow:visible}
+.xc-mark{display:inline-block;margin-left:7px;padding:0 5px;border-radius:3px;font-size:.6rem;font-weight:600;line-height:1.6;color:var(--clay);background:var(--clay-soft);border:1px solid color-mix(in srgb,var(--clay) 28%,transparent);vertical-align:1px}
+.amount-cell{text-align:right;white-space:nowrap}
+.amt-none{font-size:.74rem;font-weight:400;color:var(--ink-300)}
+.date-cell{white-space:nowrap;font-variant-numeric:tabular-nums;font-size:.79rem;color:var(--ink-400)}
+.source-cell{max-width:220px;vertical-align:middle}
+.src-link svg{opacity:0;transition:opacity .15s ease}
+.source-cell:hover .src-link svg{opacity:.7}
+
 .mini-tag{display:inline-block;font-size:0.64rem;font-weight:600;letter-spacing:.03em;padding:2px 8px;border-radius:5px;color:var(--ink-500);background:var(--surface-3);border:1px solid var(--border);white-space:nowrap;line-height:1.5}
 .mini-tag.xc{color:#8f6d3a;background:rgba(196,154,80,.14);border-color:rgba(196,154,80,.35)}
 .mini-tag.und{color:var(--ink-400)}
@@ -882,8 +901,8 @@ tr.row-open .proj-text{-webkit-line-clamp:unset;line-clamp:unset}
       <div class="table-wrapper">
         <table id="bidsTable">
           <colgroup>
-            <col style="width:16%"><col style="width:14%"><col style="width:34%">
-            <col style="width:10%"><col style="width:10%"><col style="width:16%">
+            <col style="width:15%"><col style="width:13%"><col style="width:38%">
+            <col style="width:11%"><col style="width:8%"><col style="width:15%">
           </colgroup>
           <thead>
             <tr>
@@ -1236,6 +1255,11 @@ function gotoVendor(name){
 }
 // 【链接核验白名单·结构性防御】仅以下"招标采购平台 / 机构官方采购门户"的真实深链才显示绿色"已核验"；
 // 聚合搜索类（爱企查/天眼查/标讯网/新浪财经/东方财富股吧等）一律视为检索兜底（蓝色），绝不显示绿点。
+// ★ 防盗链域名黑名单（2026-11-16 实测）：这些站点对 Referer 做校验，从本站点开必 403/拦截，
+// 但「裸访问」（无 Referer）正常 —— 意味着我方脚本校验会误判为「有效」，实际用户一点就报错。
+// 判定方法：必须带本站 Referer 再测一次。命中名单的 sourceUrl 一律不得写入。
+const REF_BLOCKED_HOSTS = ['pms2g.shrcb.com','cpms.swsc.com.cn','www.ccgp.gov.cn','www.wxcq.com.cn'];
+
 const GREEN_DOMAINS = ['ahtba.org.cn','cqcbank.com','gx966888.com','youzhicai.com','sdicc.com.cn','hlzq.com','xyzq.com.cn','wrcb.com.cn','365trade.com.cn','cfcpn.com','qyzb.shccmg.com','qrcb.com.cn','linyi.ygcgfw.com','shggzy.com','ctbpsp.com','pms2g.shrcb.com','cg.cdb.com.cn','jkv2.ahtba.org.cn','login-cpm-xt.bankofbeijing.com.cn','hcl.jxcqgs.cn','supplier.gtht.com','cg.cib.com.cn','zjzb.chinaccsscm.cn','sgccetp.com.cn','pms.hnchasing.com','cqggzy.com','jjccb.com','hfbank.com.cn','f5.zj96596.com','ebuy.spdb.com.cn','onelinkplus.com','purms.ebscn.com','ec.chng.com.cn','tongbicapital.com','hazq.com','ggzy.gov.cn','ibuy.ccb.com','wzcb.com.cn','cebbank.com.cn','chinapost.com.cn','95595.cn','portal.zsebank.com','kmerit.com','nafmii.org.cn','ec.minmetals.com.cn','www.ygcgfw.com','ygcgfw.com','www.hazq.com','www.cscb.cn','cscb.cn','www.365trade.com.cn','www.cfcpn.com','www.ahtba.org.cn','www.sdicc.com.cn','www.chinapost.com.cn','www.xyzq.com.cn','www.cqcbank.com','www.gx966888.com','www.youzhicai.com','www.wrcb.com.cn','www.hlzq.com','www.qrcb.com.cn','www.shggzy.com','www.ctbpsp.com','www.jjccb.com','www.hfbank.com.cn','www.f5.zj96596.com','www.cebbank.com.cn','www.wzcb.com.cn','www.95595.cn','www.nafmii.org.cn','www.ggzy.gov.cn','www.cqggzy.com','www.cg.cib.com.cn','www.cg.cdb.com.cn','www.hcl.jxcqgs.cn','www.supplier.gtht.com'];
 
 function isGreenUrl(u){
@@ -1306,9 +1330,9 @@ const currentWeekBids = [
     {bidder:'重庆银行股份有限公司（城市商业银行）',winner:'杭州极盾数字科技有限公司',project:'数据安全分类分级平台2026年优化改造项目（单一来源公示，预算 95 万元，分级智能识别引擎规则优化）',amount:'预算95万元',date:'2026-11-12',source:'重庆银行官网·采购公告',sourceUrl:'https://www.cqcbank.com/cn/jrch/cgxx/hjjkh/dfed/103455.html'},
     {bidder:'重庆银行股份有限公司（城市商业银行）',winner:'德勤管理咨询（上海）有限公司',project:'2026-2027年AI合规治理及场景全生命周期运营管理咨询项目（第一成交候选人，公告期 11-09 至 11-12）',amount:'122.5万元',date:'2026-11-09',source:'重庆银行官网·采购结果公示',sourceUrl:'https://www.cqcbank.com/cn/jrch/cgxx/hjjkh/sdds/103397.html'},
     {bidder:'湖南银行股份有限公司（城市商业银行）',winner:'中电金信软件有限公司',project:'国际结算系统国产化建设项目中标候选人公示（国产化）',amount:'392.8万元',date:'2026-11-09',source:'乙方宝·中标候选人公示',sourceUrl:'https://www.yfbzb.com/winbid/detail/20261109_645779962.html'},
-    {bidder:'上海农村商业银行股份有限公司（农村商业银行）',winner:'恒生电子股份有限公司',project:'资管系统群接入统一认证系统项目—资管估值清算系统及资管场内交易系统开发（项目编号 JZCG2026000484）',amount:'金额未披露',date:'2026-11-11',source:'上海农商银行供应商门户·采购结果公告',sourceUrl:'https://pms2g.shrcb.com/cms/cmsjieguogg/6e8c72a2b81249539314b17cdf7fbdee.html'},
-    {bidder:'上海农村商业银行股份有限公司（农村商业银行）',winner:'塔塔信息技术（中国）有限责任公司',project:'核心系统数据库信创改造项目核心账务系统、核心卡系统及核心账务个人信贷子系统开发（国产化改造）',amount:'金额未披露',date:'2026-11-13',source:'上海农商银行供应商门户·采购结果公告',sourceUrl:'https://pms2g.shrcb.com/cms/cmsjieguogg/f8f7cbc1151540ffb748ade559c89b15.html'},
-    {bidder:'上海农村商业银行股份有限公司（农村商业银行·集采中心代采光明食品集团）',winner:'浪潮通用软件有限公司',project:'光明食品（集团）有限公司司库体系建设项目（项目编号 JZCG2026000489）',amount:'金额未披露',date:'2026-11-13',source:'上海农商银行供应商门户·采购结果公告',sourceUrl:'https://pms2g.shrcb.com/cms/cmsjieguogg/8f1b560154e2493bb844de14015cf393.html'},
+    {bidder:'上海农村商业银行股份有限公司（农村商业银行）',winner:'恒生电子股份有限公司',project:'资管系统群接入统一认证系统项目—资管估值清算系统及资管场内交易系统开发（项目编号 JZCG2026000484）',amount:'金额未披露',date:'2026-11-11',source:'上海农商银行供应商门户·采购结果公告（官网防盗链·外部不可直开）',sourceUrl:''},
+    {bidder:'上海农村商业银行股份有限公司（农村商业银行）',winner:'塔塔信息技术（中国）有限责任公司',project:'核心系统数据库信创改造项目核心账务系统、核心卡系统及核心账务个人信贷子系统开发（国产化改造）',amount:'金额未披露',date:'2026-11-13',source:'上海农商银行供应商门户·采购结果公告（官网防盗链·外部不可直开）',sourceUrl:''},
+    {bidder:'上海农村商业银行股份有限公司（农村商业银行·集采中心代采光明食品集团）',winner:'浪潮通用软件有限公司',project:'光明食品（集团）有限公司司库体系建设项目（项目编号 JZCG2026000489）',amount:'金额未披露',date:'2026-11-13',source:'上海农商银行供应商门户·采购结果公告（官网防盗链·外部不可直开）',sourceUrl:''},
     {bidder:'江苏张家港农村商业银行股份有限公司（农村商业银行）',winner:'恒生电子股份有限公司',project:'财富产品功能优化项目成交结果公告（单一来源，公告期 11-09 至 11-11）',amount:'金额未披露',date:'2026-11-09',source:'证券之星（转企查查）·成交结果公告',sourceUrl:'https://stock.stockstar.com/RB2026111200017997.shtml'},
     {bidder:'青岛农村商业银行股份有限公司（农村商业银行）',winner:'青岛信安数科信息技术有限公司',project:'互联网综合服务平台系统信创改造等四项需求项目中标公告（编号 QRCB-JC2026082，国产化改造）',amount:'55万元',date:'2026-11-12',source:'青岛农商银行官网·中标公告',sourceUrl:'https://www.qrcb.com.cn/qrcb/xwzx/cgxx/cjgs/2026111215433174627/index.html'},
     {bidder:'广州农村商业银行股份有限公司（农村商业银行）',winner:'北京先进数通信息技术股份有限公司',project:'统一报表系统重建项目中标结果公示',amount:'336万元',date:'2026-11-13',source:'广州农商银行官网·中标结果公示',sourceUrl:'https://www.grcbank.com/grcbank/gywx/cggg/2026111317525695405/index.shtml'},
@@ -1461,7 +1485,7 @@ const archiveData = [[  /* ===== 11.02-11.08（原 currentWeekBids 结转归档�
   {bidder:'杭州银行股份有限公司（城市商业银行）',winner:'杭州云象网络技术有限公司',project:'2026年数字人民币运营机构系统建设采购（项目编号 XM_2026NHY00634）-标段二：数字人民币智能合约建设（信创/数币）',amount:'368.8万元',date:'2026-10-20',source:'氩Ar科技（转中标结果公示全文）',sourceUrl:'http://mp.weixin.qq.com/s?__biz=MzI1NTEzOTYwNQ==&mid=2651532714&idx=1&sn=951c558f7ca1dcfab930e23caed6a0a4&chksm=f029fe935cdf3981d71d12804ba4ea31bdbfccf8c019787523d3a9da825d7836adf09ab973fa#rd'},
   {bidder:'江苏银行股份有限公司（城市商业银行）',winner:'杭州时代银通软件股份有限公司',project:'代客外汇交易系统优化升级项目（10.16 边界补录）',amount:'金额未披露',date:'2026-10-16',source:'江苏省招标中心（未核验）',sourceUrl:''},
   // --- 农村商业银行 / 省级农信（最高优先级）---
-  {bidder:'上海农村商业银行股份有限公司（农村商业银行）',winner:'拓尔思信息技术股份有限公司',project:'消保全流程管控系统信创改造项目（信创，单一来源，10.16 边界补录）',amount:'金额未披露',date:'2026-10-16',source:'上海农商银行供应商门户·采购结果公告',sourceUrl:'https://pms2g.shrcb.com/cms/cmsjieguogg/75a6db3e768f423996b12ca54cc6bc50.html'},
+  {bidder:'上海农村商业银行股份有限公司（农村商业银行）',winner:'拓尔思信息技术股份有限公司',project:'消保全流程管控系统信创改造项目（信创，单一来源，10.16 边界补录）',amount:'金额未披露',date:'2026-10-16',source:'上海农商银行供应商门户·采购结果公告（官网防盗链·外部不可直开）',sourceUrl:''},
   {bidder:'江苏苏州农村商业银行股份有限公司（农村商业银行）',winner:'苏州银丰睿哲信息科技有限公司',project:'金融基础数据报送系统信创改造项目（信创，中标候选，10.16 边界补录）',amount:'金额未披露',date:'2026-10-16',source:'苏州农商银行供应商门户·中标候选人公示',sourceUrl:'https://www.szrcb.com/cgpt-web/web/index/show.do?articleId=377eddcec8a4401ca9ebc7e4c0180784'},
   {bidder:'江苏江阴农村商业银行股份有限公司（农村商业银行）',winner:'广州天维信息技术股份有限公司',project:'绩效管理系统信创改造及功能升级采购项目（信创，中标候选）',amount:'金额未披露',date:'2026-10-20',source:'江阴农商银行官网·中标候选人公示',sourceUrl:'http://www.jybank.com.cn/jybank/index/zygg/7959959/index.html'},
   {bidder:'浙江农村商业联合银行股份有限公司（省级农信）',winner:'中电金信软件有限公司',project:'数据分析建模平台项目',amount:'金额未披露',date:'2026-10-20',source:'浙江农商联合银行/爱企查（未核验）',sourceUrl:''},
@@ -1470,7 +1494,7 @@ const archiveData = [[  /* ===== 11.02-11.08（原 currentWeekBids 结转归档�
   {bidder:'光大证券股份有限公司（证券公司）',winner:'恒生电子股份有限公司',project:'金仕达恒生顶点_组合需求_九月_信创_2026_优化项目（信创）',amount:'260万元',date:'2026-10-22',source:'光大证券集中采购管理平台/证券之星',sourceUrl:'https://stock.stockstar.com/RB2026102500001841.shtml'},
   {bidder:'光大证券股份有限公司（证券公司）',winner:'福建顶点软件股份有限公司',project:'金仕达恒生顶点_组合需求_九月_信创_2026_优化项目（信创）',amount:'53万元',date:'2026-10-22',source:'光大证券集中采购管理平台/证券之星',sourceUrl:'https://stock.stockstar.com/RB2026102500001841.shtml'},
   {bidder:'财信证券股份有限公司（证券公司）',winner:'上海金仕达软件科技股份有限公司',project:'净资本风险管理信创系统并表模块和功能改造采购项目（软件部分，信创，单一来源公示）',amount:'84万元',date:'2026-10-20',source:'财信金控采购管理系统·单一来源公示',sourceUrl:'https://pms.hnchasing.com/cggg/15061.jhtml'},
-  {bidder:'国联民生证券股份有限公司（证券公司）',winner:'恒生电子股份有限公司',project:'净资本信创及并表系统项目（信创）',amount:'80万元',date:'2026-10-21',source:'无锡产权交易所·预中标公示',sourceUrl:'https://www.wxcq.com.cn/wuxicq/ygcg/021001/021001003/021001003003/20261021/456416e3-07cf-4ff0-9042-e49e080df1e5.html'},
+  {bidder:'国联民生证券股份有限公司（证券公司）',winner:'恒生电子股份有限公司',project:'净资本信创及并表系统项目（信创）',amount:'80万元',date:'2026-10-21',source:'无锡产权交易所·预中标公示',sourceUrl:''},
   {bidder:'国泰海通证券股份有限公司（证券公司）',winner:'恒生电子股份有限公司',project:'2026年资产托管公募外包TA系统和稽核运营AOP系统信创改造采购项目（信创）',amount:'194万元',date:'2026-10-20',source:'国泰海通/证券之星',sourceUrl:'https://stock.stockstar.com/RB2026102200019982.shtml'},
   {bidder:'国泰海通证券股份有限公司（证券公司）',winner:'恒生电子股份有限公司',project:'2026年资产托管场内清算运营系统信创改造采购项目（信创）',amount:'金额未披露',date:'2026-10-21',source:'国泰海通证券采购平台·结果公告（未核验）',sourceUrl:''},
   {bidder:'国泰海通证券股份有限公司（证券公司）',winner:'恒生电子股份有限公司',project:'2026年资产托管投资监督系统信创改造采购项目（信创）',amount:'178万元',date:'2026-10-21',source:'证券之星（转天眼查）',sourceUrl:'https://stock.stockstar.com/RB2026102300021395.shtml'},
@@ -1516,8 +1540,8 @@ const archiveData = [[  /* ===== 11.02-11.08（原 currentWeekBids 结转归档�
   {bidder:'青岛农村商业银行股份有限公司（农商行）',winner:'恒生电子股份有限公司',project:'综合理财功能提升及信创改造项目中标公告（信创）',amount:'165万元',date:'2026-10-12',source:'青岛农商银行官网',sourceUrl:'https://www.qrcb.com.cn/qrcb/xwzx/cgxx/cjgs/2026101216585267238/index.html'},
   {bidder:'江苏苏州农村商业银行股份有限公司（农商行）',winner:'苏州银丰睿哲信息科技有限公司（候选）',project:'金融基础数据报送系统信创改造项目采购中标候选人公示（信创）',amount:'金额未披露',date:'2026-10-16',source:'苏州农商银行官网',sourceUrl:'https://www.szrcb.com/szrcb/2026-10/16/article_2026101616300040586.shtml'},
   {bidder:'江苏昆山农村商业银行股份有限公司（农商行）',winner:'蚂蚁区块链科技（上海）有限公司',project:'客户画像优化项目采购结果公示（含对公/零售客户画像智能体开发）',amount:'92万元',date:'2026-10-14',source:'昆山农商银行官网',sourceUrl:'https://www.ksrcb.com/mobile/2026-10/14/article_2026101414570751593.html'},
-  {bidder:'上海农村商业银行股份有限公司（农商行）',winner:'拓尔思信息技术股份有限公司',project:'消保全流程管控系统信创改造项目采购结果公告（单一来源，信创）',amount:'金额未披露',date:'2026-10-16',source:'上海农商银行供应商门户',sourceUrl:'https://pms2g.shrcb.com/cms/cmsjieguogg/75a6db3e768f423996b12ca54cc6bc50.html'},
-  {bidder:'上海农村商业银行股份有限公司（农商行）',winner:'彩讯科技股份有限公司',project:'电子邮件标准功能及AI功能优化开发项目采购结果公告（单一来源）',amount:'金额未披露',date:'2026-10-12',source:'上海农商银行供应商门户',sourceUrl:'https://pms2g.shrcb.com/cms/cmsjieguogg/a8ea36c40ee24028833633ea69aa6855.html'},
+  {bidder:'上海农村商业银行股份有限公司（农商行）',winner:'拓尔思信息技术股份有限公司',project:'消保全流程管控系统信创改造项目采购结果公告（单一来源，信创）',amount:'金额未披露',date:'2026-10-16',source:'上海农商银行供应商门户（官网防盗链·外部不可直开）',sourceUrl:''},
+  {bidder:'上海农村商业银行股份有限公司（农商行）',winner:'彩讯科技股份有限公司',project:'电子邮件标准功能及AI功能优化开发项目采购结果公告（单一来源）',amount:'金额未披露',date:'2026-10-12',source:'上海农商银行供应商门户（官网防盗链·外部不可直开）',sourceUrl:''},
   {bidder:'广州农村商业银行股份有限公司（农商行）',winner:'广州佳禾科技股份有限公司',project:'2026年网页防篡改系统维保服务项目（第二次）中标结果公示',amount:'59.212万元',date:'2026-10-15',source:'广州农商银行官网',sourceUrl:'https://www.grcbank.com/grcbank/gywx/cggg/2026101517321130380/index.shtml'},
   // --- 券商 ---
   {bidder:'华安证券股份有限公司（券商）',winner:'恒生电子股份有限公司',project:'策略输出系统建设项目中标候选人公示',amount:'金额未披露',date:'2026-10-17',source:'爱企查·招投标动态',sourceUrl:''},
@@ -1680,11 +1704,11 @@ const archiveData = [[  /* ===== 11.02-11.08（原 currentWeekBids 结转归档�
   {bidder:'渤银理财有限责任公司（渤海银行理财子公司）',winner:'恒生电子股份有限公司',project:'投资交易系统续建需求建设项目（2026年第1批次）成交公示',amount:'金额未披露',date:'2026-09-15',source:'搜狐（转渤银理财成交公示）',sourceUrl:'https://www.sohu.com/a/1077776195_121319643'},
   {bidder:'光大理财有限责任公司（光大银行理财子公司）',winner:'恒生电子股份有限公司',project:'销售端资金清算系统深分T05接口改造及划款自动化项目采购项目中标结果公告',amount:'129.8万元',date:'2026-09-15',source:'东方财富/同壁财经',sourceUrl:'https://guba.eastmoney.com/news,cfhpl,1773146711,1633085009864904,z.html'},
   // --- 央行分支机构（信创软件）---
-  {bidder:'中国人民银行广东省分行（央行分支机构）',winner:'安图特(北京)科技有限公司',project:'基础软件采购项目（二次）（东方通TongWeb + 电科金仓KingbaseES 国产数据库/中间件替换，信创）',amount:'33万元',date:'2026-09-16',source:'中国政府采购网',sourceUrl:'https://www.ccgp.gov.cn/cggg/zygg//zbgg/202609/t20260916_27341407.htm'},
+  {bidder:'中国人民银行广东省分行（央行分支机构）',winner:'安图特(北京)科技有限公司',project:'基础软件采购项目（二次）（东方通TongWeb + 电科金仓KingbaseES 国产数据库/中间件替换，信创）',amount:'33万元',date:'2026-09-16',source:'中国政府采购网',sourceUrl:''},
   // --- 恒生电子 ---
   {bidder:'国信证券资产管理有限公司（券商资管）',winner:'恒生电子股份有限公司',project:'交易所改造与赎回至指定金额等模块采购项目（候选人公示）',amount:'102.3万元',date:'2026-09-18',source:'深圳交易集团（未核验）',sourceUrl:''},
   {bidder:'西南证券股份有限公司（券商）',winner:'恒生电子股份有限公司',project:'集中交易系统信创改造项目（第二次）拟中标结果公示（信创）',amount:'193.761万元',date:'2026-09-18',source:'重庆招标采购/西南证券',sourceUrl:'https://www.cqzbw.com/cms/default/webfile/tender-zbjggg/20260918/1285665272803360768.html'},
-  {bidder:'西南证券股份有限公司（券商）',winner:'恒生电子股份有限公司',project:'深市RTGS优化系列系统改造项目（机构柜台交易系统）采购结果公示',amount:'239万元',date:'2026-09-18',source:'西南证券采购平台',sourceUrl:'https://cpms.swsc.com.cn:8090/cms/cmsjieguogg/57b01f3a88a6402da8ec06d706cb1ce5.html'},
+  {bidder:'西南证券股份有限公司（券商）',winner:'恒生电子股份有限公司',project:'深市RTGS优化系列系统改造项目（机构柜台交易系统）采购结果公示',amount:'239万元',date:'2026-09-18',source:'西南证券采购平台',sourceUrl:''},
   {bidder:'财通证券股份有限公司（券商）',winner:'恒生电子股份有限公司',project:'深市RTGS优化和中登协助执法优化项目-恒生部分采购结果更正公告',amount:'金额未披露',date:'2026-09-18',source:'乐采云（未核验）',sourceUrl:''},
   {bidder:'浙商证券股份有限公司（券商）',winner:'恒生电子股份有限公司',project:'2026年第二季度恒生软件产品及技术服务集中采购项目（货物）成交候选人公示',amount:'金额未披露',date:'2026-09-18',source:'浙商证券官网',sourceUrl:'https://www.stocke.com.cn/main/a/20260918/8357123.shtml'},
   {bidder:'国开证券股份有限公司（券商）',winner:'恒生电子股份有限公司',project:'反洗钱、异常交易、隔离墙系统维护服务项目（2年期）成交结果公告',amount:'96万元',date:'2026-09-17',source:'金采网'},
@@ -1727,7 +1751,7 @@ const archiveData = [[  /* ===== 11.02-11.08（原 currentWeekBids 结转归档�
   {bidder:'天津银行（城市商业银行）',winner:'恒生电子股份有限公司',project:'一表通代销业务代理协议数据报送项目中标候选人公示',amount:'金额未披露',date:'2026-09-11',source:'中国招标投标公共服务平台（未核验）',sourceUrl:''},
   // --- 农村商业银行 / 农信（最高优先级）---
   {bidder:'青海省农村信用社联合社（农商/农信）',winner:'西安南天电脑系统有限公司',project:'一区双录系统信创改造项目（信创，直接采购结果公示）',amount:'47万元',date:'2026-09-03',source:'青海省农商行官网（未核验）',sourceUrl:''},
-  {bidder:'上海农村商业银行股份有限公司（农商行）',winner:'安徽兆尹信息科技股份有限公司',project:'投资银行业务系统债券流程优化开发项目采购结果公告',amount:'金额未披露',date:'2026-09-11',source:'上海农商银行供应商门户',sourceUrl:'https://pms2g.shrcb.com/cms/cmsjieguogg/b06211e340b04d0b9a7cb1f1d7ac1cab.html'},
+  {bidder:'上海农村商业银行股份有限公司（农商行）',winner:'安徽兆尹信息科技股份有限公司',project:'投资银行业务系统债券流程优化开发项目采购结果公告',amount:'金额未披露',date:'2026-09-11',source:'上海农商银行供应商门户（官网防盗链·外部不可直开）',sourceUrl:''},
   // --- 恒生电子 ---
   {bidder:'大家保险集团（保险资管）',winner:'恒生电子股份有限公司',project:'大家资产财富端系统信创建设项目成交结果公示（信创）',amount:'806万元',date:'2026-09-11',source:'大家保险采购平台',sourceUrl:'https://e-pur.djbx.com/cms/channel/ywgg3/4354.htm'},
   {bidder:'诺德基金管理有限公司',winner:'恒生电子股份有限公司',project:'恒生业务系统信创适配改造项目（信创，单一来源）',amount:'金额未披露',date:'2026-09-11',source:'太易招标采购平台（未核验）',sourceUrl:''},
@@ -1778,7 +1802,7 @@ const archiveData = [[  /* ===== 11.02-11.08（原 currentWeekBids 结转归档�
   {bidder:'甬兴证券',winner:'金仕达',project:'反洗钱系统信创改造采购（信创，单一来源论证公示）',amount:'金额未披露',date:'2026-09-02',source:'宁波市阳光采购服务平台'},
   {bidder:'华安期货',winner:'金仕达',project:'交易咨询系统采购项目（成交结果公告）',amount:'金额未披露',date:'2026-08-31',source:'爱企查·金仕达招投标（未核验）',sourceUrl:''},
   // --- 恒生电子 ---
-  {bidder:'西南证券',winner:'恒生电子',project:'2026年恒生软件系统维护费及技术服务费采购项目（采购结果公示）',amount:'855万元',date:'2026-09-02',source:'西南证券采购平台',sourceUrl:'https://cpms.swsc.com.cn:8090/cms/cmsjieguogg/b7f7425883b64559a704db1e9a209686.html'},
+  {bidder:'西南证券',winner:'恒生电子',project:'2026年恒生软件系统维护费及技术服务费采购项目（采购结果公示）',amount:'855万元',date:'2026-09-02',source:'西南证券采购平台',sourceUrl:''},
   {bidder:'华安资管',winner:'恒生电子',project:'信创资金清算系统项目（信创，中标结果公告）',amount:'108万元',date:'2026-09-01',source:'华安证券官网'},
   {bidder:'中信信托',winner:'恒生电子',project:'结息计费系统(AIMS)2026年需求开发项目（结果公告）',amount:'78万元',date:'2026-09-01',source:'爱企查·恒生电子招投标（未核验）',sourceUrl:''},
   {bidder:'中信信托',winner:'恒生电子',project:'综合业务报表管理系统信创国产化改造项目（信创，中标候选人公示）',amount:'金额未披露',date:'2026-09-04',source:'爱企查·恒生电子招投标（未核验）',sourceUrl:''},
@@ -1911,7 +1935,7 @@ const archiveData = [[  /* ===== 11.02-11.08（原 currentWeekBids 结转归档�
   {bidder:'天津农村商业银行',winner:'安硕信息',project:'信用风险压力测试系统2026年建设项目（中标结果公告）',amount:'90万元',date:'2026-08-19',source:'天津农商行官网（未核验）',sourceUrl:''},
   {bidder:'重庆银行',winner:'神州数码',project:'市场风险管理系统2026年优化项目（中标结果公告）',amount:'71万元',date:'2026-08-18',source:'重庆银行官网（未核验）',sourceUrl:''},
   {bidder:'中山农村商业银行',winner:'中科江南',project:'数字财政一体化系统2026年建设项目（中标结果公告）',amount:'77万元',date:'2026-08-20',source:'中山农商行官网（未核验）',sourceUrl:''},
-  {bidder:'上海农村商业银行',winner:'银信科技',project:'光明食品(集团)有限公司司库系统建设项目系统集成第三方人天服务（成交结果公告）',amount:'金额未披露',date:'2026-08-18',source:'上海农商银行供应商门户',sourceUrl:'https://pms2g.shrcb.com/cms/cmsjieguogg/93947b27dd364f418b358040f1b39d71.html'},
+  {bidder:'上海农村商业银行',winner:'银信科技',project:'光明食品(集团)有限公司司库系统建设项目系统集成第三方人天服务（成交结果公告）',amount:'金额未披露',date:'2026-08-18',source:'上海农商银行供应商门户（官网防盗链·外部不可直开）',sourceUrl:''},
   {bidder:'中信银行广州分行',winner:'京北方',project:'交易结算系统运维服务项目（中标候选人公示）',amount:'金额未披露',date:'2026-08-19',source:'中信银行采购平台（未核验）',sourceUrl:''},
   {bidder:'兴业银行深圳分行',winner:'博思致新',project:'非税收入管理系统信创改造框架协议采购（信创，框架入围）',amount:'框架入围',date:'2026-08-18',source:'兴业银行集中采购管理平台（未核验）',sourceUrl:''},
   {bidder:'秦农银行',winner:'京北方',project:'影像管理系统信创改造项目（信创，中标候选人公示）',amount:'金额未披露',date:'2026-08-20',source:'秦农银行官网（未核验）',sourceUrl:''},
@@ -1999,7 +2023,7 @@ const archiveData = [[  /* ===== 11.02-11.08（原 currentWeekBids 结转归档�
     {bidder:'兴业数字金融服务(上海)股份有限公司',winner:'兆尹信息',project:'兴银理财新一代投资交易管理三期项目（采购结果公告，中标入围供应商）',amount:'金额未披露',date:'2026-07-31',source:'兴业银行集中采购管理平台',sourceUrl:'https://cg.cib.com.cn/cms/default/webfile/ywgg3/20260731/1267881016731631616.html'},
     {bidder:'重庆农村商业银行股份有限公司',winner:'兆尹信息',project:'金融市场客户信评及投后管理项目标段一：系统开发及相关服务（第二次）（中标结果公示）',amount:'140万元',date:'2026-07-31',source:'国家公共资源交易平台·重庆',sourceUrl:'https://www.ggzy.gov.cn/information/deal/html/a/500000/0104/20260731/0050ecc2cd8be58f4b0cbe37d4a19f1e1725.html'},
     {bidder:'建信保险资产管理有限公司',winner:'兆尹信息',project:'2026年业务助理信创改造项目（竞争性磋商，采购结果公开）',amount:'63万元',date:'2026-07-31',source:'建信龙集采·采购结果公示（未核验）',sourceUrl:''},
-    {bidder:'上海农村商业银行股份有限公司',winner:'兆尹信息、恒生电子',project:'资管业务系统群开业必备数据铺底项目（单一来源；包件1理财子投资交易系统等4系统、包件2综合理财平台等4系统）',amount:'金额未披露',date:'2026-07-29',source:'上海农商银行供应商门户',sourceUrl:'https://pms2g.shrcb.com/cms/cmsjieguogg/11c4eadc61d347a1bfb691aadae9eee1.html'},
+    {bidder:'上海农村商业银行股份有限公司',winner:'兆尹信息、恒生电子',project:'资管业务系统群开业必备数据铺底项目（单一来源；包件1理财子投资交易系统等4系统、包件2综合理财平台等4系统）',amount:'金额未披露',date:'2026-07-29',source:'上海农商银行供应商门户（官网防盗链·外部不可直开）',sourceUrl:''},
     {bidder:'九江银行股份有限公司',winner:'信雅达科技股份有限公司',project:'2026年智慧客服语音平台灾备扩容和信创改造项目（中标候选人排序公示，第一中标排序人）',amount:'金额未披露',date:'2026-07-31',source:'九江银行官网·中标候选人公示',sourceUrl:'https://www.jjccb.com/ydapp/zbcg/jzcg/jg/2026073116492815311/index.shtml'},
     {bidder:'财信证券股份有限公司',winner:'恒生电子',project:'经纪业务系统(恒生)支持北交所非公开发行公司债券业务(信创)采购项目（单一来源公示）',amount:'金额未披露',date:'2026-07-31',source:'爱企查·恒生电子招投标（未核验）',sourceUrl:''},
     {bidder:'财信证券股份有限公司',winner:'恒生电子',project:'经纪业务系统支持深市RTGS优化(信创)项目（单一来源公示）',amount:'金额未披露',date:'2026-07-31',source:'爱企查·恒生电子招投标（未核验）',sourceUrl:''},
@@ -2133,7 +2157,7 @@ const archiveData = [[  /* ===== 11.02-11.08（原 currentWeekBids 结转归档�
 // ===== 量锐专题（2026年中标，补充收集） =====
 const liangruiBids = [
   {bidder:'浦发银行',winner:'量锐',project:'金融市场系统群重构建设项目之原型产品及定制化开发服务采购（2026-2029）',amount:'1752万元',date:'2026-05-12',source:'浦发银行采购平台',sourceUrl:'https://ebuy.spdb.com.cn/#/noticeDetail?noticeId=1129205376275605536281300893696'},
-  {bidder:'上海农商银行',winner:'量锐',project:'2026年量化交易系统维护服务项目（单一来源）',amount:'',date:'2026-05-08',source:'上海农商银行供应商门户',sourceUrl:'https://pms2g.shrcb.com/cms/cmsjieguogg/e75be62c601b47adafd0fc58fd42ca84.html'},
+  {bidder:'上海农商银行',winner:'量锐',project:'2026年量化交易系统维护服务项目（单一来源）',amount:'',date:'2026-05-08',source:'上海农商银行供应商门户（官网防盗链·外部不可直开）',sourceUrl:''},
   {bidder:'浦发银行',winner:'量锐',project:'2026-2029年度金融市场领域信息系统研发专业服务（入围供应商）',amount:'框架入围',date:'2026-04-29',source:'招标网（未核验）',sourceUrl:''}
 ];
 
@@ -2158,7 +2182,7 @@ const radarItems = [
   { type:'plan', bank:'建信基金 / 恒生电子', date:'2026-11-12', title:'建信基金恒生系系统信创改造批量采前公示（5 项，公示截止 2026-11-18）', content:'建信基金 11-12 批量发布恒生系系统改造单一来源采前公示：<b>投顾运营系统、机构版网上交易及客户查询系统、个人版网上交易系统、恒生直销 API4.0 四项信创改造</b> + 销售费用新规配套模块改造，公示截止 <b>2026-11-18</b>。"银行系基金信创改造包"批量浮现，Q4 信创向资管/基金各业务系统纵深。下一步：关注公示期满后的成交结果。', source:'证券之星（转企查查采前公示）', sourceUrl:'https://stock.stockstar.com/RB2026111200020191.shtml' },
   { type:'news', bank:'国泰海通证券 / 凯美瑞德', date:'2026-11-09', title:'国泰海通 2026 年全资产系统开发建设成交 — 凯美瑞德 257.5 万', content:'国泰海通证券 2026 年全资产系统开发建设采购项目结果公告（11-08 披露）：<b>凯美瑞德（苏州）信息科技股份有限公司成交，金额 257.5 万元</b>（单一来源）。券商全资产系统标志性订单正式落定，凯美瑞德"政策性银行+头部券商"资金/全资产系统双线推进。', source:'证券之星（转天眼查）', sourceUrl:'https://stock.stockstar.com/RB2026111000034474.shtml' },
   { type:'news', bank:'上海银行', date:'2026-11-13', title:'上海银行支付系统重构建设候选人公示 — 赞同科技 585.79 万（数币2.0关联）', content:'上海银行支付系统重构建设采购项目（编号 采招2026-2493）中标候选人公示（公示期 11-13 至 11-16）：<b>赞同科技股份有限公司 585.79 万元，综合得分排名第一</b>。城商行支付系统重构大单，与数币 2.0 运营机构系统建设潮呼应。下一步：关注公示期满后的中标通知书与合同签订。', source:'上海银行官网', sourceUrl:'https://www.bosc.cn/zh/jrsh/xxgk_1091/tzzxgqk/zbcg/202611/t20261114_543067.shtml' },
-  { type:'news', bank:'上海农商银行 / 塔塔信息', date:'2026-11-13', title:'上海农商核心系统数据库信创改造核心账务子系统开发成交 — 塔塔信息（中国）', content:'上海农商银行核心系统数据库信创改造项目核心账务系统、核心卡系统及核心账务个人信贷子系统开发（编号 JZCG2026000468）<b>单一来源成交：塔塔信息技术（中国）有限责任公司</b>（11-13，金额未披露）。农商行核心账务信创开发标志单，数据库信创从平台层向核心应用纵深。', source:'上海农商银行供应商门户', sourceUrl:'https://pms2g.shrcb.com/cms/cmsjieguogg/f8f7cbc1151540ffb748ade559c89b15.html' },
+  { type:'news', bank:'上海农商银行 / 塔塔信息', date:'2026-11-13', title:'上海农商核心系统数据库信创改造核心账务子系统开发成交 — 塔塔信息（中国）', content:'上海农商银行核心系统数据库信创改造项目核心账务系统、核心卡系统及核心账务个人信贷子系统开发（编号 JZCG2026000468）<b>单一来源成交：塔塔信息技术（中国）有限责任公司</b>（11-13，金额未披露）。农商行核心账务信创开发标志单，数据库信创从平台层向核心应用纵深。', source:'上海农商银行供应商门户（官网防盗链·外部不可直开）', sourceUrl:'' },
   { type:'news', bank:'华夏银行（上周补录）', date:'2026-11-04', title:'华夏银行资金条线三单密集披露：香港分行资金交易系统优化（云赢）+ 外汇双单（时代银通）', content:'华夏银行官网 11-03/11-04 密集披露（上周漏收，本期补录）：<b>香港分行资金交易系统优化和许可采购（软件开发部分）成交——杭州云赢网络</b>（单一来源）；<b>企业级信投数智平台（一期）外围配套改造—对客外汇交易系统部分成交——杭州时代银通</b>；<b>外汇对客自动报价项目成交——杭州时代银通</b>（做市商功能/风险管理/自贸区接入/IPv6 四大改造）。股份行外汇资金交易系统群持续迭代。', source:'华夏银行官网', sourceUrl:'https://www.hxb.com.cn/hxb/jrhx/hxxw/zbgg/cgjggs/zx/2026110409175791984/index.shtml' },
   // ===== 上周（11.02–11.08）结转 =====
   { type:'plan', bank:'中国建设银行四川省分行', date:'2026-11-04', title:'华西医院财务结算数据应用系统等项目公开招标（预算271.12万元）', content:'建行四川省分行对华西医院财务结算数据应用系统等项目公开招标，预算 <b>271.12 万元</b>（标包1：医院财务结算数据应用系统+医院结算资金精准管理系统；标包2：国有资产结算管理信息系统平台），招标文件获取 11-04 至 11-10，财务结算/资金管理类系统标的。下一步：关注 11 月下旬开标与中标结果。', source:'中招联合招标采购平台', sourceUrl:'https://www.365trade.com.cn/zfwzb/891500.jhtml' },
@@ -2913,18 +2937,18 @@ function renderBidsTable(){
     const amtClass = (hasAmt ? '' : 'empty') + (amt >= BIG_DEAL_MIN ? ' big' : '');
     const isWeek = weekSet.has(bidSignature(r));
     const t = tier(r);
-    const tags = [];
-    if(isXC(r.project)) tags.push('<span class="mini-tag xc">信创</span>');
-    if(!hasAmt && r.amount) tags.push(`<span class="mini-tag und">${escapeHtml(r.amount)}</span>`);
+    // 精致化（2026-11-16）：信创徽标内联到项目名末尾，不再另起一行；
+    // 「金额未披露」只在金额列表达，取消与金额列重复的冗余标签。
+    const xcTag = isXC(r.project) ? '<span class="xc-mark" title="信创项目">信创</span>' : '';
     const enc = encodeURIComponent(bidSignature(r));
     const w = primaryWinner(r);
     const tailCls = (t==='C') ? ' tail-row' : '';
     return `<tr style="--vc:${color}" class="${isWeek?'is-week':''}${tailCls}" data-sig="${enc}">
-      <td><div class="clamp2 cell-org" title="${escapeHtml(r.bidder)}">${escapeHtml(shortOrg(r.bidder))}</div>${isWeek?'<span class="week-badge">最新</span>':''}</td>
-      <td><a class="vendor-link" href="javascript:void(0)" onclick="gotoVendor('${escapeHtml(w)}')" title="${escapeHtml(r.winner)}"><span class="vendor-tag" style="border-color:${color}40">${escapeHtml(shortOrg(r.winner))}</span></a></td>
-      <td class="proj-cell" onclick="this.closest('tr').classList.toggle('row-open')" title="${escapeHtml(r.project)}"><div class="clamp2 proj-text">${escapeHtml(r.project)}</div>${tags.length?`<div class="proj-tags">${tags.join('')}</div>`:''}</td>
-      <td class="amount-cell ${amtClass}"${hasAmt?` title="约 ${amt.toLocaleString()} 万元"`:''}>${hasAmt ? `<span class="amt-num">${escapeHtml(r.amount)}</span>` : '—'}</td>
-      <td>${r.date ? `<span class="date-tag">${escapeHtml(r.date)}</span>` : '<span class="date-tag" style="opacity:.45">—</span>'}</td>
+      <td><div class="cell-org" title="${escapeHtml(r.bidder)}"><span class="org-name">${escapeHtml(shortOrg(r.bidder))}</span>${isWeek?'<span class="week-badge">最新</span>':''}</div></td>
+      <td><a class="vendor-link" href="javascript:void(0)" onclick="gotoVendor('${escapeHtml(w)}')" title="${escapeHtml(r.winner)}"><span class="vdot" style="background:${color}"></span><span class="vname">${escapeHtml(shortOrg(r.winner))}</span></a></td>
+      <td class="proj-cell" onclick="this.closest('tr').classList.toggle('row-open')" title="${escapeHtml(r.project)}"><div class="proj-text">${escapeHtml(r.project)}${xcTag}</div></td>
+      <td class="amount-cell ${amtClass}"${hasAmt?` title="约 ${amt.toLocaleString()} 万元"`:''}>${hasAmt ? `<span class="amt-num">${escapeHtml(r.amount)}</span>` : '<span class="amt-none">未披露</span>'}</td>
+      <td class="date-cell">${r.date ? escapeHtml(r.date) : '<span class="amt-none">—</span>'}</td>
       <td class="source-cell">${sourceCell(r)}</td>
     </tr>`;
   }).join('');
